@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import { logger } from "../middleware/logEvents";
@@ -15,6 +15,11 @@ app.use(cors());
 app.use(express.json());
 
 //routes
+
+app.all("*", (req: Request, res: Response) => {
+  res.status(404);
+  res.type("txt").send("404 not found");
+});
 
 app.use(errorHandler);
 
