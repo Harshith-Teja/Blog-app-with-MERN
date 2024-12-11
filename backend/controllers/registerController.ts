@@ -21,7 +21,7 @@ export const handleNewUser = async (req: Request, res: Response) => {
     const hashedPwd = bcrypt.hash(pwd, 10);
 
     //store the new user in the db
-    const newUser = new User({ uname, pwd });
+    const newUser = new User({ uname, hashedPwd });
     await newUser.save();
 
     res.status(201).json({ success: "user has been successfully created" });
