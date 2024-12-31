@@ -1,6 +1,10 @@
 import { Request, Response } from "express";
 import { IUser, User } from "../models/users";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 export const handleLoginUser = async (req: Request, res: Response) => {
   const { uname, pwd } = req.body;
@@ -20,7 +24,28 @@ export const handleLoginUser = async (req: Request, res: Response) => {
 
     if (match) {
       //create JWTs
-      res.status(201).json({ message: "User successfully logged in" });
+
+      const accessToken = jwt.sign(
+        { username: foundUser.uname },
+        process.env.ACCESS_TOKEN_SECRET as string,
+        { expiresIn: "30s" }
+      );
+
+      const refreshToken = jwt.sign(
+        { username: foundUser.uname },
+        process.env.REFRESH_TOKEN_SECRET as string,
+        { expiresIn: "1d" }
+      );
+
+      foundUser.refreshToken = refreshToken;
+      await foundUser.save();
+
+      res.cookie("jwt", refreshToken, {
+        httpOnly: true,
+        maxAge: 24 * 60 * 60 * 1000,
+      });
+
+      res.status(201).json({ accessToken });
     } else {
       res.status(401).json({ message: "Unauthorized" });
     }
