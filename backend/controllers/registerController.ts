@@ -8,13 +8,13 @@ export const handleNewUser = async (req: Request, res: Response) => {
   if (!uname || !pwd)
     return res
       .status(400)
-      .json({ message: "Email and password are mandatory" });
+      .json({ message: "Username and password are mandatory" });
 
   //check for duplicate
   const duplicate = await User.find((person: IUser) => person.uname === uname);
 
   if (duplicate)
-    return res.status(409).json({ message: "Email already exists" });
+    return res.status(409).json({ message: "Username already exists" });
 
   try {
     //hash the pwd
