@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+import express, { Request, RequestHandler, Response } from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import { logger } from "../middleware/logEvents";
@@ -23,7 +23,7 @@ app.use(express.json());
 app.use("/register", registerRouter);
 app.use("/login", loginRouter);
 
-//app.use(verifyJWT);
+app.use(verifyJWT as RequestHandler);
 
 app.use("/users", userRouter);
 
