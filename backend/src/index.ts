@@ -7,6 +7,7 @@ import { verifyJWT } from "../middleware/verifyJWT";
 import registerRouter from "../routes/register";
 import loginRouter from "../routes/login";
 import userRouter from "../routes/api/users";
+import { connectDB } from "../config/connectDB";
 
 const app = express();
 const PORT = 5000;
@@ -32,6 +33,8 @@ app.all("*", (req: Request, res: Response) => {
 });
 
 app.use(errorHandler);
+
+connectDB();
 
 app.listen(PORT, () => {
   console.log(`Server running on PORT ${PORT}`);
