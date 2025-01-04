@@ -1,13 +1,13 @@
 import express, { Request, RequestHandler, Response } from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import { logger } from "../middleware/logEvents";
-import { errorHandler } from "../middleware/errorHandler";
-import { verifyJWT } from "../middleware/verifyJWT";
-import registerRouter from "../routes/register";
-import loginRouter from "../routes/login";
-import userRouter from "../routes/api/users";
-import { connectDB } from "../config/connectDB";
+import { logger } from "./src/middleware/logEvents";
+import { errorHandler } from "./src/middleware/errorHandler";
+import { verifyJWT } from "./src/middleware/verifyJWT";
+import registerRouter from "./src/routes/register";
+import loginRouter from "./src/routes/login";
+import userRouter from "./src/routes/api/users";
+import { connectDB } from "./src/config/connectDB";
 
 const app = express();
 const PORT = 5000;
