@@ -15,7 +15,7 @@ export const handleNewUser = async (
       .json({ message: "Username and password are mandatory" });
 
   //check for duplicate
-  const duplicate = await User.find({ uname });
+  const duplicate = await User.findOne({ uname }).exec();
 
   if (duplicate)
     return res.status(409).json({ message: "Username already exists" });
