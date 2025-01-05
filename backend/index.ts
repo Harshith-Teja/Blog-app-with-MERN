@@ -6,8 +6,10 @@ import { errorHandler } from "./src/middleware/errorHandler";
 import { verifyJWT } from "./src/middleware/verifyJWT";
 import registerRouter from "./src/routes/register";
 import loginRouter from "./src/routes/login";
+import refreshRouter from "./src/routes/refresh";
 import userRouter from "./src/routes/api/users";
 import { connectDB } from "./src/config/connectDB";
+import cookieParser from "cookie-parser";
 
 const app = express();
 const PORT = 5000;
@@ -18,10 +20,12 @@ dotenv.config();
 app.use(logger);
 app.use(cors());
 app.use(express.json());
+app.use(cookieParser());
 
 //routes
 app.use("/register", registerRouter);
 app.use("/login", loginRouter);
+app.use("/refresh", refreshRouter);
 
 app.use(verifyJWT as RequestHandler);
 
