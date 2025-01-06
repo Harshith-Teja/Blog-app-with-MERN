@@ -6,6 +6,7 @@ import { errorHandler } from "./src/middleware/errorHandler";
 import { verifyJWT } from "./src/middleware/verifyJWT";
 import registerRouter from "./src/routes/register";
 import loginRouter from "./src/routes/login";
+import logoutRouter from "./src/routes/logout";
 import refreshRouter from "./src/routes/refresh";
 import userRouter from "./src/routes/api/users";
 import { connectDB } from "./src/config/connectDB";
@@ -26,6 +27,7 @@ app.use(cookieParser());
 app.use("/register", registerRouter);
 app.use("/login", loginRouter);
 app.use("/refresh", refreshRouter);
+app.use("/logout", logoutRouter);
 
 app.use(verifyJWT as RequestHandler);
 
