@@ -20,7 +20,8 @@ export const handleLogout = async (req: Request, res: Response) => {
     }
 
     //clear the refreshToken in the db
-    foundUser.refreshToken = "";
+    foundUser.refreshToken =
+      foundUser.refreshToken?.filter((rf) => rf !== refreshToken) || []; //clears the token of current device and keeps the tokens of other devices intact
     await foundUser.save();
 
     res.clearCookie("jwt", { httpOnly: true });

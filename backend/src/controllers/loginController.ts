@@ -8,6 +8,7 @@ dotenv.config();
 
 export const handleLoginUser = async (req: Request, res: Response) => {
   const { uname, pwd } = req.body;
+  const cookies = req.cookies;
 
   if (!uname || !pwd)
     return res
@@ -31,16 +32,23 @@ export const handleLoginUser = async (req: Request, res: Response) => {
         { expiresIn: "30s" }
       );
 
-      const refreshToken = jwt.sign(
+      const newRefreshToken = jwt.sign(
         { username: foundUser.uname },
         process.env.REFRESH_TOKEN_SECRET as string,
         { expiresIn: "1d" }
       );
 
-      foundUser.refreshToken = refreshToken;
+      //if a jwt rf token cookie exists, clear both the cookie and that token
+      const newRfTokenArr = !cookies?.jwt
+        ? foundUser.refreshToken
+        : foundUser.refreshToken?.filter((rf) => rf !== cookies.jwt) || [];
+
+      if (cookies.jwt) res.clearCookie("jwt", { httpOnly: true });
+
+      foundUser.refreshToken = [...(newRfTokenArr || []), newRefreshToken];
       await foundUser.save();
 
-      res.cookie("jwt", refreshToken, {
+      res.cookie("jwt", newRefreshToken, {
         httpOnly: true,
         maxAge: 24 * 60 * 60 * 1000,
       });
