@@ -39,11 +39,24 @@ export const handleLoginUser = async (req: Request, res: Response) => {
       );
 
       //if a jwt rf token cookie exists, clear both the cookie and that token
-      const newRfTokenArr = !cookies?.jwt
+      let newRfTokenArr = !cookies?.jwt
         ? foundUser.refreshToken
         : foundUser.refreshToken?.filter((rf) => rf !== cookies.jwt) || [];
 
-      if (cookies.jwt) res.clearCookie("jwt", { httpOnly: true });
+      if (cookies.jwt) {
+        //detected re-use of rf token
+
+        const refreshToken = cookies.jwt;
+        const foundToken = await User.findOne({ refreshToken }).exec();
+
+        if (!foundToken) {
+          //a rf is used and if it is not there in the db, then it is a stolen rf token
+          console.log("attempted refresh token re-use at login");
+          newRfTokenArr = [];
+        }
+
+        res.clearCookie("jwt", { httpOnly: true });
+      }
 
       foundUser.refreshToken = [...(newRfTokenArr || []), newRefreshToken];
       const result = await foundUser.save();
