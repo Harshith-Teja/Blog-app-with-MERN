@@ -46,7 +46,8 @@ export const handleLoginUser = async (req: Request, res: Response) => {
       if (cookies.jwt) res.clearCookie("jwt", { httpOnly: true });
 
       foundUser.refreshToken = [...(newRfTokenArr || []), newRefreshToken];
-      await foundUser.save();
+      const result = await foundUser.save();
+      console.log(result);
 
       res.cookie("jwt", newRefreshToken, {
         httpOnly: true,
