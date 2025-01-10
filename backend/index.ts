@@ -11,6 +11,8 @@ import refreshRouter from "./src/routes/refresh";
 import userRouter from "./src/routes/api/users";
 import { connectDB } from "./src/config/connectDB";
 import cookieParser from "cookie-parser";
+import corsOptions from "./src/config/corsOptions";
+import credentials from "./src/middleware/credentials";
 
 const app = express();
 const PORT = 5000;
@@ -19,7 +21,8 @@ dotenv.config();
 
 //middleware
 app.use(logger);
-app.use(cors());
+app.use(credentials);
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
 
