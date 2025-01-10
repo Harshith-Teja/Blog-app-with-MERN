@@ -8,7 +8,7 @@ export const handleRefreshToken = async (req: Request, res: Response) => {
   if (!cookies?.jwt) return res.sendStatus(401);
 
   const refreshToken = cookies.jwt;
-  res.clearCookie("jwt", { httpOnly: true }); //clearing existing token for refreshToken rotation
+  res.clearCookie("jwt", { httpOnly: true, sameSite: "none", secure: true }); //clearing existing token for refreshToken rotation
 
   try {
     const foundUser: IUser | null = await User.findOne({ refreshToken }).exec();

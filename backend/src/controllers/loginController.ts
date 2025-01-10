@@ -55,7 +55,11 @@ export const handleLoginUser = async (req: Request, res: Response) => {
           newRfTokenArr = [];
         }
 
-        res.clearCookie("jwt", { httpOnly: true });
+        res.clearCookie("jwt", {
+          httpOnly: true,
+          sameSite: "none",
+          secure: true,
+        });
       }
 
       foundUser.refreshToken = [...(newRfTokenArr || []), newRefreshToken];
