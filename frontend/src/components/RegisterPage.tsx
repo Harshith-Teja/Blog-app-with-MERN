@@ -4,7 +4,8 @@ import {
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useEffect, useState } from "react";
+import axios from "axios";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
 const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
@@ -23,6 +24,11 @@ const RegisterPage = () => {
   const [validCnfrmPwd, setValidCnfrmPwd] = useState(false);
   const [cnfrmPwdFocus, setCnfrmPwdFocus] = useState(false);
 
+  const [errMsg, setErrMsg] = useState("");
+
+  const userRef = useRef<HTMLInputElement | null>(null);
+  const errRef = useRef<HTMLInputElement | null>(null);
+
   useEffect(() => {
     setValidUname(USER_REGEX.test(uname));
   }, [uname]);
@@ -32,9 +38,61 @@ const RegisterPage = () => {
     setValidCnfrmPwd(pwd === cnfrmPwd);
   }, [pwd, cnfrmPwd]);
 
+  useEffect(() => {
+    if (userRef.current) userRef.current.focus();
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    //if button is enabled by JS hack
+    if (!uname || !pwd) {
+      setErrMsg("Username and pwd are required to submit");
+      if (errRef.current) errRef.current.focus();
+      return;
+    }
+
+    const v1 = USER_REGEX.test(uname);
+    const v2 = PWD_REGEX.test(pwd);
+
+    if (!v1 || !v2) {
+      setErrMsg("Invalid username or password");
+      if (errRef.current) errRef.current.focus();
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/register",
+        JSON.stringify({ uname, pwd }),
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        }
+      );
+
+      console.log(response?.data);
+
+      setUname("");
+      setPwd("");
+      setCnfrmPwd("");
+    } catch (err: any) {
+      if (!err?.response) setErrMsg("No server response");
+      else if (err.response === 409) setErrMsg("Username already taken");
+      else setErrMsg(err.message);
+
+      if (errRef.current) errRef.current.focus();
+    }
+  };
   return (
     <div className="w-full h-full flex justify-center items-center bg-cyan-400">
-      <form className="w-[30%] bg-slate-100 rounded-lg p-8 text-center">
+      <form
+        className="w-[30%] bg-slate-100 rounded-lg p-8 text-center"
+        onSubmit={handleSubmit}
+      >
+        <p ref={errRef} className="text-red-500" aria-live="assertive">
+          {errMsg}
+        </p>
         <h1 className="font-bold text-3xl mb-4">Register Page</h1>
         <label htmlFor="uname" className="text-xl">
           Username{" "}
@@ -51,6 +109,8 @@ const RegisterPage = () => {
           type="text"
           id="uname"
           className="border-black border-2 rounded-md p-1 mb-4 w-2/3"
+          ref={userRef}
+          value={uname}
           onChange={(e) => setUname(e.target.value)}
           aria-invalid={!validUname ? "true" : "false"}
           aria-describedby="uidnote"
@@ -87,6 +147,7 @@ const RegisterPage = () => {
           type="password"
           id="pwd"
           className="border-black border-2 rounded-md p-1 mb-4 w-2/3"
+          value={pwd}
           onChange={(e) => setPwd(e.target.value)}
           aria-invalid={!validPwd ? "true" : "false"}
           aria-describedby="pwdnote"
@@ -129,6 +190,7 @@ const RegisterPage = () => {
           type="password"
           id="cnfrmPwd"
           className="border-black border-2 rounded-md p-1 mb-4 w-2/3"
+          value={cnfrmPwd}
           onChange={(e) => setCnfrmPwd(e.target.value)}
           aria-invalid={!validCnfrmPwd ? "true" : "false"}
           aria-describedby="cnfrmnote"
