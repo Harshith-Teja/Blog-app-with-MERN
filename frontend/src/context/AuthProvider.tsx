@@ -1,0 +1,25 @@
+import { createContext, useState } from "react";
+
+interface AuthState {
+  uname?: string;
+  pwd?: string;
+  accessToken?: string | null;
+}
+
+interface AuthContextType {
+  auth: AuthState;
+  setAuth: React.Dispatch<React.SetStateAction<{}>>;
+}
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+  const [auth, setAuth] = useState({});
+
+  return (
+    <AuthContext.Provider value={{ auth, setAuth }}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
+
+export default AuthContext;
