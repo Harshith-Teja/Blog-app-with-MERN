@@ -10,7 +10,7 @@ export const logEvents = async (
   logName: string
 ): Promise<void> => {
   const datetime = `${format(new Date(), "yyyyMMdd\tHH:mm:ss")}`;
-  const logItem = `${datetime}\t${uuid()}\t${message}`;
+  const logItem = `${datetime}\t${uuid()}\t${message}\n`;
 
   try {
     if (!fs.existsSync(path.join(__dirname, "..", "logs"))) {
