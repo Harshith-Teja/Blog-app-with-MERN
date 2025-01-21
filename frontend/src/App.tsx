@@ -17,12 +17,12 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/blogs" element={<Blogs />} />
+
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+
+          <Route path="/*" element={<ErrorPage />} />
         </Route>
-
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-
-        <Route path="/*" element={<ErrorPage />} />
       </Routes>
     </div>
   );
