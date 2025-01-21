@@ -5,7 +5,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
-import { Button, Label, Spinner, TextInput } from "flowbite-react";
+import { Alert, Button, Label, Spinner, TextInput } from "flowbite-react";
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -118,9 +118,14 @@ const RegisterPage = () => {
             className="w-full bg-slate-100 rounded-lg p-8 text-center"
             onSubmit={handleSubmit}
           >
-            <p ref={errRef} className="text-red-500" aria-live="assertive">
+            <Alert
+              ref={errRef}
+              color="failure"
+              className={errMsg ? "block" : "hidden"}
+              aria-live="assertive"
+            >
               {errMsg}
-            </p>
+            </Alert>
             <h1 className="font-bold text-3xl mb-4">Sign up</h1>
             <Label htmlFor="uname" className="text-xl">
               Username{" "}
