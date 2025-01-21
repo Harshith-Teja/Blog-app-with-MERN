@@ -12,7 +12,7 @@ const userSchema = new Schema(
     pwd: { type: String, required: true },
     refreshToken: { type: [String], default: [] },
   },
-  { collection: "userInfo" }
+  { timestamps: true }
 );
 
 export const User = model<IUser>("User", userSchema);
