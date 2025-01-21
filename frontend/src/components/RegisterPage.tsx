@@ -5,7 +5,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
-import { Button, Label, TextInput } from "flowbite-react";
+import { Button, Label, Spinner, TextInput } from "flowbite-react";
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -27,6 +27,7 @@ const RegisterPage = () => {
 
   const [errMsg, setErrMsg] = useState("");
   const [success, setSuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const userRef = useRef<HTMLInputElement | null>(null);
   const errRef = useRef<HTMLInputElement | null>(null);
@@ -64,6 +65,8 @@ const RegisterPage = () => {
     }
 
     try {
+      setLoading(true);
+
       const response = await axios.post(
         "http://localhost:5000/register",
         JSON.stringify({ uname, pwd }),
@@ -80,12 +83,15 @@ const RegisterPage = () => {
       setCnfrmPwd("");
       setErrMsg("");
       setSuccess(true);
+      setLoading(false);
     } catch (err: any) {
       if (!err?.response) setErrMsg("No server response");
       else if (err.response.status === 409) setErrMsg("Username already taken");
       else setErrMsg(err.message);
 
       if (errRef.current) errRef.current.focus();
+
+      setLoading(false);
     }
   };
   return (
@@ -231,9 +237,9 @@ const RegisterPage = () => {
               type="submit"
               gradientDuoTone="purpleToPink"
               className="w-full mt-4"
-              disabled={!validUname || !validPwd || !validCnfrmPwd}
+              disabled={!validUname || !validPwd || !validCnfrmPwd || !loading}
             >
-              Sign up
+              {loading ? <Spinner size="sm" /> : "Sign up"}
             </Button>
             <p>
               Already a user?{" "}
