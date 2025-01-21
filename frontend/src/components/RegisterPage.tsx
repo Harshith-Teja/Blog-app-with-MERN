@@ -107,7 +107,7 @@ const RegisterPage = () => {
       </div>
       <div className="flex-1 flex justify-center items-center p-4">
         {success ? (
-          <section className="w-[30%] bg-slate-100 rounded-lg p-8 text-center">
+          <section className="bg-slate-100 rounded-lg p-8 text-center">
             <h1 className="text-2xl font-semibold text-green-500">Success!!</h1>
             <Link to="/login" className="underline">
               Sign In
@@ -237,7 +237,7 @@ const RegisterPage = () => {
               type="submit"
               gradientDuoTone="purpleToPink"
               className="w-full mt-4"
-              disabled={!validUname || !validPwd || !validCnfrmPwd || !loading}
+              disabled={!validUname || !validPwd || !validCnfrmPwd || loading}
             >
               {loading ? <Spinner size="sm" /> : "Sign up"}
             </Button>
