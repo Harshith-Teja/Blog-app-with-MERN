@@ -1,7 +1,8 @@
 import axios from "axios";
 import { useContext, useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import AuthContext from "../context/AuthProvider";
+import { Alert, Button, Label, Spinner, TextInput } from "flowbite-react";
 
 const LoginPage = () => {
   const authContext = useContext(AuthContext);
@@ -16,7 +17,9 @@ const LoginPage = () => {
   const [pwd, setPwd] = useState("");
 
   const [errMsg, setErrMsg] = useState("");
-  const [success, setSuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate();
 
   const userRef = useRef<HTMLInputElement | null>(null);
   const errRef = useRef<HTMLInputElement | null>(null);
@@ -41,6 +44,8 @@ const LoginPage = () => {
     }
 
     try {
+      setLoading(true);
+
       const response = await axios.post(
         "http://localhost:5000/login",
         JSON.stringify({ uname, pwd }),
@@ -57,60 +62,74 @@ const LoginPage = () => {
       setAuth({ uname, pwd, accessToken });
       setUname("");
       setPwd("");
-      setSuccess(true);
+      setLoading(false);
+      navigate("/");
     } catch (err: any) {
       if (!err?.response) setErrMsg("No server response");
+      else if (err.response.status === 409) setErrMsg("Username already taken");
       else setErrMsg(err.message);
 
       errRef.current?.focus();
+
+      setLoading(false);
     }
   };
 
   return (
-    <div className="w-full h-full flex justify-center items-center bg-cyan-400">
-      {success ? (
-        <section className="w-[30%] bg-slate-100 rounded-lg p-8 text-center">
-          <h1 className="text-2xl font-semibold text-green-500">Success!!</h1>
-          <Link to="/" className="underline">
-            Go to home
-          </Link>
-        </section>
-      ) : (
+    <div className="w-full h-full mt-20 p-3 max-w-3xl mx-auto flex flex-col gap-5 md:flex-row md:items-center">
+      <div
+        id="logo"
+        className="flex-1 flex flex-col justify-center items-center"
+      >
+        <h1 className="font-bold text-3xl dark:text-white">BlogSmith</h1>
+        <p className="font-light text-md dark:text-white">
+          Forge your thoughts into powerful posts
+        </p>
+      </div>
+      <div className="flex-1 flex justify-center items-center p-4">
         <form
-          className="w-[30%] bg-slate-100 rounded-lg p-8 text-center"
+          className="w-full bg-slate-100 rounded-lg p-8 text-center"
           onSubmit={handleSubmit}
         >
-          <p ref={errRef} className="text-red-500" aria-live="assertive">
+          <Alert
+            ref={errRef}
+            color="failure"
+            className={errMsg ? "block" : "hidden"}
+            aria-live="assertive"
+          >
             {errMsg}
-          </p>
-          <h1 className="font-bold text-3xl mb-4">Login Page</h1>
-          <label htmlFor="uname" className="text-xl">
+          </Alert>
+          <Label htmlFor="uname" className="text-xl">
             Username
-          </label>
+          </Label>
           <br />
-          <input
+          <TextInput
             type="text"
             id="uname"
-            className="border-black border-2 rounded-md p-1 mb-4 w-2/3"
+            autoComplete="off"
             value={uname}
             onChange={(e) => setUname(e.target.value)}
           />
           <br />
-          <label htmlFor="pwd" className="text-xl">
+          <Label htmlFor="pwd" className="text-xl">
             Password
-          </label>{" "}
+          </Label>{" "}
           <br />
-          <input
+          <TextInput
             type="password"
             id="pwd"
-            className="border-black border-2 rounded-md p-1 mb-4 w-2/3"
             value={pwd}
             onChange={(e) => setPwd(e.target.value)}
           />{" "}
           <br />
-          <button className="p-2 w-1/2 rounded-md bg-cyan-300 my-2">
-            Submit
-          </button>
+          <Button
+            type="submit"
+            gradientDuoTone="purpleToPink"
+            className="w-full mt-4"
+            disabled={loading}
+          >
+            {loading ? <Spinner size="sm" /> : "Sign in"}
+          </Button>
           <p>
             New user?{" "}
             <Link to="/register" className="underline">
@@ -118,7 +137,7 @@ const LoginPage = () => {
             </Link>
           </p>
         </form>
-      )}
+      </div>
     </div>
   );
 };
