@@ -33,3 +33,11 @@
 20250121	13:33:25	223b79bb-1d23-4d69-8c16-92f2f319105a	POST	http://localhost:5173	/register
 20250121	13:33:51	25177545-74b7-40c0-b086-917c37bc7784	OPTIONS	http://localhost:5173	/login
 20250121	13:33:51	b01aa41a-74f4-49bd-8801-704900ab8bf7	POST	http://localhost:5173	/login
+20250122	11:10:55	fb5280f8-52d1-42ed-8920-678e03ab6f20	OPTIONS	http://localhost:5173	/login
+20250122	11:10:55	708ca3eb-1be0-44e0-9322-8bac22b9bd1d	POST	http://localhost:5173	/login
+20250122	11:11:21	4356a973-97b6-4425-9e90-dcd70accfb03	OPTIONS	http://localhost:5173	/login
+20250122	11:11:21	57a83679-41ea-4c55-97f0-4959a4234a27	POST	http://localhost:5173	/login
+20250122	11:11:38	ccd5506c-9273-4c7d-8e83-2e2acf2430fa	OPTIONS	http://localhost:5173	/login
+20250122	11:11:38	e7584476-9ede-4f72-b525-a09c12222bb8	POST	http://localhost:5173	/login
+20250122	11:14:07	b5e0dbbf-2107-49c4-879b-473bbb8d4cf2	OPTIONS	http://localhost:5173	/login
+20250122	11:14:07	e0104173-b201-477e-bd91-0a78ae4664ac	POST	http://localhost:5173	/login

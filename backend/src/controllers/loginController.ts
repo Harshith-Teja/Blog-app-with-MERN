@@ -73,7 +73,9 @@ export const handleLoginUser = async (req: Request, res: Response) => {
         maxAge: 24 * 60 * 60 * 1000,
       });
 
-      res.status(201).json({ accessToken });
+      const { pwd, ...userWithoutPwd } = foundUser.toObject();
+
+      res.status(201).json({ accessToken, userWithoutPwd });
     } else {
       res.status(401).json({ message: "Unauthorized" });
     }
