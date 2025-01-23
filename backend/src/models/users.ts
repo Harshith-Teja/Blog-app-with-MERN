@@ -4,6 +4,8 @@ export interface IUser extends Document {
   uname: string;
   pwd: string;
   refreshToken?: string[];
+  email?: string;
+  profilePic?: string;
 }
 
 const userSchema = new Schema(
