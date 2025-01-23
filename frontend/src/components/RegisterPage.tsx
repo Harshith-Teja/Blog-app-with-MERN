@@ -8,6 +8,7 @@ import axios from "axios";
 import { Alert, Button, Label, Spinner, TextInput } from "flowbite-react";
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import OAuth from "./OAuth";
 
 const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
@@ -246,6 +247,7 @@ const RegisterPage = () => {
             >
               {loading ? <Spinner size="sm" /> : "Sign up"}
             </Button>
+            <OAuth />
             <p>
               Already a user?{" "}
               <Link to="/login" className="underline">

@@ -9,6 +9,7 @@ import {
   signInSuccess,
 } from "../redux/user/userSlice";
 import { RootState } from "../redux/store";
+import OAuth from "./OAuth";
 
 const LoginPage = () => {
   const dispatch = useDispatch();
@@ -134,6 +135,7 @@ const LoginPage = () => {
           >
             {loading ? <Spinner size="sm" /> : "Sign in"}
           </Button>
+          <OAuth />
           <p>
             New user?{" "}
             <Link to="/register" className="underline">
