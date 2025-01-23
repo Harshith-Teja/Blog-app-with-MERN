@@ -41,3 +41,15 @@
 20250122	11:11:38	e7584476-9ede-4f72-b525-a09c12222bb8	POST	http://localhost:5173	/login
 20250122	11:14:07	b5e0dbbf-2107-49c4-879b-473bbb8d4cf2	OPTIONS	http://localhost:5173	/login
 20250122	11:14:07	e0104173-b201-477e-bd91-0a78ae4664ac	POST	http://localhost:5173	/login
+20250123	10:49:58	55492f53-f727-419a-b817-d57d2fe7fe30	OPTIONS	http://localhost:5173	/login
+20250123	10:49:58	6e29f071-d7ec-4e56-9d5a-651b09e5a012	POST	http://localhost:5173	/login
+20250123	10:53:09	3bdd5291-a98e-400d-9775-ff876d94d258	OPTIONS	http://localhost:5173	/login
+20250123	10:53:09	db23fca5-61f9-4c42-b4e7-bc786f2723dd	POST	http://localhost:5173	/login
+20250123	11:40:43	f9ea8bb0-8bf8-432e-abfa-56e24d5855e0	OPTIONS	http://localhost:5173	/login
+20250123	11:40:43	faafd08c-40b6-4ad2-9045-7d8564a4ed98	POST	http://localhost:5173	/login
+20250123	16:36:58	9820fc17-1a3d-45a0-8057-c6c364c36abe	OPTIONS	http://localhost:5173	/google
+20250123	16:36:58	77319a31-b2a9-4bf6-a74b-65445f9e4008	POST	http://localhost:5173	/google
+20250123	16:40:05	77d11bbc-9940-49df-9b71-f9a8bd7ee934	OPTIONS	http://localhost:5173	/google
+20250123	16:40:05	8885d5ef-4f9a-4016-86ef-0c4f3e5cd17b	POST	http://localhost:5173	/google
+20250123	16:40:32	0af947dd-d7cf-492e-a711-dae7ba2151a6	OPTIONS	http://localhost:5173	/google
+20250123	16:40:32	2960e7bd-7f11-4c78-beda-4c28c285b64c	POST	http://localhost:5173	/google

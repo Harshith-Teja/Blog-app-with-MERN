@@ -1,23 +1,25 @@
 import axios from "axios";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import AuthContext from "../context/AuthProvider";
 import { Alert, Button, Label, Spinner, TextInput } from "flowbite-react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  signInFailure,
+  signInStart,
+  signInSuccess,
+} from "../redux/user/userSlice";
+import { RootState } from "../redux/store";
+import OAuth from "./OAuth";
 
 const LoginPage = () => {
-  const authContext = useContext(AuthContext);
-
-  if (!authContext) {
-    throw new Error("AuthContext must be used within an AuthProvider");
-  }
-
-  const { setAuth } = authContext;
+  const dispatch = useDispatch();
 
   const [uname, setUname] = useState("");
   const [pwd, setPwd] = useState("");
 
-  const [errMsg, setErrMsg] = useState("");
-  const [loading, setLoading] = useState(false);
+  const { loading, error: errMsg } = useSelector(
+    (state: RootState) => state.user
+  );
 
   const navigate = useNavigate();
 
@@ -29,14 +31,14 @@ const LoginPage = () => {
   }, []);
 
   useEffect(() => {
-    setErrMsg("");
+    dispatch(signInFailure(""));
   }, [uname, pwd]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!uname || !pwd) {
-      setErrMsg("Username and password are required to login");
+      dispatch(signInFailure("Username and password are required to login"));
 
       if (userRef.current) userRef.current.focus();
 
@@ -44,7 +46,7 @@ const LoginPage = () => {
     }
 
     try {
-      setLoading(true);
+      dispatch(signInStart());
 
       const response = await axios.post(
         "http://localhost:5000/login",
@@ -55,23 +57,26 @@ const LoginPage = () => {
         }
       );
 
-      console.log(response.data);
-      console.log(JSON.stringify(response));
+      const data = response.data;
 
-      const accessToken: string | null = response?.data?.accessToken;
-      setAuth({ uname, pwd, accessToken });
+      if (data.success === false) {
+        dispatch(signInFailure(data.message));
+        return;
+      }
+
+      console.log(data);
+
       setUname("");
       setPwd("");
-      setLoading(false);
+      dispatch(signInSuccess(data));
       navigate("/");
     } catch (err: any) {
-      if (!err?.response) setErrMsg("No server response");
-      else if (err.response.status === 409) setErrMsg("Username already taken");
-      else setErrMsg(err.message);
+      if (!err?.response) dispatch(signInFailure("No server response"));
+      else if (err.response.status === 409)
+        dispatch(signInFailure("Username already taken"));
+      else dispatch(signInFailure(err.message));
 
       errRef.current?.focus();
-
-      setLoading(false);
     }
   };
 
@@ -130,6 +135,7 @@ const LoginPage = () => {
           >
             {loading ? <Spinner size="sm" /> : "Sign in"}
           </Button>
+          <OAuth />
           <p>
             New user?{" "}
             <Link to="/register" className="underline">
