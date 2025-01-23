@@ -7,6 +7,7 @@ import Dashboard from "./components/Dashboard";
 import Blogs from "./components/Blogs";
 import Layout from "./components/Layout";
 import ErrorPage from "./components/ErrorPage";
+import PrivateRoute from "./components/PrivateRoute";
 
 function App() {
   return (
@@ -15,8 +16,11 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/blogs" element={<Blogs />} />
+
+          <Route element={<PrivateRoute />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/blogs" element={<Blogs />} />
+          </Route>
 
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
