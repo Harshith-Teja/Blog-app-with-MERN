@@ -1,21 +1,26 @@
-import { faMagnifyingGlass, faMoon } from "@fortawesome/free-solid-svg-icons";
+import {
+  faMagnifyingGlass,
+  faMoon,
+  faSun,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Avatar, Button, Dropdown, Navbar, TextInput } from "flowbite-react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
 import { RootState } from "../redux/store";
+import { toggleTheme } from "../redux/theme/themeSlice";
 
 const Header = () => {
   const path = useLocation().pathname;
   const { currentUser } = useSelector((state: RootState) => state.user);
+  const { theme } = useSelector((state: RootState) => state.theme);
+  const dispatch = useDispatch();
 
   return (
     <Navbar className="border-b-2">
       <div id="logo" className="flex flex-col">
-        <h1 className="font-bold text-sm sm:text-xl md:text-3xl dark:text-white">
-          BlogSmith
-        </h1>
-        <p className="font-light text-sm hidden md:block dark:text-white">
+        <h1 className="font-bold text-sm sm:text-xl md:text-3xl">BlogSmith</h1>
+        <p className="font-light text-sm hidden md:block">
           Forge your thoughts into powerful posts
         </p>
       </div>
@@ -31,8 +36,17 @@ const Header = () => {
         <FontAwesomeIcon icon={faMagnifyingGlass} />
       </Button>
       <div className="flex gap-2 md:order-2">
-        <Button className="w-12 h-10 hidden sm:inline" color="gray" pill>
-          <FontAwesomeIcon icon={faMoon} />
+        <Button
+          className="w-12 h-10 hidden sm:inline"
+          color="gray"
+          pill
+          onClick={() => dispatch(toggleTheme())}
+        >
+          {theme === "light" ? (
+            <FontAwesomeIcon icon={faMoon} />
+          ) : (
+            <FontAwesomeIcon icon={faSun} />
+          )}
         </Button>
 
         {currentUser ? (
