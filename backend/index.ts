@@ -8,6 +8,7 @@ import registerRouter from "./src/routes/register";
 import loginRouter from "./src/routes/login";
 import logoutRouter from "./src/routes/logout";
 import refreshRouter from "./src/routes/refresh";
+import googleRouter from "./src/routes/google";
 import userRouter from "./src/routes/api/users";
 import { connectDB } from "./src/config/connectDB";
 import cookieParser from "cookie-parser";
@@ -29,6 +30,7 @@ app.use(cookieParser());
 //routes
 app.use("/register", registerRouter);
 app.use("/login", loginRouter);
+app.use("/google", googleRouter);
 app.use("/refresh", refreshRouter);
 app.use("/logout", logoutRouter);
 
