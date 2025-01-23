@@ -23,7 +23,7 @@ const OAuth = () => {
       console.log(resultsFrmGoogle);
 
       const response = await axios.post(
-        "http://localhost:3000/auth/google",
+        "http://localhost:5000/google",
         JSON.stringify({
           name: resultsFrmGoogle.user.displayName,
           email: resultsFrmGoogle.user.email,
