@@ -35,7 +35,7 @@ const OAuth = () => {
         }
       );
 
-      dispatch(signInSuccess(response));
+      dispatch(signInSuccess(response.data?.userWithoutPwd));
       navigate("/");
     } catch (err) {
       console.log(err);
