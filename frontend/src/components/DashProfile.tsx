@@ -22,14 +22,6 @@ const DashProfile = () => {
           placeholder="Username"
           defaultValue={currentUser?.uname}
         />
-        {currentUser?.email && (
-          <TextInput
-            type="text"
-            id="uname"
-            placeholder="Username"
-            defaultValue={currentUser?.email}
-          />
-        )}
         <TextInput type="password" id="pwd" placeholder="Password" />
         <Button type="submit" gradientDuoTone="purpleToBlue">
           Update
