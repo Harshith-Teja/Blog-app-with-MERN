@@ -1,12 +1,8 @@
-import { NextFunction, Request, Response } from "express";
+import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import { User } from "../models/users";
 
-export const handleNewUser = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const handleNewUser = async (req: Request, res: Response) => {
   const { uname, pwd } = req.body;
 
   if (!uname || !pwd)
@@ -31,6 +27,5 @@ export const handleNewUser = async (
     res.status(201).json({ success: "user has been successfully created" });
   } catch (err: any) {
     res.status(500).json({ message: err.message });
-    //next(err);
   }
 };
