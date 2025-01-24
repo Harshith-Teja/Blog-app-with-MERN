@@ -24,12 +24,13 @@ const DashSidebar = () => {
             icon={() => <FontAwesomeIcon icon={faUser} />}
             label={"User"}
             labelColor="dark"
+            as="div"
           >
             <Link to="/dashboard?tab=profile">Profile</Link>
           </Sidebar.Item>
           <Sidebar.Item
             icon={() => <FontAwesomeIcon icon={faArrowRight} />}
-            classname="cursor-pointer"
+            className="cursor-pointer"
           >
             Sign out
           </Sidebar.Item>
