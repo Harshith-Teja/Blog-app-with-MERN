@@ -18,13 +18,13 @@ export const googleLoginController = async (req: Request, res: Response) => {
     if (foundUser) {
       //User exists -> SignIn -> refreshToken rotation
       const accessToken = jwt.sign(
-        { username: foundUser.uname },
+        { id: foundUser._id },
         process.env.ACCESS_TOKEN_SECRET as string,
         { expiresIn: "30s" }
       );
 
       const newRefreshToken = jwt.sign(
-        { username: foundUser.uname },
+        { id: foundUser._id },
         process.env.REFRESH_TOKEN_SECRET as string,
         { expiresIn: "1d" }
       );

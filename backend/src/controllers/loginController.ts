@@ -27,13 +27,13 @@ export const handleLoginUser = async (req: Request, res: Response) => {
       //create JWTs
 
       const accessToken = jwt.sign(
-        { username: foundUser.uname },
+        { id: foundUser._id },
         process.env.ACCESS_TOKEN_SECRET as string,
         { expiresIn: "30s" }
       );
 
       const newRefreshToken = jwt.sign(
-        { username: foundUser.uname },
+        { id: foundUser._id },
         process.env.REFRESH_TOKEN_SECRET as string,
         { expiresIn: "1d" }
       );
