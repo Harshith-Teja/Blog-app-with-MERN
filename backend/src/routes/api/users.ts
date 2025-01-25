@@ -3,12 +3,13 @@ import {
   deleteUser,
   getAllUsers,
   getUser,
+  updateUser,
 } from "../../controllers/userController";
 
 const router = express.Router();
-
 router.get("/", getAllUsers);
 router.delete("/", deleteUser as RequestHandler);
 router.get("/:id", getUser as RequestHandler);
+router.put("/update/:id", updateUser as RequestHandler);
 
 export default router;
