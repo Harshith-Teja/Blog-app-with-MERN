@@ -9,6 +9,7 @@ import loginRouter from "./src/routes/login";
 import logoutRouter from "./src/routes/logout";
 import refreshRouter from "./src/routes/refresh";
 import googleRouter from "./src/routes/google";
+import postsRouter from "./src/routes/posts";
 import userRouter from "./src/routes/api/users";
 import { connectDB } from "./src/config/connectDB";
 import cookieParser from "cookie-parser";
@@ -37,6 +38,7 @@ app.use("/logout", logoutRouter);
 app.use(verifyJWT as RequestHandler);
 
 app.use("/users", userRouter);
+app.use("/create-post", postsRouter);
 
 app.all("*", (req: Request, res: Response) => {
   res.status(404);
