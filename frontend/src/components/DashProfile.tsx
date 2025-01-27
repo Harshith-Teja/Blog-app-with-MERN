@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/store";
-import { Alert, Button, Modal, TextInput } from "flowbite-react";
+import { Alert, Button, Modal, Spinner, TextInput } from "flowbite-react";
 import { useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -23,9 +23,11 @@ const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 
 const DashProfile = () => {
-  const { currentUser, error: errMsg } = useSelector(
-    (state: RootState) => state.user
-  );
+  const {
+    currentUser,
+    error: errMsg,
+    loading,
+  } = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch();
 
   const [uname, setUname] = useState(currentUser?.uname || "");
@@ -208,7 +210,7 @@ const DashProfile = () => {
             (uname.length > 0 && !validUname) || (pwd.length > 0 && !validPwd)
           }
         >
-          Update
+          {loading ? <Spinner size="sm" /> : "Update"}
         </Button>
         <Alert
           ref={errRef}
