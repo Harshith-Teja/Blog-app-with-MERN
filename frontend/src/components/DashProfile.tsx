@@ -18,6 +18,7 @@ import {
   updateSuccess,
 } from "../redux/user/userSlice";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
@@ -207,10 +208,22 @@ const DashProfile = () => {
           type="submit"
           gradientDuoTone="purpleToBlue"
           disabled={
-            (uname.length > 0 && !validUname) || (pwd.length > 0 && !validPwd)
+            (uname.length > 0 && !validUname) ||
+            (pwd.length > 0 && !validPwd) ||
+            loading
           }
         >
-          {loading ? <Spinner size="sm" /> : "Update"}
+          {loading ? <Spinner size="sm" /> : "Update profile"}
+        </Button>
+        <Button
+          gradientDuoTone="purpleToBlue"
+          disabled={
+            (uname.length > 0 && !validUname) ||
+            (pwd.length > 0 && !validPwd) ||
+            loading
+          }
+        >
+          <Link to="/create-post">Create posts</Link>
         </Button>
         <Alert
           ref={errRef}

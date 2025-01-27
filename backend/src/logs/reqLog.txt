@@ -221,3 +221,5 @@
 20250127	11:50:09	92209154-6b55-4639-b2c6-3c5b84c0e6cc	POST	http://localhost:5173	/google
 20250127	11:50:14	2b0158a8-2e09-414e-bb03-2a790a3d53db	OPTIONS	http://localhost:5173	/logout
 20250127	11:50:14	6b611792-d0da-4ed5-8be1-f1eccc2c4ee9	POST	http://localhost:5173	/logout
+20250127	12:17:37	45c7b02d-611c-4f66-a10b-71891fd13b10	OPTIONS	http://localhost:5173	/google
+20250127	12:17:37	c5d250e4-e38c-477d-8524-d94cc1b617a6	POST	http://localhost:5173	/google
