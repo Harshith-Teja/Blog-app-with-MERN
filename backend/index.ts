@@ -38,7 +38,7 @@ app.use("/logout", logoutRouter);
 app.use(verifyJWT as RequestHandler);
 
 app.use("/users", userRouter);
-app.use("/create-post", postsRouter);
+app.use("/posts", postsRouter);
 
 app.all("*", (req: Request, res: Response) => {
   res.status(404);
