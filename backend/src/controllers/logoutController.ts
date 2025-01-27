@@ -10,7 +10,7 @@ export const handleLogout = async (req: Request, res: Response) => {
 
   const refreshToken = cookies.jwt;
 
-  //is refreshToken in the db
+  //check if refreshToken in the db
   try {
     const foundUser: IUser | null = await User.findOne({ refreshToken }).exec();
 
