@@ -1,4 +1,8 @@
-import { faArrowRight, faUser } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowRight,
+  faFile,
+  faUser,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Sidebar } from "flowbite-react";
 import { useEffect, useState } from "react";
@@ -56,6 +60,15 @@ const DashSidebar = () => {
             as="div"
           >
             <Link to="/dashboard?tab=profile">Profile</Link>
+          </Sidebar.Item>
+          <Sidebar.Item
+            active={tab === "posts"}
+            icon={() => <FontAwesomeIcon icon={faFile} />}
+            label={"Posts"}
+            labelColor="dark"
+            as="div"
+          >
+            <Link to="/dashboard?tab=posts">Posts</Link>
           </Sidebar.Item>
           <Sidebar.Item
             icon={() => <FontAwesomeIcon icon={faArrowRight} />}
