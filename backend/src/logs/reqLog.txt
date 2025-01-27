@@ -223,3 +223,9 @@
 20250127	11:50:14	6b611792-d0da-4ed5-8be1-f1eccc2c4ee9	POST	http://localhost:5173	/logout
 20250127	12:17:37	45c7b02d-611c-4f66-a10b-71891fd13b10	OPTIONS	http://localhost:5173	/google
 20250127	12:17:37	c5d250e4-e38c-477d-8524-d94cc1b617a6	POST	http://localhost:5173	/google
+20250127	17:45:31	aad6a6df-13c1-4ca6-89c1-ee9db91be806	OPTIONS	http://localhost:5173	/create-post
+20250127	17:45:31	352d6d61-c242-465c-b8c9-a1bd02cc303e	POST	http://localhost:5173	/create-post
+20250127	17:48:53	1741155f-da52-4810-af22-390431736b2a	OPTIONS	http://localhost:5173	/create-post
+20250127	17:48:53	75d93abb-a077-4f54-b7f2-3d7fad6646bb	POST	http://localhost:5173	/create-post
+20250127	17:49:11	a9049520-36f1-4257-a119-7e269a24c7d4	OPTIONS	http://localhost:5173	/create-post
+20250127	17:49:11	5f91b5c5-7628-4f3d-a04a-a9251ec91508	POST	http://localhost:5173	/create-post
