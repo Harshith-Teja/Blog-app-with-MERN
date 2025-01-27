@@ -47,8 +47,7 @@ export const getAllUsers = async (req: Request, res: Response) => {
 
 export const deleteUser = async (req: Request, res: Response) => {
   const { id } = req.params;
-  console.log("req", req.userId);
-  console.log("params", id);
+
   if (req.userId !== id)
     return res
       .status(400)
