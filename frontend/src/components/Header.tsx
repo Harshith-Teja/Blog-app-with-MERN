@@ -6,15 +6,44 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Avatar, Button, Dropdown, Navbar, TextInput } from "flowbite-react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { RootState } from "../redux/store";
 import { toggleTheme } from "../redux/theme/themeSlice";
+import {
+  signoutFailure,
+  signoutStart,
+  signoutSuccess,
+} from "../redux/user/userSlice";
+import axios from "axios";
 
 const Header = () => {
   const path = useLocation().pathname;
   const { currentUser } = useSelector((state: RootState) => state.user);
   const { theme } = useSelector((state: RootState) => state.theme);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleSignout = async () => {
+    try {
+      dispatch(signoutStart());
+
+      const response = await axios.post("http://localhost:5000/logout", {
+        withCredentials: true,
+      });
+
+      const data = response?.data;
+
+      if (data.success === false) {
+        dispatch(signoutFailure(data.message));
+        return;
+      }
+
+      dispatch(signoutSuccess());
+      navigate("/login");
+    } catch (err: any) {
+      dispatch(signoutFailure(err.message));
+    }
+  };
 
   return (
     <Navbar className="border-b-2">
@@ -65,7 +94,7 @@ const Header = () => {
               <Dropdown.Item>Profile</Dropdown.Item>
             </Link>
             <Dropdown.Divider />
-            <Dropdown.Item>Sign out</Dropdown.Item>
+            <Dropdown.Item onClick={handleSignout}>Sign out</Dropdown.Item>
           </Dropdown>
         ) : (
           <Button gradientDuoTone="purpleToBlue" outline>

@@ -10,6 +10,9 @@ import {
 import {
   deleteUserFailure,
   deleteUserSuccess,
+  signoutFailure,
+  signoutStart,
+  signoutSuccess,
   updateFailure,
   updateStart,
   updateSuccess,
@@ -51,11 +54,31 @@ const DashProfile = () => {
     setValidPwd(PWD_REGEX.test(pwd));
   }, [pwd]);
 
+  const handleSignout = async () => {
+    try {
+      dispatch(signoutStart());
+
+      const response = await axios.post("http://localhost:5000/logout", {
+        withCredentials: true,
+      });
+
+      const data = response?.data;
+
+      if (data.success === false) {
+        dispatch(signoutFailure(data.message));
+        return;
+      }
+
+      dispatch(signoutSuccess());
+    } catch (err: any) {
+      dispatch(signoutFailure(err.message));
+    }
+  };
   const handleDelete = async () => {
     setShowModal(false);
 
     try {
-      updateStart();
+      dispatch(updateStart());
 
       const response = await axios.delete(
         `http://localhost:5000/users/delete/${currentUser?._id}`,
@@ -72,7 +95,7 @@ const DashProfile = () => {
 
       dispatch(deleteUserSuccess(data.message));
     } catch (err: any) {
-      deleteUserFailure(err.message);
+      dispatch(deleteUserFailure(err.message));
     }
   };
 
@@ -208,7 +231,9 @@ const DashProfile = () => {
         <span className="cursor-pointer" onClick={() => setShowModal(true)}>
           Delete account
         </span>
-        <span className="cursor-pointer">Sign out</span>
+        <span className="cursor-pointer" onClick={handleSignout}>
+          Sign out
+        </span>
       </div>
       {showModal && (
         <Modal
