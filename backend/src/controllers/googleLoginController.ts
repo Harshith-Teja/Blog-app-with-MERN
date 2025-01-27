@@ -88,14 +88,16 @@ export const googleLoginController = async (req: Request, res: Response) => {
         profilePic: photoUrl,
       });
 
+      await newUser.save();
+
       const accessToken = jwt.sign(
-        { username: newUser.uname },
+        { username: newUser._id },
         process.env.ACCESS_TOKEN_SECRET as string,
         { expiresIn: "30s" }
       );
 
       const refreshToken = jwt.sign(
-        { username: newUser.uname },
+        { username: newUser._id },
         process.env.REFRESH_TOKEN_SECRET as string,
         { expiresIn: "1d" }
       );
