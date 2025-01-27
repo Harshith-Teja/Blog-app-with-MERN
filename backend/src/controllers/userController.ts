@@ -46,18 +46,20 @@ export const getAllUsers = async (req: Request, res: Response) => {
 };
 
 export const deleteUser = async (req: Request, res: Response) => {
-  // const { id } = req.params;
-  if (!req?.body?.id)
+  const { id } = req.params;
+  console.log("req", req.userId);
+  console.log("params", id);
+  if (req.userId !== id)
     return res
       .status(400)
-      .json({ message: "User Id is required to delete the user" });
+      .json({ message: "You are not allowed to delete the user" });
 
   try {
-    const user = await User.find({ _id: req.body.id }).exec();
+    const user = await User.find({ _id: id }).exec();
 
-    if (!user) return res.status(204).json({ message: "User Id not found" });
+    if (!user) return res.status(404).json({ message: "User Id not found" });
 
-    await User.deleteOne({ _id: req.body.id });
+    await User.deleteOne({ _id: id });
 
     res.status(201).json({ message: "User has been deleted successfully" });
   } catch (err: any) {
