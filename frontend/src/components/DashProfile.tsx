@@ -1,10 +1,15 @@
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/store";
-import { Alert, Button, TextInput } from "flowbite-react";
+import { Alert, Button, Modal, TextInput } from "flowbite-react";
 import { useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import {
+  faCircleExclamation,
+  faInfoCircle,
+} from "@fortawesome/free-solid-svg-icons";
+import {
+  deleteUserFailure,
+  deleteUserSuccess,
   updateFailure,
   updateStart,
   updateSuccess,
@@ -32,6 +37,8 @@ const DashProfile = () => {
   const successRef = useRef<HTMLInputElement | null>(null);
   const errRef = useRef<HTMLInputElement | null>(null);
 
+  const [showModal, setShowModal] = useState(false);
+
   useEffect(() => {
     dispatch(updateFailure(""));
     setSuccess(false);
@@ -43,6 +50,31 @@ const DashProfile = () => {
     setSuccess(false);
     setValidPwd(PWD_REGEX.test(pwd));
   }, [pwd]);
+
+  const handleDelete = async () => {
+    setShowModal(false);
+
+    try {
+      updateStart();
+
+      const response = await axios.delete(
+        `http://localhost:5000/users/delete/${currentUser?._id}`,
+        {
+          withCredentials: true,
+        }
+      );
+
+      const data = response.data;
+
+      if (data.success == false) {
+        dispatch(deleteUserFailure(data.message));
+      }
+
+      dispatch(deleteUserSuccess(data.message));
+    } catch (err: any) {
+      deleteUserFailure(err.message);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -173,9 +205,38 @@ const DashProfile = () => {
         </Alert>
       </form>
       <div className="text-red-500 mt-5 flex justify-between">
-        <span className="cursor-pointer">Delete account</span>
+        <span className="cursor-pointer" onClick={() => setShowModal(true)}>
+          Delete account
+        </span>
         <span className="cursor-pointer">Sign out</span>
       </div>
+      {showModal && (
+        <Modal
+          show={showModal}
+          onClose={() => setShowModal(false)}
+          popup
+          size="md"
+        >
+          <Modal.Header />
+          <Modal.Body className="text-center">
+            <FontAwesomeIcon
+              icon={faCircleExclamation}
+              className="w-14 h-14 text-gray-500 dark:text-gray-200 mb-4"
+            />
+            <h1 className="text-gray-500 dark:text-gray-200 text-lg mb-4">
+              Are you sure you want to delete your account?
+            </h1>
+            <div className="flex justify-center gap-4">
+              <Button color="failure" onClick={handleDelete}>
+                Yes, I'm sure
+              </Button>
+              <Button color="gray" onClick={() => setShowModal(false)}>
+                No, cancel
+              </Button>
+            </div>
+          </Modal.Body>
+        </Modal>
+      )}
     </div>
   );
 };
