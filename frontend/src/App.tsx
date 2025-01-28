@@ -9,6 +9,7 @@ import Layout from "./components/Layout";
 import ErrorPage from "./components/ErrorPage";
 import PrivateRoute from "./components/PrivateRoute";
 import CreatePost from "./components/CreatePost";
+import UpdatePost from "./components/UpdatePost";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/blogs" element={<Blogs />} />
             <Route path="/create-post" element={<CreatePost />} />
+            <Route path="/update-post/:postId" element={<UpdatePost />} />
           </Route>
 
           <Route path="/login" element={<LoginPage />} />
