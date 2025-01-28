@@ -15,7 +15,7 @@ const CreatePost = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/create-post",
+        "http://localhost:5000/posts/create-post",
         JSON.stringify(formData),
         {
           headers: { "Content-Type": "Application/json" },
