@@ -81,3 +81,25 @@ export const deletePost = async (req: Request, res: Response) => {
     res.status(400).json({ message: err.message });
   }
 };
+
+export const updatePost = async (req: Request, res: Response) => {
+  if (req.userId !== req.params.userId)
+    return res.status(401).json({ message: "Unauthorized" });
+
+  try {
+    const updatedPost = await Post.findByIdAndUpdate(
+      req.params.postId,
+      {
+        $set: {
+          title: req.body.title,
+          category: req.body.category,
+          content: req.body.content,
+        },
+      },
+      { new: true }
+    );
+    res.status(200).json(updatedPost);
+  } catch (err: any) {
+    res.status(400).json({ message: err.message });
+  }
+};
