@@ -2,7 +2,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Table } from "flowbite-react";
+import { Button, Table } from "flowbite-react";
 import { Link } from "react-router-dom";
 
 type PostType = {
@@ -15,15 +15,20 @@ type PostType = {
 };
 const DashPosts = () => {
   const { currentUser } = useSelector((state: RootState) => state.user);
-  const [userPosts, setPosts] = useState<PostType[]>([]);
+  const [userPosts, setUserPosts] = useState<PostType[]>([]);
+  const [showMore, setShowMore] = useState(false);
+  const [totalPosts, setTotalPosts] = useState(0);
 
-  console.log(userPosts);
+  useEffect(() => {
+    if (totalPosts > userPosts.length) setShowMore(true);
+    else setShowMore(false);
+  }, [totalPosts, userPosts]);
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5000/posts/get-posts/${currentUser?._id}`,
+          `http://localhost:5000/posts/get-posts/?userId=${currentUser?._id}`,
           {
             withCredentials: true,
           }
@@ -35,17 +40,40 @@ const DashPosts = () => {
           return;
         }
 
-        setPosts(data.posts);
+        setUserPosts(data.posts);
+        setTotalPosts(data.totalPosts);
       } catch (err: any) {}
     };
 
     fetchPosts();
   }, [currentUser?._id]);
+
+  const handleShowMore = async () => {
+    const startInd = userPosts.length;
+
+    try {
+      const response = await axios.get(
+        `http://localhost:5000/posts/get-posts/?userId=${currentUser?._id}&startInd=${startInd}`,
+        {
+          withCredentials: true,
+        }
+      );
+
+      const data = response.data;
+
+      if (data.success === false) {
+        return;
+      }
+
+      setUserPosts((prev) => [...prev, ...data.posts]);
+      setTotalPosts(data.totalPosts);
+    } catch (err: any) {}
+  };
   return (
-    <div className="table-auto md:mx-auto overflow-x-scroll p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-500">
+    <div className=" w-full table-auto overflow-x-scroll p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-500">
       {userPosts.length > 0 ? (
         <>
-          <Table hoverable className="md">
+          <Table hoverable className="shadow-md">
             <Table.Head>
               <Table.HeadCell>Date updated</Table.HeadCell>
               <Table.HeadCell>Post Title</Table.HeadCell>
@@ -57,7 +85,7 @@ const DashPosts = () => {
             </Table.Head>
             <Table.Body className="divide-y">
               {userPosts.map((post) => (
-                <Table.Row className="dark:text-white">
+                <Table.Row className="dark:text-white" key={post._id}>
                   <Table.Cell>
                     {new Date(post?.updatedAt).toLocaleDateString()}
                   </Table.Cell>
@@ -79,6 +107,15 @@ const DashPosts = () => {
               ))}
             </Table.Body>
           </Table>
+          {showMore && (
+            <Button
+              color="gray"
+              className="w-full text-teal-500 self-center text-sm my-7"
+              onClick={handleShowMore}
+            >
+              Show more
+            </Button>
+          )}
         </>
       ) : (
         <p>No posts available!!</p>
