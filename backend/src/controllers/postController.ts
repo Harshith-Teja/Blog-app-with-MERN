@@ -69,3 +69,15 @@ export const getPosts = async (req: Request, res: Response) => {
     res.status(400).json({ message: err.message });
   }
 };
+
+export const deletePost = async (req: Request, res: Response) => {
+  if (req.userId !== req.params.userId)
+    return res.status(401).json({ message: "Unauthorized" });
+
+  try {
+    await Post.findByIdAndDelete(req.params.postId);
+    res.status(200).json({ message: "Post has been successfully deleted" });
+  } catch (err: any) {
+    res.status(400).json({ message: err.message });
+  }
+};
