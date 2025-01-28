@@ -10,6 +10,7 @@ import ErrorPage from "./components/ErrorPage";
 import PrivateRoute from "./components/PrivateRoute";
 import CreatePost from "./components/CreatePost";
 import UpdatePost from "./components/UpdatePost";
+import PostPage from "./components/PostPage";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
             <Route path="/update-post/:postId" element={<UpdatePost />} />
           </Route>
 
+          <Route path="/posts/:slug" element={<PostPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
 
