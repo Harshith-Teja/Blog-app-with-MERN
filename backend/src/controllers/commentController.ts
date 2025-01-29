@@ -28,3 +28,29 @@ export const getPostComments = async (req: Request, res: Response) => {
     res.status(400).json({ message: err.message });
   }
 };
+
+export const likeComment = async (req: Request, res: Response) => {
+  try {
+    const comment = await Comment.findByIdAndUpdate(req.params.commentId);
+
+    if (!comment) return res.status(404).json({ message: "comment not found" });
+
+    const userInd = comment.likes?.indexOf(req.userId as string);
+
+    if (userInd === -1) {
+      //user not found(not liked)
+      comment.likes?.push(req.userId as string); //add like
+      comment.numOfLikes += 1;
+    } else {
+      //user found(liked)
+      comment.likes?.splice(userInd as number, 1); //remove like
+      comment.numOfLikes -= 1;
+    }
+
+    await comment.save();
+
+    res.status(200).json({ comment });
+  } catch (err: any) {
+    res.status(400).json({ message: err.message });
+  }
+};
