@@ -1,7 +1,8 @@
 import axios from "axios";
-import { Button, Spinner } from "flowbite-react";
+import { Alert, Button, Spinner } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import CommentSection from "./CommentSection";
 
 type PostType = {
   _id: string;
@@ -58,6 +59,9 @@ const PostPage = () => {
         </main>
       ) : (
         <main className="flex flex-col max-w-6xl mx-auto min-h-screen p-3">
+          <Alert color="failure" className={errMsg ? "block" : "hidden"}>
+            {errMsg}
+          </Alert>
           <h1 className="text-3xl lg:text-4xl mt-10 p-3 text-center max-w-2xl mx-auto">
             {post.title}
           </h1>
@@ -79,6 +83,7 @@ const PostPage = () => {
             className="p-3 w-full max-w-3xl mx-auto post-content"
             dangerouslySetInnerHTML={{ __html: post.content as string }}
           ></section>
+          <CommentSection postId={post._id} />
         </main>
       )}
     </>
