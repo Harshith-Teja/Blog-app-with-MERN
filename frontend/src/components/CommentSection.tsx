@@ -2,13 +2,51 @@ import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { Link } from "react-router-dom";
 import { Alert, Button, Textarea } from "flowbite-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
+import Comment from "./Comment";
+
+type CommentType = {
+  _id: string;
+  content: string;
+  postId: string;
+  userId: string;
+  likes?: Array<String>;
+  numOfLikes?: Number;
+};
 
 const CommentSection = ({ postId }: { postId: string }) => {
   const { currentUser } = useSelector((state: RootState) => state.user);
   const [comment, setComment] = useState("");
   const [errMsg, setErrMsg] = useState("");
+  const [postComments, setPostComments] = useState<CommentType[]>([]);
+
+  useEffect(() => {
+    const fetchPostComments = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:5000/comments/get-post-comments/${postId}`,
+          {
+            withCredentials: true,
+          }
+        );
+
+        const data = response.data;
+        console.log(data);
+        if (data.success === false) {
+          setErrMsg(data.message);
+          return;
+        }
+
+        setPostComments(data.postComments);
+        setErrMsg("");
+      } catch (err: any) {
+        setErrMsg(err.message);
+      }
+    };
+
+    fetchPostComments();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -30,6 +68,7 @@ const CommentSection = ({ postId }: { postId: string }) => {
         return;
       }
 
+      setPostComments([data.newComment, ...postComments]);
       setComment("");
       setErrMsg("");
     } catch (err: any) {
@@ -84,6 +123,17 @@ const CommentSection = ({ postId }: { postId: string }) => {
             {errMsg}
           </Alert>
         </form>
+      )}
+
+      {postComments.length === 0 ? (
+        <p className="text-sm my-4">No comments yet!</p>
+      ) : (
+        <section>
+          <p>{postComments.length} comments</p>
+          {postComments.map((comment) => (
+            <Comment key={comment._id} comment={comment} />
+          ))}
+        </section>
       )}
     </div>
   );
