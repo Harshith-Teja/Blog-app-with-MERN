@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Alert, Button, Textarea } from "flowbite-react";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -12,7 +12,7 @@ type CommentType = {
   postId: string;
   userId: string;
   likes?: Array<String>;
-  numOfLikes?: Number;
+  numOfLikes: number;
 };
 
 const CommentSection = ({ postId }: { postId: string }) => {
@@ -20,6 +20,7 @@ const CommentSection = ({ postId }: { postId: string }) => {
   const [comment, setComment] = useState("");
   const [errMsg, setErrMsg] = useState("");
   const [postComments, setPostComments] = useState<CommentType[]>([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchPostComments = async () => {
@@ -32,7 +33,6 @@ const CommentSection = ({ postId }: { postId: string }) => {
         );
 
         const data = response.data;
-        console.log(data);
         if (data.success === false) {
           setErrMsg(data.message);
           return;
@@ -47,6 +47,44 @@ const CommentSection = ({ postId }: { postId: string }) => {
 
     fetchPostComments();
   }, []);
+
+  const handleLike = async (commentId: string) => {
+    try {
+      if (currentUser === null) {
+        navigate("/login");
+        return;
+      }
+
+      const response = await axios.put(
+        `http://localhost:5000/comments/like-comment/${commentId}`,
+        {},
+        {
+          withCredentials: true,
+        }
+      );
+
+      const data = response.data;
+      if (data.success === false) {
+        setErrMsg(data.message);
+        return;
+      }
+
+      setPostComments(
+        postComments.map((comment) =>
+          comment._id === commentId
+            ? {
+                ...comment,
+                likes: data.comment.likes,
+                numOfLikes: data.comment.numOfLikes,
+              }
+            : comment
+        )
+      );
+      setErrMsg("");
+    } catch (err: any) {
+      setErrMsg(err.message);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -131,7 +169,11 @@ const CommentSection = ({ postId }: { postId: string }) => {
         <section>
           <p>{postComments.length} comments</p>
           {postComments.map((comment) => (
-            <Comment key={comment._id} comment={comment} />
+            <Comment
+              key={comment._id}
+              comment={comment}
+              handleLike={handleLike}
+            />
           ))}
         </section>
       )}
