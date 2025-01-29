@@ -83,7 +83,7 @@ const PostPage = () => {
             className="p-3 w-full max-w-3xl mx-auto post-content"
             dangerouslySetInnerHTML={{ __html: post.content as string }}
           ></section>
-          <CommentSection postId={post._id} />
+          <CommentSection postId={post._id as string} />
         </main>
       )}
     </>
