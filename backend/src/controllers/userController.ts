@@ -67,18 +67,14 @@ export const deleteUser = async (req: Request, res: Response) => {
 };
 
 export const getUser = async (req: Request, res: Response) => {
-  //const { id } = req.params;
-  if (!req?.body?.id)
-    return res
-      .status(400)
-      .json({ message: "User Id is required to fetch the user" });
-
   try {
-    const user = await User.find({ _id: req.body.id }).exec();
+    const user = await User.findById(req.params.userId).exec();
 
-    if (!user) return res.status(204).json({ message: "User Id not found" });
+    if (!user) return res.status(404).json({ message: "User Id not found" });
 
-    res.status(201).json({ user });
+    const { pwd, ...userWithoutPwd } = user.toObject();
+
+    res.status(200).json({ user: userWithoutPwd });
   } catch (err: any) {
     res.status(400).json({ message: err.message });
   }
