@@ -10,6 +10,7 @@ import logoutRouter from "./src/routes/logout";
 import refreshRouter from "./src/routes/refresh";
 import googleRouter from "./src/routes/google";
 import postsRouter from "./src/routes/posts";
+import commentsRouter from "./src/routes/comment";
 import userRouter from "./src/routes/api/users";
 import { connectDB } from "./src/config/connectDB";
 import cookieParser from "cookie-parser";
@@ -39,6 +40,7 @@ app.use(verifyJWT as RequestHandler);
 
 app.use("/users", userRouter);
 app.use("/posts", postsRouter);
+app.use("/comments", commentsRouter);
 
 app.all("*", (req: Request, res: Response) => {
   res.status(404);
