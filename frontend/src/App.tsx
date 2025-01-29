@@ -11,10 +11,12 @@ import PrivateRoute from "./components/PrivateRoute";
 import CreatePost from "./components/CreatePost";
 import UpdatePost from "./components/UpdatePost";
 import PostPage from "./components/PostPage";
+import ScrollToTop from "./components/ScrollToTop";
 
 function App() {
   return (
     <div className="w-full h-dvh">
+      <ScrollToTop />
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route path="/" element={<Home />} />
