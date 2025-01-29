@@ -16,3 +16,15 @@ export const createComment = async (req: Request, res: Response) => {
     res.status(400).json({ message: err.message });
   }
 };
+
+export const getPostComments = async (req: Request, res: Response) => {
+  try {
+    const postComments = await Comment.find({ postId: req.params.postId }).sort(
+      { createdAt: -1 }
+    );
+
+    res.status(200).json({ postComments });
+  } catch (err: any) {
+    res.status(400).json({ message: err.message });
+  }
+};
