@@ -5,7 +5,7 @@ interface IComment extends Document {
   postId: string;
   userId: string;
   likes?: Array<String>;
-  numOfLikes?: Number;
+  numOfLikes: number;
 }
 
 const commentSchema = new Schema(
