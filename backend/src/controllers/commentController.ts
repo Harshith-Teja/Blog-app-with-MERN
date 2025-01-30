@@ -79,3 +79,22 @@ export const editComment = async (req: Request, res: Response) => {
     res.status(400).json({ message: err.message });
   }
 };
+
+export const deleteComment = async (req: Request, res: Response) => {
+  try {
+    const comment = await Comment.findById(req.params.commentId);
+
+    if (!comment) return res.status(404).json({ message: "comment not found" });
+
+    if (req.userId !== comment.userId)
+      return res
+        .status(401)
+        .json({ message: "You are not allowed to edit this comment" });
+
+    await Comment.findByIdAndDelete(comment._id);
+
+    res.status(200).json({ message: "Comment has been deleted" });
+  } catch (err: any) {
+    res.status(400).json({ message: err.message });
+  }
+};
