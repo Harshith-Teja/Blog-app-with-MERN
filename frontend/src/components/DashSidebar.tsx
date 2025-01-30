@@ -1,5 +1,6 @@
 import {
   faArrowRight,
+  faComment,
   faFile,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
@@ -64,11 +65,18 @@ const DashSidebar = () => {
           <Sidebar.Item
             active={tab === "posts"}
             icon={() => <FontAwesomeIcon icon={faFile} />}
-            label={"Posts"}
             labelColor="dark"
             as="div"
           >
             <Link to="/dashboard?tab=posts">Posts</Link>
+          </Sidebar.Item>
+          <Sidebar.Item
+            active={tab === "comments"}
+            icon={() => <FontAwesomeIcon icon={faComment} />}
+            labelColor="dark"
+            as="div"
+          >
+            <Link to="/dashboard?tab=comments">Comments</Link>
           </Sidebar.Item>
           <Sidebar.Item
             icon={() => <FontAwesomeIcon icon={faArrowRight} />}
