@@ -3,6 +3,7 @@ import { Alert, Button, Spinner } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import CommentSection from "./CommentSection";
+import PostCard from "./PostCard";
 
 type PostType = {
   _id: string;
@@ -19,6 +20,7 @@ const PostPage = () => {
   const [loading, setLoading] = useState(false);
   const [errMsg, setErrMsg] = useState("");
   const [post, setPost] = useState<Partial<PostType>>({});
+  const [recentPosts, setRecentPosts] = useState<PostType[]>([]);
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -51,6 +53,32 @@ const PostPage = () => {
     fetchPost();
   }, [slug]);
 
+  useEffect(() => {
+    const fetchPosts = async () => {
+      setLoading(true);
+
+      try {
+        const response = await axios.get(
+          "http://localhost:5000/posts/get-posts?limit=3",
+          {
+            withCredentials: true,
+          }
+        );
+
+        const data = response.data;
+
+        if (data.success === false) {
+          return;
+        }
+
+        setRecentPosts(data.posts);
+      } catch (err: any) {
+        setErrMsg(err.message);
+      }
+    };
+
+    fetchPosts();
+  }, []);
   return (
     <>
       {loading ? (
@@ -84,6 +112,15 @@ const PostPage = () => {
             dangerouslySetInnerHTML={{ __html: post.content as string }}
           ></section>
           <CommentSection postId={post._id as string} />
+
+          <section className="flex flex-col justify-between items-center my-5">
+            <h1 className="text-xl my-5">Recent articles</h1>
+            <div className="flex flex-col sm:flex-row gap-6">
+              {recentPosts.map((post) => (
+                <PostCard key={post._id} post={post} />
+              ))}
+            </div>
+          </section>
         </main>
       )}
     </>
