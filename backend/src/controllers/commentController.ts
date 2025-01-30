@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { Comment } from "../models/comment";
+import { Post } from "../models/posts";
 
 export const createComment = async (req: Request, res: Response) => {
   const { content, postId, userId } = req.body;
@@ -94,6 +95,70 @@ export const deleteComment = async (req: Request, res: Response) => {
     await Comment.findByIdAndDelete(comment._id);
 
     res.status(200).json({ message: "Comment has been deleted" });
+  } catch (err: any) {
+    res.status(400).json({ message: err.message });
+  }
+};
+
+export const getAllComments = async (req: Request, res: Response) => {
+  try {
+    const startInd = parseInt(req.query.startInd as string) || 0;
+    const limit = parseInt(req.query.limit as string) || 9;
+    const sortDirection = req.query.sort === "desc" ? -1 : 1;
+
+    console.log(req.query.userId);
+    const postsOfUser = await Post.find({ userId: req.query.userId });
+
+    //resolve all asynchronous operations in parallel
+    const comments = await Promise.all(
+      postsOfUser.map(async (post) => {
+        const postComments = await Comment.find({ postId: post._id })
+          .sort({ creadtedAt: sortDirection })
+          .skip(startInd)
+          .limit(limit);
+        return postComments;
+      })
+    );
+
+    const allComments = comments.flat(); //flattens the nested array
+
+    const totalCommentsCount = await Promise.all(
+      postsOfUser.map(async (post) => {
+        const count = await Comment.countDocuments({ postId: post._id });
+        return count;
+      })
+    );
+
+    const totalComments = totalCommentsCount.reduce(
+      (sum, count) => sum + count,
+      0
+    );
+
+    const now = new Date();
+    const oneMonthAgo = new Date(
+      now.getFullYear(),
+      now.getMonth() - 1,
+      now.getDate()
+    );
+
+    const totalLastMonthCommentsCount = await Promise.all(
+      postsOfUser.map(async (post) => {
+        const count = await Comment.countDocuments({
+          postId: post._id,
+          createdAt: { $gte: oneMonthAgo },
+        });
+        return count;
+      })
+    );
+
+    const totalLastMonthComments = totalLastMonthCommentsCount.reduce(
+      (sum, count) => sum + count,
+      0
+    );
+
+    res
+      .status(200)
+      .json({ allComments, totalComments, totalLastMonthComments });
   } catch (err: any) {
     res.status(400).json({ message: err.message });
   }
