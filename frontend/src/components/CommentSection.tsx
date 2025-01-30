@@ -1,10 +1,12 @@
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { Link, useNavigate } from "react-router-dom";
-import { Alert, Button, Textarea } from "flowbite-react";
+import { Alert, Button, Modal, Textarea } from "flowbite-react";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Comment from "./Comment";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircleExclamation } from "@fortawesome/free-solid-svg-icons";
 
 type CommentType = {
   _id: string;
@@ -20,6 +22,8 @@ const CommentSection = ({ postId }: { postId: string }) => {
   const [comment, setComment] = useState("");
   const [errMsg, setErrMsg] = useState("");
   const [postComments, setPostComments] = useState<CommentType[]>([]);
+  const [showModal, setShowModal] = useState(false);
+  const [commentIdToDelete, setCommentIdToDelete] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -92,6 +96,35 @@ const CommentSection = ({ postId }: { postId: string }) => {
         cmnt._id === comment._id ? { ...cmnt, content: editedContent } : cmnt
       )
     );
+  };
+
+  const handleDelete = async (commentId: string) => {
+    if (!currentUser) {
+      navigate("/login");
+      return;
+    }
+
+    try {
+      const response = await axios.delete(
+        `http://localhost:5000/comments/delete-comment/${commentId}`,
+        {
+          withCredentials: true,
+        }
+      );
+
+      const data = response.data;
+      if (data.success === false) {
+        setErrMsg(data.message);
+        return;
+      }
+
+      setPostComments(
+        postComments.filter((comment) => comment._id !== commentId)
+      );
+      setShowModal(false);
+    } catch (err: any) {
+      setErrMsg(err.message);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -182,9 +215,44 @@ const CommentSection = ({ postId }: { postId: string }) => {
               comment={comment}
               onLike={handleLike}
               onEdit={handleEdit}
+              onDelete={(commentId) => {
+                setShowModal(true);
+                setCommentIdToDelete(commentId);
+              }}
             />
           ))}
         </section>
+      )}
+
+      {showModal && (
+        <Modal
+          show={showModal}
+          onClose={() => setShowModal(false)}
+          popup
+          size="md"
+        >
+          <Modal.Header />
+          <Modal.Body className="text-center">
+            <FontAwesomeIcon
+              icon={faCircleExclamation}
+              className="w-14 h-14 text-gray-500 dark:text-gray-200 mb-4"
+            />
+            <h1 className="text-gray-500 dark:text-gray-200 text-lg mb-4">
+              Are you sure you want to delete this comment?
+            </h1>
+            <div className="flex justify-center gap-4">
+              <Button
+                color="failure"
+                onClick={() => handleDelete(commentIdToDelete)}
+              >
+                Yes, I'm sure
+              </Button>
+              <Button color="gray" onClick={() => setShowModal(false)}>
+                No, cancel
+              </Button>
+            </div>
+          </Modal.Body>
+        </Modal>
       )}
     </div>
   );

@@ -15,12 +15,14 @@ type CommentType = {
   likes?: Array<String>;
   numOfLikes: number;
   createdAt?: string;
+  updatedAt?: string;
 };
 
 type CommentProps = {
   comment: CommentType;
   onLike: (commendId: string) => void;
   onEdit: (comment: CommentType, editedContent: string) => void;
+  onDelete: (commendId: string) => void;
 };
 
 type User = {
@@ -31,7 +33,7 @@ type User = {
   profilePic: string;
 };
 
-const Comment = ({ comment, onLike, onEdit }: CommentProps) => {
+const Comment = ({ comment, onLike, onEdit, onDelete }: CommentProps) => {
   const [user, setUser] = useState<User>();
   const { currentUser } = useSelector((state: RootState) => state.user);
   const [isEditing, setIsEditing] = useState(false);
@@ -107,7 +109,9 @@ const Comment = ({ comment, onLike, onEdit }: CommentProps) => {
             {user?.uname ? user?.uname : "Anonymous user"}
           </p>
           <p className="text-xs text-gray-500">
-            {moment(comment.createdAt).fromNow()}
+            {comment.updatedAt && comment.updatedAt !== comment.createdAt
+              ? "(Edited) " + moment(comment.updatedAt).fromNow()
+              : moment(comment.createdAt).fromNow()}
           </p>
         </section>
         {isEditing ? (
@@ -159,12 +163,20 @@ const Comment = ({ comment, onLike, onEdit }: CommentProps) => {
                     (comment.numOfLikes > 1 ? "likes" : "like")}
               </p>
               {currentUser && currentUser._id === comment.userId && (
-                <button
-                  className="text-gray-500 hover:text-blue-500 text-sm"
-                  onClick={handleEdit}
-                >
-                  Edit
-                </button>
+                <>
+                  <button
+                    className="text-gray-500 hover:text-blue-500 text-sm"
+                    onClick={handleEdit}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    className="text-gray-500 hover:text-red-500 text-sm"
+                    onClick={() => onDelete(comment._id)}
+                  >
+                    Delete
+                  </button>
+                </>
               )}
             </div>
           </section>
