@@ -86,6 +86,14 @@ const CommentSection = ({ postId }: { postId: string }) => {
     }
   };
 
+  const handleEdit = (comment: CommentType, editedContent: string) => {
+    setPostComments(
+      postComments.map((cmnt) =>
+        cmnt._id === comment._id ? { ...cmnt, content: editedContent } : cmnt
+      )
+    );
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -172,7 +180,8 @@ const CommentSection = ({ postId }: { postId: string }) => {
             <Comment
               key={comment._id}
               comment={comment}
-              handleLike={handleLike}
+              onLike={handleLike}
+              onEdit={handleEdit}
             />
           ))}
         </section>

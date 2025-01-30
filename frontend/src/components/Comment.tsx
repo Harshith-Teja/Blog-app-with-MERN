@@ -5,6 +5,7 @@ import moment from "moment";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
+import { Button, Textarea } from "flowbite-react";
 
 type CommentType = {
   _id: string;
@@ -18,7 +19,8 @@ type CommentType = {
 
 type CommentProps = {
   comment: CommentType;
-  handleLike: (commendId: string) => void;
+  onLike: (commendId: string) => void;
+  onEdit: (comment: CommentType, editedContent: string) => void;
 };
 
 type User = {
@@ -29,9 +31,11 @@ type User = {
   profilePic: string;
 };
 
-const Comment = ({ comment, handleLike }: CommentProps) => {
+const Comment = ({ comment, onLike, onEdit }: CommentProps) => {
   const [user, setUser] = useState<User>();
   const { currentUser } = useSelector((state: RootState) => state.user);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedContent, setEditedContent] = useState(comment.content);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -44,6 +48,11 @@ const Comment = ({ comment, handleLike }: CommentProps) => {
         );
 
         const data = response.data;
+
+        if (data.success === false) {
+          console.log(data.message);
+          return;
+        }
         setUser(data.user);
       } catch (err: any) {
         console.log(err.message);
@@ -52,6 +61,37 @@ const Comment = ({ comment, handleLike }: CommentProps) => {
 
     fetchUser();
   }, []);
+
+  const handleEdit = () => {
+    setIsEditing(true);
+    setEditedContent(comment.content);
+  };
+
+  const handleSave = async () => {
+    try {
+      const response = await axios.put(
+        `http://localhost:5000/comments/edit-comment/${comment._id}`,
+        JSON.stringify({ content: editedContent }),
+        {
+          headers: { "Content-Type": "Application/json" },
+          withCredentials: true,
+        }
+      );
+
+      const data = response.data;
+
+      if (data.success === false) {
+        console.log(data.message);
+        return;
+      }
+
+      setIsEditing(false);
+      onEdit(comment, data.editedComment.content);
+    } catch (err: any) {
+      console.log(err.message);
+    }
+  };
+
   return (
     <div className="mt-5 border-b p-3 flex">
       <section className="mr-4">
@@ -61,7 +101,7 @@ const Comment = ({ comment, handleLike }: CommentProps) => {
           className="w-8 h-8 rounded-full"
         />
       </section>
-      <section>
+      <section className="w-full">
         <section className="flex gap-2 items-center">
           <p className="text-sm font-medium">
             {user?.uname ? user?.uname : "Anonymous user"}
@@ -70,28 +110,65 @@ const Comment = ({ comment, handleLike }: CommentProps) => {
             {moment(comment.createdAt).fromNow()}
           </p>
         </section>
-        <section className="mt-2">
-          <p className="text-gray-800">{comment.content}</p>
-          <div className="mt-2 flex gap-2 items-center">
-            <button
-              className={
-                comment.likes &&
-                comment.likes.includes(currentUser?._id as string)
-                  ? "text-red-500"
-                  : "text-gray-300 hover:text-red-500 "
-              }
-              onClick={() => handleLike(comment._id)}
-            >
-              <FontAwesomeIcon icon={faHeart} />
-            </button>
-            <p className="text-gray-400 text-xs">
-              {comment.numOfLikes > 0 &&
-                comment.numOfLikes +
-                  " " +
-                  (comment.numOfLikes > 1 ? "likes" : "like")}
-            </p>
-          </div>
-        </section>
+        {isEditing ? (
+          <section className="mt-2">
+            <Textarea
+              className="mb-2"
+              value={editedContent}
+              onChange={(e) => setEditedContent(e.target.value)}
+            />
+            <div className="flex gap-2 justify-end">
+              <Button
+                type="button"
+                size="xs"
+                gradientDuoTone="purpleToBlue"
+                onClick={handleSave}
+              >
+                Save
+              </Button>
+              <Button
+                type="button"
+                size="xs"
+                gradientDuoTone="purpleToBlue"
+                outline
+                onClick={() => setIsEditing(false)}
+              >
+                Cancel
+              </Button>
+            </div>
+          </section>
+        ) : (
+          <section className="mt-2">
+            <p className="text-gray-800">{comment.content}</p>
+            <div className="mt-2 flex gap-2 items-center">
+              <button
+                className={
+                  comment.likes &&
+                  comment.likes.includes(currentUser?._id as string)
+                    ? "text-red-500"
+                    : "text-gray-300 hover:text-red-500 "
+                }
+                onClick={() => onLike(comment._id)}
+              >
+                <FontAwesomeIcon icon={faHeart} />
+              </button>
+              <p className="text-gray-400 text-xs">
+                {comment.numOfLikes > 0 &&
+                  comment.numOfLikes +
+                    " " +
+                    (comment.numOfLikes > 1 ? "likes" : "like")}
+              </p>
+              {currentUser && currentUser._id === comment.userId && (
+                <button
+                  className="text-gray-500 hover:text-blue-500 text-sm"
+                  onClick={handleEdit}
+                >
+                  Edit
+                </button>
+              )}
+            </div>
+          </section>
+        )}
       </section>
     </div>
   );
