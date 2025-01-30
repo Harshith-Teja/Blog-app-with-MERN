@@ -3,6 +3,7 @@ import {
   createComment,
   deleteComment,
   editComment,
+  getAllComments,
   getPostComments,
   likeComment,
 } from "../controllers/commentController";
@@ -14,5 +15,6 @@ router.get("/get-post-comments/:postId", getPostComments as RequestHandler);
 router.put("/like-comment/:commentId", likeComment as RequestHandler);
 router.put("/edit-comment/:commentId", editComment as RequestHandler);
 router.delete("/delete-comment/:commentId", deleteComment as RequestHandler);
+router.get("/get-all-comments", getAllComments as RequestHandler);
 
 export default router;
