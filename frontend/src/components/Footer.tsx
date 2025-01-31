@@ -10,7 +10,7 @@ import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
-    <Footerfb className="border-black border-2 m-2 p-5">
+    <Footerfb className="border-black border-2 m-2 p-5 dark:bg-[rgb(24,34,62)]">
       <footer className="w-full max-w-7xl mx-auto">
         <div className="grid w-full justify-between sm:flex md:grid-cols-1">
           <section className="mt-4">
@@ -34,7 +34,7 @@ const Footer = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  Careers
+                  Community
                 </Footerfb.Link>
               </Footerfb.LinkGroup>
             </section>

@@ -64,9 +64,11 @@ const Header = () => {
   };
 
   return (
-    <Navbar className="border-b-2">
+    <Navbar className="border-b-2 dark:bg-[rgb(24,34,62)]">
       <div id="logo" className="flex flex-col">
-        <h1 className="font-bold text-sm sm:text-xl md:text-3xl">BlogSmith</h1>
+        <h1 className="font-bold text-sm sm:text-xl md:text-3xl">
+          <Link to="/">BlogSmith</Link>
+        </h1>
         <p className="font-light text-sm hidden md:block">
           Forge your thoughts into powerful posts
         </p>
