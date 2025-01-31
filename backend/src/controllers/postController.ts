@@ -36,13 +36,16 @@ export const getPosts = async (req: Request, res: Response) => {
 
     const posts = await Post.find({
       ...(req.query.userId && { userId: req.query.userId }),
-      ...(req.query.category && { category: req.query.category }),
+      ...(req.query.category &&
+        req.query.category !== "uncategorized" && {
+          category: req.query.category,
+        }),
       ...(req.query.slug && { slug: req.query.slug }),
       ...(req.query.postId && { _id: req.query.postId }),
       ...(req.query.searchTerm && {
         $or: [
           { title: { $regex: req.query.searchTerm, $options: "i" } },
-          { content: { $regex: req.query.content, $options: "i" } },
+          { content: { $regex: req.query.searchTerm, $options: "i" } },
         ],
       }),
     })
@@ -58,7 +61,7 @@ export const getPosts = async (req: Request, res: Response) => {
       ...(req.query.searchTerm && {
         $or: [
           { title: { $regex: req.query.searchTerm, $options: "i" } },
-          { content: { $regex: req.query.content, $options: "i" } },
+          { content: { $regex: req.query.searchTerm, $options: "i" } },
         ],
       }),
     });
