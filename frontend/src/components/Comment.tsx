@@ -143,7 +143,9 @@ const Comment = ({ comment, onLike, onEdit, onDelete }: CommentProps) => {
           </section>
         ) : (
           <section className="mt-2">
-            <p className="text-gray-800">{comment.content}</p>
+            <p className="text-gray-800 dark:text-slate-300">
+              {comment.content}
+            </p>
             <div className="mt-2 flex gap-2 items-center">
               <button
                 className={
