@@ -163,3 +163,54 @@ export const getAllComments = async (req: Request, res: Response) => {
     res.status(400).json({ message: err.message });
   }
 };
+
+export const getAllLikes = async (req: Request, res: Response) => {
+  try {
+    const postsOfUser = await Post.find({ userId: req.query.userId });
+
+    const comments = await Promise.all(
+      postsOfUser.map(async (post) => {
+        const postComments = Comment.find({ postId: post._id });
+        return postComments;
+      })
+    );
+
+    const allComments = comments.flat();
+
+    const totalLikeCount = allComments.map((comment) => comment.numOfLikes);
+
+    const totalLikes = totalLikeCount.reduce((sum, count) => sum + count, 0);
+
+    const now = new Date();
+    const oneMonthAgo = new Date(
+      now.getFullYear(),
+      now.getMonth() - 1,
+      now.getDate()
+    );
+
+    const lastMonthComments = await Promise.all(
+      postsOfUser.map(async (post) => {
+        const lastMonthPostComments = await Comment.find({
+          postId: post._id,
+          createdAt: { $gte: oneMonthAgo },
+        });
+        return lastMonthPostComments;
+      })
+    );
+
+    const allLastMonthComments = lastMonthComments.flat();
+
+    const totalLastMonthLikesCount = allLastMonthComments.map(
+      (comment) => comment.numOfLikes
+    );
+
+    const totalLastMonthLikes = totalLastMonthLikesCount.reduce(
+      (sum, count) => sum + count,
+      0
+    );
+
+    res.status(200).json({ totalLikes, totalLastMonthLikes });
+  } catch (err: any) {
+    res.status(400).json({ message: err.message });
+  }
+};
