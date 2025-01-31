@@ -15,7 +15,6 @@ type PostType = {
 
 const Home = () => {
   const [posts, setPosts] = useState<PostType[]>([]);
-  const [totalPosts, setTotalPosts] = useState(0);
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -34,7 +33,6 @@ const Home = () => {
         }
 
         setPosts(data.posts);
-        setTotalPosts(data.totalPosts);
       } catch (err: any) {}
     };
 
