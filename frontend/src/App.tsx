@@ -16,7 +16,7 @@ import Search from "./components/Search";
 
 function App() {
   return (
-    <div className="w-full h-dvh">
+    <div className="w-full min-h-screen">
       <ScrollToTop />
       <Routes>
         <Route path="/" element={<Layout />}>
