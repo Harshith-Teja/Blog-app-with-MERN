@@ -10,7 +10,7 @@ import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
-    <Footerfb className="border-black border-2 m-2">
+    <Footerfb className="border-black border-2 m-2 p-5">
       <footer className="w-full max-w-7xl mx-auto">
         <div className="grid w-full justify-between sm:flex md:grid-cols-1">
           <section className="mt-4">
