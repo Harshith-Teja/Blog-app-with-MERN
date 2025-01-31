@@ -15,13 +15,23 @@ import {
   signoutSuccess,
 } from "../redux/user/userSlice";
 import axios from "axios";
+import { useEffect, useState } from "react";
 
 const Header = () => {
   const path = useLocation().pathname;
+  const location = useLocation();
   const { currentUser } = useSelector((state: RootState) => state.user);
   const { theme } = useSelector((state: RootState) => state.theme);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [searchTerm, setSearchTerm] = useState("");
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+    const searchTermFromUrl = urlParams.get("searchTerm");
+
+    if (searchTermFromUrl) setSearchTerm(searchTermFromUrl);
+  }, [location.search]);
 
   const handleSignout = async () => {
     try {
@@ -45,6 +55,14 @@ const Header = () => {
     }
   };
 
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const urlParams = new URLSearchParams(location.search);
+    urlParams.set("searchTerm", searchTerm);
+    const searchQuery = urlParams.toString();
+    navigate(`/search?${searchQuery}`);
+  };
+
   return (
     <Navbar className="border-b-2">
       <div id="logo" className="flex flex-col">
@@ -53,12 +71,14 @@ const Header = () => {
           Forge your thoughts into powerful posts
         </p>
       </div>
-      <form>
+      <form onSubmit={handleSubmit}>
         <TextInput
           type="text"
           placeholder="Search a post"
           rightIcon={() => <FontAwesomeIcon icon={faMagnifyingGlass} />} //rightIcon expects a react component to render, so the fa icon is wrapped in a react component and passed as a whole
           className="hidden lg:inline"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
         />
       </form>
       <Button className="w-12 h-10 lg:hidden" color="gray" pill>
