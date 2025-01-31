@@ -12,6 +12,7 @@ import CreatePost from "./components/CreatePost";
 import UpdatePost from "./components/UpdatePost";
 import PostPage from "./components/PostPage";
 import ScrollToTop from "./components/ScrollToTop";
+import Search from "./components/Search";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route path="/" element={<Home />} />
+          <Route path="/search" element={<Search />} />
 
           <Route element={<PrivateRoute />}>
             <Route path="/about" element={<About />} />
