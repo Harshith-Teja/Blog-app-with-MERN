@@ -67,7 +67,7 @@ const Home = () => {
               ))}
             </div>
             <Link
-              to="/search"
+              to="/blogs"
               className="text-sm sm:text-lg text-cyan-500 text-center font-bold hover:underline"
             >
               View all posts
