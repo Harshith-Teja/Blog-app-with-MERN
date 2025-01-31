@@ -32,16 +32,16 @@ export const getPosts = async (req: Request, res: Response) => {
   try {
     const startInd = parseInt(req.query.startInd as string) || 0;
     const limit = parseInt(req.query.limit as string) || 9;
-    const sortDirection = req.query.order === "asc" ? 1 : -1;
+    const sortDirection = req.query.sort === "asc" ? 1 : -1;
 
     const posts = await Post.find({
       ...(req.query.userId && { userId: req.query.userId }),
       ...(req.query.category && { category: req.query.category }),
       ...(req.query.slug && { slug: req.query.slug }),
       ...(req.query.postId && { _id: req.query.postId }),
-      ...(req.query.searchItem && {
+      ...(req.query.searchTerm && {
         $or: [
-          { title: { $regex: req.query.searchItem, $options: "i" } },
+          { title: { $regex: req.query.searchTerm, $options: "i" } },
           { content: { $regex: req.query.content, $options: "i" } },
         ],
       }),
@@ -50,7 +50,18 @@ export const getPosts = async (req: Request, res: Response) => {
       .skip(startInd)
       .limit(limit);
 
-    const totalPosts = await Post.countDocuments();
+    const totalPosts = await Post.countDocuments({
+      ...(req.query.userId && { userId: req.query.userId }),
+      ...(req.query.category && { category: req.query.category }),
+      ...(req.query.slug && { slug: req.query.slug }),
+      ...(req.query.postId && { _id: req.query.postId }),
+      ...(req.query.searchTerm && {
+        $or: [
+          { title: { $regex: req.query.searchTerm, $options: "i" } },
+          { content: { $regex: req.query.content, $options: "i" } },
+        ],
+      }),
+    });
 
     const now = new Date();
 
