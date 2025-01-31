@@ -1,5 +1,6 @@
 import {
   faArrowRight,
+  faChartSimple,
   faComment,
   faFile,
   faUser,
@@ -54,9 +55,16 @@ const DashSidebar = () => {
       <Sidebar.Items>
         <Sidebar.ItemGroup>
           <Sidebar.Item
+            active={tab === "dash" || !tab}
+            icon={() => <FontAwesomeIcon icon={faChartSimple} />}
+            labelColor="dark"
+            as="div"
+          >
+            <Link to="/dashboard?tab=dash">Dashboard</Link>
+          </Sidebar.Item>
+          <Sidebar.Item
             active={tab === "profile"}
             icon={() => <FontAwesomeIcon icon={faUser} />}
-            label={"User"}
             labelColor="dark"
             as="div"
           >
