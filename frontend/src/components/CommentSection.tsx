@@ -172,9 +172,11 @@ const CommentSection = ({ postId }: { postId: string }) => {
           </Link>
         </section>
       ) : (
-        <section>
+        <section className="flex items-center gap-1 my-5 text-gray-500 text-sm border rounded-md p-3">
           <p>You must be signed in to comment</p>
-          <Link to={"/login"}>Sign in</Link>
+          <Link to={"/login"} className="text-blue-600 underline">
+            Sign in
+          </Link>
         </section>
       )}
 
