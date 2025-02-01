@@ -64,16 +64,16 @@ const LoginPage = () => {
         return;
       }
 
-      console.log(data);
-
       setUname("");
       setPwd("");
-      dispatch(signInSuccess(data));
+      dispatch(signInSuccess(data?.userWithoutPwd));
       navigate("/");
     } catch (err: any) {
       if (!err?.response) dispatch(signInFailure("No server response"));
       else if (err.response.status === 409)
         dispatch(signInFailure("Username already taken"));
+      else if (err.response.status === 401)
+        dispatch(signInFailure("Unauthorized"));
       else dispatch(signInFailure(err.message));
 
       errRef.current?.focus();
