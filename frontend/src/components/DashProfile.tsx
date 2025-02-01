@@ -125,7 +125,7 @@ const DashProfile = () => {
 
       console.log(data);
 
-      dispatch(updateSuccess(data.userWithoutPwd));
+      dispatch(updateSuccess(data?.userWithoutPwd));
       setSuccess(true);
       successRef.current?.focus();
     } catch (err: any) {
