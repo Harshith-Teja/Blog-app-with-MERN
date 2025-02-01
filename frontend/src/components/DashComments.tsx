@@ -173,7 +173,9 @@ const DashComments = () => {
           )}
         </>
       )}
-      {!commentsLoading && <p>No comments available!!</p>}
+      {!commentsLoading && comments.length === 0 && (
+        <p>No comments available!!</p>
+      )}
       {showModal && (
         <Modal
           show={showModal}
