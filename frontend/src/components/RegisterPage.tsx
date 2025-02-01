@@ -108,7 +108,7 @@ const RegisterPage = () => {
       </div>
       <div className="flex-1 flex justify-center items-center p-4">
         {success ? (
-          <section className="bg-slate-100 rounded-lg p-8 text-center">
+          <section className="bg-slate-100 rounded-lg p-8 text-center dark:bg-[rgb(24,34,62)]">
             <h1 className="text-2xl font-semibold text-green-500">Success!!</h1>
             <Link to="/login" className="underline">
               Sign In
@@ -116,7 +116,7 @@ const RegisterPage = () => {
           </section>
         ) : (
           <form
-            className="w-full bg-slate-100 rounded-lg p-8 text-center"
+            className="w-full bg-slate-100 rounded-lg p-8 text-center dark:bg-[rgb(24,34,62)]"
             onSubmit={handleSubmit}
           >
             <Alert
@@ -154,7 +154,7 @@ const RegisterPage = () => {
               id="uidnote"
               className={
                 unameFocus && uname && !validUname
-                  ? "text-xs p-1 mt-2 rounded-md bg-slate-400 w-5/6 mx-auto"
+                  ? "text-xs p-1 mt-2 rounded-md bg-slate-400 w-5/6 mx-auto dark:bg-[rgb(63,72,100)]"
                   : "hidden"
               }
             >
@@ -190,7 +190,7 @@ const RegisterPage = () => {
               id="pwdnote"
               className={
                 pwdFocus && pwd && !validPwd
-                  ? "text-xs p-1 mt-2 rounded-md bg-slate-400 w-5/6 mx-auto"
+                  ? "text-xs p-1 mt-2 rounded-md bg-slate-400 w-5/6 mx-auto dark:bg-[rgb(63,72,100)]"
                   : "hidden"
               }
             >
@@ -232,12 +232,12 @@ const RegisterPage = () => {
               id="cnfrmnote"
               className={
                 cnfrmPwdFocus && cnfrmPwd && !validCnfrmPwd
-                  ? "text-xs p-1 mt-2 rounded-md bg-slate-400 w-5/6 mx-auto"
+                  ? "text-xs p-1 mt-2 rounded-md bg-slate-400 w-5/6 mx-auto dark:bg-[rgb(63,72,100)]"
                   : "hidden"
               }
             >
-              <FontAwesomeIcon icon={faInfoCircle} />
-              Must match the first password input field.
+              <FontAwesomeIcon icon={faInfoCircle} /> Must match the first
+              password input field.
             </p>
             <Button
               type="submit"

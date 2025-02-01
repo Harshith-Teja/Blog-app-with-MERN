@@ -93,7 +93,7 @@ const LoginPage = () => {
       </div>
       <div className="flex-1 flex justify-center items-center p-4">
         <form
-          className="w-full bg-slate-100 rounded-lg p-8 text-center"
+          className="w-full bg-slate-100 rounded-lg p-8 text-center  dark:bg-[rgb(24,34,62)]"
           onSubmit={handleSubmit}
         >
           <Alert
