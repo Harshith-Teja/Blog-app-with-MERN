@@ -190,23 +190,29 @@ const DashboardComp = () => {
               <Link to="/dashboard?tab=comments">See All</Link>
             </Button>
           </section>
-          <Table hoverable className="shadow-lg rounded-lg">
-            <Table.Head>
-              <Table.HeadCell className="bg-slate-300">Comment</Table.HeadCell>
-              <Table.HeadCell className="bg-slate-300">Likes</Table.HeadCell>
-            </Table.Head>
-            <Table.Body className="divide-y">
-              {comments.map((comment) => (
-                <Table.Row key={comment._id}>
-                  <Table.Cell className="w-96">
-                    {" "}
-                    <p className="line-clamp-2">{comment.content}</p>{" "}
-                  </Table.Cell>
-                  <Table.Cell>{comment.numOfLikes}</Table.Cell>
-                </Table.Row>
-              ))}
-            </Table.Body>
-          </Table>
+          {comments.length > 0 ? (
+            <Table hoverable className="shadow-lg rounded-lg">
+              <Table.Head>
+                <Table.HeadCell className="bg-slate-300">
+                  Comment
+                </Table.HeadCell>
+                <Table.HeadCell className="bg-slate-300">Likes</Table.HeadCell>
+              </Table.Head>
+              <Table.Body className="divide-y">
+                {comments.map((comment) => (
+                  <Table.Row key={comment._id}>
+                    <Table.Cell className="w-96">
+                      {" "}
+                      <p className="line-clamp-2">{comment.content}</p>{" "}
+                    </Table.Cell>
+                    <Table.Cell>{comment.numOfLikes}</Table.Cell>
+                  </Table.Row>
+                ))}
+              </Table.Body>
+            </Table>
+          ) : (
+            <p className="text-center">No comments to display!!</p>
+          )}
         </article>
         <article className="flex flex-1 flex-col w-full md:w-auto shadow-md p-4 rounded-md dark:bg-gray-800">
           <section className="flex justify-between p-3 text-sm font-semibold">
@@ -215,20 +221,26 @@ const DashboardComp = () => {
               <Link to="/dashboard?tab=comments">See All</Link>
             </Button>
           </section>
-          <Table hoverable className="shadow-lg rounded-lg">
-            <Table.Head>
-              <Table.HeadCell className="bg-slate-300">Title</Table.HeadCell>
-              <Table.HeadCell className="bg-slate-300">Category</Table.HeadCell>
-            </Table.Head>
-            <Table.Body className="divide-y">
-              {posts.map((post) => (
-                <Table.Row key={post._id}>
-                  <Table.Cell className="w-96">{post.title}</Table.Cell>
-                  <Table.Cell className="w-5">{post.category}</Table.Cell>
-                </Table.Row>
-              ))}
-            </Table.Body>
-          </Table>
+          {posts.length > 0 ? (
+            <Table hoverable className="shadow-lg rounded-lg">
+              <Table.Head>
+                <Table.HeadCell className="bg-slate-300">Title</Table.HeadCell>
+                <Table.HeadCell className="bg-slate-300">
+                  Category
+                </Table.HeadCell>
+              </Table.Head>
+              <Table.Body className="divide-y">
+                {posts.map((post) => (
+                  <Table.Row key={post._id}>
+                    <Table.Cell className="w-96">{post.title}</Table.Cell>
+                    <Table.Cell className="w-5">{post.category}</Table.Cell>
+                  </Table.Row>
+                ))}
+              </Table.Body>
+            </Table>
+          ) : (
+            <p className="text-center">No posts to display!!</p>
+          )}
         </article>
       </div>
     </div>
