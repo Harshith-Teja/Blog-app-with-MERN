@@ -12,17 +12,7 @@ import {
 import { Button, Table } from "flowbite-react";
 import { Link } from "react-router-dom";
 import { PostType } from "../types/PostType";
-
-type CommentType = {
-  _id: string;
-  content: string;
-  postId: string;
-  userId: string;
-  likes?: Array<String>;
-  numOfLikes: number;
-  createdAt?: string;
-  updatedAt?: string;
-};
+import { CommentType } from "../types/CommentType";
 
 const DashboardComp = () => {
   const [comments, setComments] = useState<CommentType[]>([]);

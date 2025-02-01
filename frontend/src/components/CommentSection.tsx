@@ -7,15 +7,7 @@ import axios from "axios";
 import Comment from "./Comment";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleExclamation } from "@fortawesome/free-solid-svg-icons";
-
-type CommentType = {
-  _id: string;
-  content: string;
-  postId: string;
-  userId: string;
-  likes?: Array<String>;
-  numOfLikes: number;
-};
+import { CommentType } from "../types/CommentType";
 
 const CommentSection = ({ postId }: { postId: string }) => {
   const { currentUser } = useSelector((state: RootState) => state.user);

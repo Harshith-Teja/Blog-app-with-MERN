@@ -5,16 +5,7 @@ import axios from "axios";
 import { Button, Modal, Table } from "flowbite-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleExclamation } from "@fortawesome/free-solid-svg-icons";
-type CommentType = {
-  _id: string;
-  content: string;
-  postId: string;
-  userId: string;
-  likes?: Array<String>;
-  numOfLikes: number;
-  createdAt?: string;
-  updatedAt?: string;
-};
+import { CommentType } from "../types/CommentType";
 
 const DashComments = () => {
   const { currentUser } = useSelector((state: RootState) => state.user);
