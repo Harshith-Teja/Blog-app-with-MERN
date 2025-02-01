@@ -3,6 +3,8 @@ import { Button, Select, Spinner, TextInput } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import PostCard from "./PostCard";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
 
 type PostType = {
   _id: string;
@@ -27,6 +29,7 @@ const Search = () => {
   const [totalPosts, setTotalPosts] = useState(0);
   const location = useLocation();
   const navigate = useNavigate();
+  const { currentUser } = useSelector((state: RootState) => state.user);
 
   useEffect(() => {
     if (totalPosts > posts.length) setShowMore(true);
@@ -99,6 +102,12 @@ const Search = () => {
   };
 
   const handleShowMore = async () => {
+    if (!currentUser) {
+      //if the user is not logged in, redirect to login page
+      navigate("/login");
+      return;
+    }
+
     const startInd = "" + posts.length;
     const urlParams = new URLSearchParams(location.search);
     urlParams.set("startInd", startInd);
