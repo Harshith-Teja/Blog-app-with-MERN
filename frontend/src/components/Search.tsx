@@ -22,6 +22,7 @@ const Search = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { currentUser } = useSelector((state: RootState) => state.user);
+  const [morePostsLoading, setMorePostsLoading] = useState(false);
 
   //if totalPosts are greater than current posts, enables show more button
   useEffect(() => {
@@ -111,6 +112,8 @@ const Search = () => {
     const searchQuery = urlParams.toString();
 
     try {
+      setMorePostsLoading(true);
+
       const response = await axios.get(
         `${BASE_URL}/posts/get-posts?${searchQuery}`,
         {
@@ -121,12 +124,18 @@ const Search = () => {
       const data = response.data;
 
       if (data.success === false) {
+        console.log(data?.message);
+        setMorePostsLoading(false);
         return;
       }
 
       setPosts((prev) => [...prev, ...data.posts]);
       setTotalPosts(data.totalPosts);
-    } catch (err: any) {}
+      setMorePostsLoading(false);
+    } catch (err: any) {
+      console.log(err.message);
+      setMorePostsLoading(false);
+    }
   };
 
   //updates searchquery everytime filter is submitted(one of searchTerm, sort, category changes)
@@ -187,16 +196,18 @@ const Search = () => {
         <h1 className="text-3xl font-semibold border-gray-500 p-3 mt-5">
           Posts results
         </h1>
-        <div className="p-7 grid grid-cols-2 sm:grid-cols-3 gap-4">
+        <section className="flex justify-center mt-5">
+          {loading && <Spinner size="md" />}
           {!loading && posts.length === 0 && (
             <p className="text-xl">No posts found</p>
           )}
-          {loading && <Spinner size="md" />}
+        </section>
+        <div className="p-7 grid grid-cols-2 sm:grid-cols-3 gap-4">
           {!loading &&
             posts.length > 0 &&
             posts.map((post) => <PostCard key={post._id} post={post} />)}
         </div>
-        {showMore && (
+        {!morePostsLoading && showMore && (
           <Button
             color="gray"
             className="w-full text-teal-500 self-center text-sm my-7"
@@ -204,6 +215,11 @@ const Search = () => {
           >
             Show more
           </Button>
+        )}
+        {morePostsLoading && (
+          <section className="flex justify-center mt-5">
+            <Spinner size="md" />
+          </section>
         )}
       </section>
     </div>

@@ -9,7 +9,8 @@ const Blogs = () => {
   const [posts, setPosts] = useState<PostType[]>([]);
   const [totalPosts, setTotalPosts] = useState(0);
   const [showMore, setShowMore] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [postsLoading, setpostsLoading] = useState(false);
+  const [morePostsLoading, setMorePostsLoading] = useState(false);
 
   //if totalPosts are greater than current posts, enables show more button
   useEffect(() => {
@@ -20,7 +21,7 @@ const Blogs = () => {
   //fetces posts on every refresh of the page
   useEffect(() => {
     const fetchPosts = async () => {
-      setLoading(true);
+      setpostsLoading(true);
       try {
         const response = await axios.get(`${BASE_URL}/posts/get-posts`, {
           withCredentials: true,
@@ -29,16 +30,16 @@ const Blogs = () => {
         const data = response.data;
 
         if (data.success === false) {
-          setLoading(false);
+          setpostsLoading(false);
           console.log(data.message);
           return;
         }
 
         setPosts(data.posts);
         setTotalPosts(data.totalPosts);
-        setLoading(false);
+        setpostsLoading(false);
       } catch (err: any) {
-        setLoading(false);
+        setpostsLoading(false);
         console.log(err.message);
       }
     };
@@ -51,6 +52,8 @@ const Blogs = () => {
     const startInd = posts.length;
 
     try {
+      setMorePostsLoading(true);
+
       const response = await axios.get(
         `${BASE_URL}/posts/get-posts/?startInd=${startInd}`,
         {
@@ -61,26 +64,34 @@ const Blogs = () => {
       const data = response.data;
 
       if (data.success === false) {
+        console.log(data?.message);
+        setMorePostsLoading(false);
         return;
       }
 
       setPosts((prev) => [...prev, ...data.posts]); //keeps the previous posts intact, and adds new posts
       setTotalPosts(data.totalPosts);
-    } catch (err: any) {}
+      setMorePostsLoading(false);
+    } catch (err: any) {
+      console.log(err.message);
+      setMorePostsLoading(false);
+    }
   };
 
   return (
     <div className="min-h-screen">
-      <div className="p-7 max-w-6xl mx-auto grid grid-cols-2 sm:grid-cols-3 gap-8">
-        {!loading && posts.length === 0 && (
-          <p className="text-xl">No posts found</p>
+      <div className="flex justify-center mt-12">
+        {!postsLoading && posts.length === 0 && (
+          <p className="text-xl">No posts found!</p>
         )}
-        {loading && <Spinner size="md" />}
-        {!loading &&
+        {postsLoading && <Spinner size="md" />}
+      </div>
+      <div className="p-7 max-w-6xl mx-auto grid grid-cols-2 sm:grid-cols-3 gap-8">
+        {!postsLoading &&
           posts.length > 0 &&
           posts.map((post) => <PostCard key={post._id} post={post} />)}
       </div>
-      {showMore && (
+      {!morePostsLoading && showMore && (
         <Button
           color="gray"
           className="max-w-6xl mx-auto text-teal-500 self-center text-sm my-7"
@@ -88,6 +99,11 @@ const Blogs = () => {
         >
           Show more
         </Button>
+      )}
+      {morePostsLoading && (
+        <section className="flex justify-center mt-5">
+          <Spinner size="md" />
+        </section>
       )}
     </div>
   );

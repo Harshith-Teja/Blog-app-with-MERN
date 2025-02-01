@@ -2,7 +2,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Button, Modal, Table } from "flowbite-react";
+import { Button, Modal, Spinner, Table } from "flowbite-react";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleExclamation } from "@fortawesome/free-solid-svg-icons";
@@ -16,6 +16,8 @@ const DashPosts = () => {
   const [totalPosts, setTotalPosts] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const [postIdToDelete, setPostIdToDelete] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [morePostsLoading, setMorePostsLoading] = useState(false);
 
   //if totalPosts are greater than current posts, enables show more button
   useEffect(() => {
@@ -27,6 +29,8 @@ const DashPosts = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
+        setLoading(true);
+
         const response = await axios.get(
           `${BASE_URL}/posts/get-posts/?userId=${currentUser?._id}`,
           {
@@ -37,11 +41,14 @@ const DashPosts = () => {
         const data = response.data;
 
         if (data.success === false) {
+          console.log(data?.message);
+          setLoading(false);
           return;
         }
 
         setUserPosts(data.posts);
         setTotalPosts(data.totalPosts);
+        setLoading(false);
       } catch (err: any) {}
     };
 
@@ -53,6 +60,8 @@ const DashPosts = () => {
     const startInd = userPosts.length;
 
     try {
+      setMorePostsLoading(true);
+
       const response = await axios.get(
         `${BASE_URL}/posts/get-posts/?userId=${currentUser?._id}&startInd=${startInd}`,
         {
@@ -63,12 +72,18 @@ const DashPosts = () => {
       const data = response.data;
 
       if (data.success === false) {
+        console.log(data?.message);
+        setMorePostsLoading(false);
         return;
       }
 
       setUserPosts((prev) => [...prev, ...data.posts]); //keeps the previous posts intact, and adds new posts
       setTotalPosts(data.totalPosts);
-    } catch (err: any) {}
+      setMorePostsLoading(false);
+    } catch (err: any) {
+      console.log(err.message);
+      setMorePostsLoading(false);
+    }
   };
 
   //deletes the post
@@ -86,6 +101,7 @@ const DashPosts = () => {
       const data = response.data;
 
       if (data.success === false) {
+        console.log(data?.message);
         return;
       }
 
@@ -97,7 +113,10 @@ const DashPosts = () => {
   };
   return (
     <div className=" w-full table-auto overflow-x-scroll p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-500">
-      {userPosts.length > 0 ? (
+      <section className="flex justify-center mt-5">
+        {loading && <Spinner size="md" />}
+      </section>
+      {!loading && userPosts.length > 0 && (
         <>
           <Table hoverable className="shadow-md">
             <Table.Head>
@@ -139,7 +158,7 @@ const DashPosts = () => {
               ))}
             </Table.Body>
           </Table>
-          {showMore && (
+          {!morePostsLoading && showMore && (
             <Button
               color="gray"
               className="w-full text-teal-500 self-center text-sm my-7"
@@ -148,9 +167,15 @@ const DashPosts = () => {
               Show more
             </Button>
           )}
+          {morePostsLoading && (
+            <section className="flex justify-center mt-5">
+              <Spinner size="md" />
+            </section>
+          )}
         </>
-      ) : (
-        <p>No posts available!!</p>
+      )}
+      {!loading && userPosts.length === 0 && (
+        <p className="text-xl">No posts found</p>
       )}
       {showModal && (
         <Modal

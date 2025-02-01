@@ -2,7 +2,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Button, Modal, Table } from "flowbite-react";
+import { Button, Modal, Spinner, Table } from "flowbite-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleExclamation } from "@fortawesome/free-solid-svg-icons";
 import { CommentType } from "../types/CommentType";
@@ -16,6 +16,8 @@ const DashComments = () => {
   const [showModal, setShowModal] = useState(false);
   const [commentIdToDelete, setCommentIdToDelete] = useState("");
   const [totalComments, setTotalComments] = useState(0);
+  const [commentsLoading, setCommentsLoading] = useState(false);
+  const [morePostsLoading, setMorePostsLoading] = useState(false);
 
   //if totalComments are greater than current comments, enables show more button
   useEffect(() => {
@@ -27,6 +29,7 @@ const DashComments = () => {
   useEffect(() => {
     const fetchComments = async () => {
       try {
+        setCommentsLoading(true);
         const response = await axios.get(
           `${BASE_URL}/comments/get-all-comments/?userId=${currentUser?._id}`,
           {
@@ -37,13 +40,16 @@ const DashComments = () => {
         const data = response.data;
         if (data.success === false) {
           console.log(data.message);
+          setCommentsLoading(false);
           return;
         }
 
         setComments(data.allComments);
         setTotalComments(data.totalComments);
+        setCommentsLoading(false);
       } catch (err: any) {
         console.log(err.message);
+        setCommentsLoading(false);
       }
     };
 
@@ -55,6 +61,8 @@ const DashComments = () => {
     const startInd = comments.length;
 
     try {
+      setMorePostsLoading(true);
+
       const response = await axios.get(
         `${BASE_URL}/comments/get-all-comments/?userId=${currentUser?._id}&startInd=${startInd}`,
         {
@@ -65,11 +73,14 @@ const DashComments = () => {
       const data = response.data;
 
       if (data.success === false) {
+        console.log(data?.message);
+        setMorePostsLoading(false);
         return;
       }
 
       setComments((prev) => [...prev, ...data.comments]); //keeps the previous comments intact, and adds new comments
       setTotalComments(data.totalComments);
+      setMorePostsLoading(false);
     } catch (err: any) {
       console.log(err.message);
     }
@@ -105,7 +116,10 @@ const DashComments = () => {
 
   return (
     <div className=" w-full table-auto overflow-x-scroll p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-500">
-      {comments.length > 0 ? (
+      <section className="flex justify-center mt-5">
+        {commentsLoading && <Spinner size="md" />}
+      </section>
+      {!commentsLoading && comments.length > 0 && (
         <>
           <Table hoverable className="shadow-md">
             <Table.Head>
@@ -143,7 +157,7 @@ const DashComments = () => {
               ))}
             </Table.Body>
           </Table>
-          {showMore && (
+          {!morePostsLoading && showMore && (
             <Button
               color="gray"
               className="w-full text-teal-500 self-center text-sm my-7"
@@ -152,10 +166,14 @@ const DashComments = () => {
               Show more
             </Button>
           )}
+          {morePostsLoading && (
+            <section className="flex justify-center mt-5">
+              <Spinner size="md" />
+            </section>
+          )}
         </>
-      ) : (
-        <p>No comments available!!</p>
       )}
+      {!commentsLoading && <p>No comments available!!</p>}
       {showModal && (
         <Modal
           show={showModal}

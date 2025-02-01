@@ -9,7 +9,7 @@ import {
   faFile,
   faHeart,
 } from "@fortawesome/free-solid-svg-icons";
-import { Button, Table } from "flowbite-react";
+import { Button, Spinner, Table } from "flowbite-react";
 import { Link } from "react-router-dom";
 import { PostType } from "../types/PostType";
 import { CommentType } from "../types/CommentType";
@@ -25,11 +25,15 @@ const DashboardComp = () => {
   const [totalLastMonthPosts, setTotalLastMonthPosts] = useState(0);
   const [totalLastMonthLikes, setTotalLastMonthLikes] = useState(0);
   const { currentUser } = useSelector((state: RootState) => state.user);
+  const [commentsLoading, setCommentsLoading] = useState(false);
+  const [postsLoading, setPostsLoading] = useState(false);
 
   //fetches posts, comments and likes whenever the user changes
   useEffect(() => {
     const fetchComments = async () => {
       try {
+        setCommentsLoading(true);
+
         const response = await axios.get(
           `${BASE_URL}/comments/get-all-comments/?userId=${currentUser?._id}`,
           {
@@ -40,14 +44,17 @@ const DashboardComp = () => {
         const data = response.data;
         if (data.success === false) {
           console.log(data.message);
+          setCommentsLoading(false);
           return;
         }
 
         setComments(data.allComments);
         setTotalComments(data.totalComments);
         setTotalLastMonthComments(data.totalLastMonthComments);
+        setCommentsLoading(false);
       } catch (err: any) {
         console.log(err.message);
+        setCommentsLoading(false);
       }
     };
 
@@ -55,6 +62,8 @@ const DashboardComp = () => {
 
     const fetchPosts = async () => {
       try {
+        setPostsLoading(true);
+
         const response = await axios.get(
           `${BASE_URL}/posts/get-posts/?userId=${currentUser?._id}`,
           {
@@ -65,13 +74,19 @@ const DashboardComp = () => {
         const data = response.data;
 
         if (data.success === false) {
+          console.log(data.message);
+          setPostsLoading(false);
           return;
         }
 
         setPosts(data.posts);
         setTotalPosts(data.totalPosts);
         setTotalLastMonthPosts(data.lastMonthPosts);
-      } catch (err: any) {}
+        setPostsLoading(false);
+      } catch (err: any) {
+        console.log(err.message);
+        setPostsLoading(false);
+      }
     };
 
     fetchPosts();
@@ -172,7 +187,10 @@ const DashboardComp = () => {
               <Link to="/dashboard?tab=comments">See All</Link>
             </Button>
           </section>
-          {comments.length > 0 ? (
+          <section className="flex justify-center">
+            {commentsLoading && <Spinner size="md" />}
+          </section>
+          {!commentsLoading && comments.length > 0 && (
             <Table hoverable className="shadow-lg rounded-lg">
               <Table.Head>
                 <Table.HeadCell className="bg-slate-300">
@@ -192,7 +210,8 @@ const DashboardComp = () => {
                 ))}
               </Table.Body>
             </Table>
-          ) : (
+          )}
+          {!commentsLoading && comments.length === 0 && (
             <p className="text-center">No comments to display!!</p>
           )}
         </article>
@@ -203,7 +222,10 @@ const DashboardComp = () => {
               <Link to="/dashboard?tab=posts">See All</Link>
             </Button>
           </section>
-          {posts.length > 0 ? (
+          <section className="flex justify-center">
+            {postsLoading && <Spinner size="md" />}
+          </section>
+          {!postsLoading && posts.length > 0 && (
             <Table hoverable className="shadow-lg rounded-lg">
               <Table.Head>
                 <Table.HeadCell className="bg-slate-300">Title</Table.HeadCell>
@@ -220,7 +242,8 @@ const DashboardComp = () => {
                 ))}
               </Table.Body>
             </Table>
-          ) : (
+          )}
+          {!postsLoading && (
             <p className="text-center">No posts to display!!</p>
           )}
         </article>
