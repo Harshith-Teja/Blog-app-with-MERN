@@ -13,6 +13,7 @@ declare global {
 export const verifyJWT = (req: Request, res: Response, next: NextFunction) => {
   const token: string | undefined = req.cookies?.jwt;
 
+  console.log("jwt ", token);
   if (!token) return res.status(401).json({ message: "Unauthorized" });
 
   jwt.verify(
