@@ -26,6 +26,7 @@ const Blogs = () => {
 
   useEffect(() => {
     const fetchPosts = async () => {
+      setLoading(true);
       try {
         const response = await axios.get(
           `http://localhost:5000/posts/get-posts`,
@@ -37,12 +38,18 @@ const Blogs = () => {
         const data = response.data;
 
         if (data.success === false) {
+          setLoading(false);
+          console.log(data.message);
           return;
         }
 
         setPosts(data.posts);
         setTotalPosts(data.totalPosts);
-      } catch (err: any) {}
+        setLoading(false);
+      } catch (err: any) {
+        setLoading(false);
+        console.log(err.message);
+      }
     };
 
     fetchPosts();
