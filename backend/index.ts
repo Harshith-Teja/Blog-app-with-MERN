@@ -36,10 +36,11 @@ app.use("/google", googleRouter);
 app.use("/refresh", refreshRouter);
 app.use("/logout", logoutRouter);
 
+app.use("/posts", postsRouter);
+
 app.use(verifyJWT as RequestHandler);
 
 app.use("/users", userRouter);
-app.use("/posts", postsRouter);
 app.use("/comments", commentsRouter);
 
 app.all("*", (req: Request, res: Response) => {
