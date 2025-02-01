@@ -7,6 +7,6 @@
     "strict": true,
     "esModuleInterop": true
   },
-  "include": ["src", "index.ts"], // Files or directories to include
+  "include": ["src", "src/index.ts"], // Files or directories to include
   "exclude": ["node_modules", "dist"] // Files or directories to exclude
 }
