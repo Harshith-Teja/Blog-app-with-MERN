@@ -54,7 +54,6 @@ const DashboardComp = () => {
         );
 
         const data = response.data;
-        console.log(data);
         if (data.success === false) {
           console.log(data.message);
           return;
@@ -103,7 +102,6 @@ const DashboardComp = () => {
         );
 
         const data = response.data;
-        console.log(data);
         if (data.success === false) {
           console.log(data.message);
           return;
@@ -218,7 +216,7 @@ const DashboardComp = () => {
           <section className="flex justify-between p-3 text-sm font-semibold">
             <h1>Recent posts</h1>
             <Button outline gradientDuoTone="purpleToPink">
-              <Link to="/dashboard?tab=comments">See All</Link>
+              <Link to="/dashboard?tab=posts">See All</Link>
             </Button>
           </section>
           {posts.length > 0 ? (

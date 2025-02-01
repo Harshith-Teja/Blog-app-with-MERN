@@ -64,7 +64,6 @@ const UpdatePost = () => {
       );
 
       const data = response.data;
-      // console.log(data);
 
       if (data.success === false) {
         setErrMsg(data.message);

@@ -123,8 +123,6 @@ const DashProfile = () => {
         return;
       }
 
-      console.log(data);
-
       dispatch(updateSuccess(data?.userWithoutPwd));
       setSuccess(true);
       successRef.current?.focus();

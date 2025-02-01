@@ -20,7 +20,6 @@ const OAuth = () => {
 
     try {
       const resultsFrmGoogle = await signInWithPopup(auth, provider);
-      console.log(resultsFrmGoogle);
 
       const response = await axios.post(
         "http://localhost:5000/google",
