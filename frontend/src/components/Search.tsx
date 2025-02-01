@@ -5,16 +5,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import PostCard from "./PostCard";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
-
-type PostType = {
-  _id: string;
-  title: string;
-  content: string;
-  category: string;
-  slug: string;
-  createdAt: string;
-  updatedAt: string;
-};
+import { PostType } from "../types/PostType";
 
 const Search = () => {
   const [sidebarData, setSidebarData] = useState({

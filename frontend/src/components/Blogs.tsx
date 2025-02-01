@@ -2,16 +2,7 @@ import axios from "axios";
 import { Button, Spinner } from "flowbite-react";
 import { useEffect, useState } from "react";
 import PostCard from "./PostCard";
-
-type PostType = {
-  _id: string;
-  title: string;
-  content: string;
-  category: string;
-  slug: string;
-  createdAt: string;
-  updatedAt: string;
-};
+import { PostType } from "../types/PostType";
 
 const Blogs = () => {
   const [posts, setPosts] = useState<PostType[]>([]);

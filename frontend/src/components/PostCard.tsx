@@ -1,14 +1,5 @@
 import { Link } from "react-router-dom";
-
-type PostType = {
-  _id: string;
-  title: string;
-  content: string;
-  category: string;
-  slug: string;
-  createdAt: string;
-  updatedAt: string;
-};
+import { PostType } from "../types/PostType";
 
 type PostCardProps = {
   post: PostType;

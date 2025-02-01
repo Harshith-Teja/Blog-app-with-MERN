@@ -2,16 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import PostCard from "./PostCard";
-
-type PostType = {
-  _id: string;
-  title: string;
-  content: string;
-  category: string;
-  slug: string;
-  createdAt: string;
-  updatedAt: string;
-};
+import { PostType } from "../types/PostType";
 
 const Home = () => {
   const [posts, setPosts] = useState<PostType[]>([]);

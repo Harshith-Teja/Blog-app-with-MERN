@@ -6,15 +6,7 @@ import "react-quill/dist/quill.snow.css";
 import { useNavigate, useParams } from "react-router-dom";
 import { RootState } from "../redux/store";
 import { useSelector } from "react-redux";
-
-type PostType = {
-  _id: string;
-  title: string;
-  content: string;
-  category: string;
-  slug: string;
-  updatedAt: string;
-};
+import { PostType } from "../types/PostType";
 
 const UpdatePost = () => {
   const [formData, setFormData] = useState<Partial<PostType>>({});

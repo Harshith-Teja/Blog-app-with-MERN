@@ -6,15 +6,8 @@ import { Button, Modal, Table } from "flowbite-react";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleExclamation } from "@fortawesome/free-solid-svg-icons";
+import { PostType } from "../types/PostType";
 
-type PostType = {
-  _id: string;
-  title: string;
-  content: string;
-  category: string;
-  slug: string;
-  updatedAt: string;
-};
 const DashPosts = () => {
   const { currentUser } = useSelector((state: RootState) => state.user);
   const [userPosts, setUserPosts] = useState<PostType[]>([]);

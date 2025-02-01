@@ -4,16 +4,7 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import CommentSection from "./CommentSection";
 import PostCard from "./PostCard";
-
-type PostType = {
-  _id: string;
-  title: string;
-  content: string;
-  category: string;
-  slug: string;
-  createdAt: string;
-  updatedAt: string;
-};
+import { PostType } from "../types/PostType";
 
 const PostPage = () => {
   const { slug } = useParams();

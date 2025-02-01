@@ -11,6 +11,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { Button, Table } from "flowbite-react";
 import { Link } from "react-router-dom";
+import { PostType } from "../types/PostType";
 
 type CommentType = {
   _id: string;
@@ -21,15 +22,6 @@ type CommentType = {
   numOfLikes: number;
   createdAt?: string;
   updatedAt?: string;
-};
-
-type PostType = {
-  _id: string;
-  title: string;
-  content: string;
-  category: string;
-  slug: string;
-  updatedAt: string;
 };
 
 const DashboardComp = () => {
