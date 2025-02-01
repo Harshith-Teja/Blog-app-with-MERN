@@ -19,6 +19,7 @@ import {
 } from "../redux/user/userSlice";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { BASE_URL } from "../api/requestUrl";
 
 const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
@@ -61,7 +62,7 @@ const DashProfile = () => {
     try {
       dispatch(signoutStart());
 
-      const response = await axios.post("http://localhost:5000/logout", {
+      const response = await axios.post(`${BASE_URL}/logout`, {
         withCredentials: true,
       });
 
@@ -84,7 +85,7 @@ const DashProfile = () => {
       dispatch(updateStart());
 
       const response = await axios.delete(
-        `http://localhost:5000/users/delete/${currentUser?._id}`,
+        `${BASE_URL}/users/delete/${currentUser?._id}`,
         {
           withCredentials: true,
         }
@@ -108,7 +109,7 @@ const DashProfile = () => {
     try {
       dispatch(updateStart());
       const response = await axios.put(
-        `http://localhost:5000/users/update/${currentUser?._id}`,
+        `${BASE_URL}/users/update/${currentUser?._id}`,
         JSON.stringify({ uname, pwd }),
         {
           headers: { "Content-Type": "Application/json" },

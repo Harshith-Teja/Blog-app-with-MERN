@@ -3,6 +3,7 @@ import { Button, Spinner } from "flowbite-react";
 import { useEffect, useState } from "react";
 import PostCard from "./PostCard";
 import { PostType } from "../types/PostType";
+import { BASE_URL } from "../api/requestUrl";
 
 const Blogs = () => {
   const [posts, setPosts] = useState<PostType[]>([]);
@@ -19,12 +20,9 @@ const Blogs = () => {
     const fetchPosts = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(
-          `http://localhost:5000/posts/get-posts`,
-          {
-            withCredentials: true,
-          }
-        );
+        const response = await axios.get(`${BASE_URL}/posts/get-posts`, {
+          withCredentials: true,
+        });
 
         const data = response.data;
 
@@ -51,7 +49,7 @@ const Blogs = () => {
 
     try {
       const response = await axios.get(
-        `http://localhost:5000/posts/get-posts/?startInd=${startInd}`,
+        `${BASE_URL}/posts/get-posts/?startInd=${startInd}`,
         {
           withCredentials: true,
         }

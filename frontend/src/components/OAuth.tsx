@@ -7,6 +7,7 @@ import axios from "axios";
 import { useDispatch } from "react-redux";
 import { signInSuccess } from "../redux/user/userSlice";
 import { useNavigate } from "react-router-dom";
+import { BASE_URL } from "../api/requestUrl";
 
 const OAuth = () => {
   const dispatch = useDispatch();
@@ -22,7 +23,7 @@ const OAuth = () => {
       const resultsFrmGoogle = await signInWithPopup(auth, provider);
 
       const response = await axios.post(
-        "http://localhost:5000/google",
+        `${BASE_URL}/google`,
         JSON.stringify({
           name: resultsFrmGoogle.user.displayName,
           email: resultsFrmGoogle.user.email,

@@ -16,6 +16,7 @@ import {
 } from "../redux/user/userSlice";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { BASE_URL } from "../api/requestUrl";
 
 const Header = () => {
   const path = useLocation().pathname;
@@ -37,7 +38,7 @@ const Header = () => {
     try {
       dispatch(signoutStart());
 
-      const response = await axios.post("http://localhost:5000/logout", {
+      const response = await axios.post(`${BASE_URL}/logout`, {
         withCredentials: true,
       });
 

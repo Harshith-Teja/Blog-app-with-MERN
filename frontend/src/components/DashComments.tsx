@@ -6,6 +6,7 @@ import { Button, Modal, Table } from "flowbite-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleExclamation } from "@fortawesome/free-solid-svg-icons";
 import { CommentType } from "../types/CommentType";
+import { BASE_URL } from "../api/requestUrl";
 
 const DashComments = () => {
   const { currentUser } = useSelector((state: RootState) => state.user);
@@ -25,7 +26,7 @@ const DashComments = () => {
     const fetchComments = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5000/comments/get-all-comments/?userId=${currentUser?._id}`,
+          `${BASE_URL}/comments/get-all-comments/?userId=${currentUser?._id}`,
           {
             withCredentials: true,
           }
@@ -52,7 +53,7 @@ const DashComments = () => {
 
     try {
       const response = await axios.get(
-        `http://localhost:5000/comments/get-all-comments/?userId=${currentUser?._id}&startInd=${startInd}`,
+        `${BASE_URL}/comments/get-all-comments/?userId=${currentUser?._id}&startInd=${startInd}`,
         {
           withCredentials: true,
         }
@@ -76,7 +77,7 @@ const DashComments = () => {
 
     try {
       const response = await axios.delete(
-        `http://localhost:5000/comments/delete-comment/${commentIdToDelete}`,
+        `${BASE_URL}/comments/delete-comment/${commentIdToDelete}`,
         {
           withCredentials: true,
         }

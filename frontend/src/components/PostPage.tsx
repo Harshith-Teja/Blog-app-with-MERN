@@ -5,6 +5,7 @@ import { Link, useParams } from "react-router-dom";
 import CommentSection from "./CommentSection";
 import PostCard from "./PostCard";
 import { PostType } from "../types/PostType";
+import { BASE_URL } from "../api/requestUrl";
 
 const PostPage = () => {
   const { slug } = useParams();
@@ -19,7 +20,7 @@ const PostPage = () => {
 
       try {
         const response = await axios.get(
-          `http://localhost:5000/posts/get-posts?slug=${slug}`,
+          `${BASE_URL}/posts/get-posts?slug=${slug}`,
           {
             withCredentials: true,
           }
@@ -50,7 +51,7 @@ const PostPage = () => {
 
       try {
         const response = await axios.get(
-          "http://localhost:5000/posts/get-posts?limit=3",
+          `${BASE_URL}/posts/get-posts?limit=3`,
           {
             withCredentials: true,
           }

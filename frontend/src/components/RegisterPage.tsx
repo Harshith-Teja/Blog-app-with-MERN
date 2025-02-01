@@ -9,6 +9,7 @@ import { Alert, Button, Label, Spinner, TextInput } from "flowbite-react";
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import OAuth from "./OAuth";
+import { BASE_URL } from "../api/requestUrl";
 
 const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
@@ -68,14 +69,10 @@ const RegisterPage = () => {
     try {
       setLoading(true);
 
-      await axios.post(
-        "http://localhost:5000/register",
-        JSON.stringify({ uname, pwd }),
-        {
-          headers: { "Content-Type": "application/json" },
-          withCredentials: true,
-        }
-      );
+      await axios.post(`${BASE_URL}/register`, JSON.stringify({ uname, pwd }), {
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true,
+      });
 
       setUname("");
       setPwd("");

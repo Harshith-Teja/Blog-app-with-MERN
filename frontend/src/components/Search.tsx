@@ -6,6 +6,7 @@ import PostCard from "./PostCard";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { PostType } from "../types/PostType";
+import { BASE_URL } from "../api/requestUrl";
 
 const Search = () => {
   const [sidebarData, setSidebarData] = useState({
@@ -48,7 +49,7 @@ const Search = () => {
 
       try {
         const response = await axios.get(
-          `http://localhost:5000/posts/get-posts?${searchQuery}`,
+          `${BASE_URL}/posts/get-posts?${searchQuery}`,
           {
             withCredentials: true,
           }
@@ -107,7 +108,7 @@ const Search = () => {
 
     try {
       const response = await axios.get(
-        `http://localhost:5000/posts/get-posts?${searchQuery}`,
+        `${BASE_URL}/posts/get-posts?${searchQuery}`,
         {
           withCredentials: true,
         }

@@ -8,6 +8,7 @@ import Comment from "./Comment";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleExclamation } from "@fortawesome/free-solid-svg-icons";
 import { CommentType } from "../types/CommentType";
+import { BASE_URL } from "../api/requestUrl";
 
 const CommentSection = ({ postId }: { postId: string }) => {
   const { currentUser } = useSelector((state: RootState) => state.user);
@@ -22,7 +23,7 @@ const CommentSection = ({ postId }: { postId: string }) => {
     const fetchPostComments = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5000/comments/get-post-comments/${postId}`,
+          `${BASE_URL}/comments/get-post-comments/${postId}`,
           {
             withCredentials: true,
           }
@@ -52,7 +53,7 @@ const CommentSection = ({ postId }: { postId: string }) => {
       }
 
       const response = await axios.put(
-        `http://localhost:5000/comments/like-comment/${commentId}`,
+        `${BASE_URL}/comments/like-comment/${commentId}`,
         {},
         {
           withCredentials: true,
@@ -98,7 +99,7 @@ const CommentSection = ({ postId }: { postId: string }) => {
 
     try {
       const response = await axios.delete(
-        `http://localhost:5000/comments/delete-comment/${commentId}`,
+        `${BASE_URL}/comments/delete-comment/${commentId}`,
         {
           withCredentials: true,
         }
@@ -124,7 +125,7 @@ const CommentSection = ({ postId }: { postId: string }) => {
 
     try {
       const response = await axios.post(
-        `http://localhost:5000/comments/create-comment`,
+        `${BASE_URL}/comments/create-comment`,
         JSON.stringify({ content: comment, postId, userId: currentUser?._id }),
         {
           headers: { "Content-Type": "Application/json" },

@@ -16,6 +16,7 @@ import {
   signoutSuccess,
 } from "../redux/user/userSlice";
 import axios from "axios";
+import { BASE_URL } from "../api/requestUrl";
 
 const DashSidebar = () => {
   const location = useLocation();
@@ -33,7 +34,7 @@ const DashSidebar = () => {
     try {
       dispatch(signoutStart());
 
-      const response = await axios.post("http://localhost:5000/logout", {
+      const response = await axios.post(`${BASE_URL}/logout`, {
         withCredentials: true,
       });
 

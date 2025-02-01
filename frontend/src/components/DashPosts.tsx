@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleExclamation } from "@fortawesome/free-solid-svg-icons";
 import { PostType } from "../types/PostType";
+import { BASE_URL } from "../api/requestUrl";
 
 const DashPosts = () => {
   const { currentUser } = useSelector((state: RootState) => state.user);
@@ -25,7 +26,7 @@ const DashPosts = () => {
     const fetchPosts = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5000/posts/get-posts/?userId=${currentUser?._id}`,
+          `${BASE_URL}/posts/get-posts/?userId=${currentUser?._id}`,
           {
             withCredentials: true,
           }
@@ -50,7 +51,7 @@ const DashPosts = () => {
 
     try {
       const response = await axios.get(
-        `http://localhost:5000/posts/get-posts/?userId=${currentUser?._id}&startInd=${startInd}`,
+        `${BASE_URL}/posts/get-posts/?userId=${currentUser?._id}&startInd=${startInd}`,
         {
           withCredentials: true,
         }
@@ -72,7 +73,7 @@ const DashPosts = () => {
 
     try {
       const response = await axios.delete(
-        `http://localhost:5000/posts/delete-post/${postIdToDelete}/${currentUser?._id}`,
+        `${BASE_URL}/posts/delete-post/${postIdToDelete}/${currentUser?._id}`,
         {
           withCredentials: true,
         }

@@ -10,6 +10,7 @@ import {
 } from "../redux/user/userSlice";
 import { RootState } from "../redux/store";
 import OAuth from "./OAuth";
+import { BASE_URL } from "../api/requestUrl";
 
 const LoginPage = () => {
   const dispatch = useDispatch();
@@ -49,7 +50,7 @@ const LoginPage = () => {
       dispatch(signInStart());
 
       const response = await axios.post(
-        "http://localhost:5000/login",
+        `${BASE_URL}/login`,
         JSON.stringify({ uname, pwd }),
         {
           headers: { "Content-Type": "Application/json" },

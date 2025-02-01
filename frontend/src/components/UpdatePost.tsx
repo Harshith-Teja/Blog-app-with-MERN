@@ -7,6 +7,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { RootState } from "../redux/store";
 import { useSelector } from "react-redux";
 import { PostType } from "../types/PostType";
+import { BASE_URL } from "../api/requestUrl";
 
 const UpdatePost = () => {
   const [formData, setFormData] = useState<Partial<PostType>>({});
@@ -20,7 +21,7 @@ const UpdatePost = () => {
     const fetchPost = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5000/posts/get-posts?postId=${postId}`,
+          `${BASE_URL}/posts/get-posts?postId=${postId}`,
           {
             withCredentials: true,
           }
@@ -47,7 +48,7 @@ const UpdatePost = () => {
 
     try {
       const response = await axios.put(
-        `http://localhost:5000/posts/update-post/${postId}/${currentUser?._id}`,
+        `${BASE_URL}/posts/update-post/${postId}/${currentUser?._id}`,
         JSON.stringify(formData),
         {
           headers: { "Content-Type": "Application/json" },

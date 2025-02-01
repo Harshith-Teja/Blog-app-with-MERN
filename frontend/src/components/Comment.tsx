@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { Button, Textarea } from "flowbite-react";
 import { CommentType } from "../types/CommentType";
+import { BASE_URL } from "../api/requestUrl";
 
 type CommentProps = {
   comment: CommentType;
@@ -33,7 +34,7 @@ const Comment = ({ comment, onLike, onEdit, onDelete }: CommentProps) => {
     const fetchUser = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5000/users/get-user/${comment.userId}`,
+          `${BASE_URL}/users/get-user/${comment.userId}`,
           {
             withCredentials: true,
           }
@@ -62,7 +63,7 @@ const Comment = ({ comment, onLike, onEdit, onDelete }: CommentProps) => {
   const handleSave = async () => {
     try {
       const response = await axios.put(
-        `http://localhost:5000/comments/edit-comment/${comment._id}`,
+        `${BASE_URL}/comments/edit-comment/${comment._id}`,
         JSON.stringify({ content: editedContent }),
         {
           headers: { "Content-Type": "Application/json" },

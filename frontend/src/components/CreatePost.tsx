@@ -4,6 +4,7 @@ import { useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { useNavigate } from "react-router-dom";
+import { BASE_URL } from "../api/requestUrl";
 
 const CreatePost = () => {
   const [formData, setFormData] = useState({});
@@ -15,7 +16,7 @@ const CreatePost = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/posts/create-post",
+        `${BASE_URL}/posts/create-post`,
         JSON.stringify(formData),
         {
           headers: { "Content-Type": "Application/json" },

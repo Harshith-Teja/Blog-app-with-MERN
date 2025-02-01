@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import PostCard from "./PostCard";
 import { PostType } from "../types/PostType";
+import { BASE_URL } from "../api/requestUrl";
 
 const Home = () => {
   const [posts, setPosts] = useState<PostType[]>([]);
@@ -10,12 +11,9 @@ const Home = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:5000/posts/get-posts`,
-          {
-            withCredentials: true,
-          }
-        );
+        const response = await axios.get(`${BASE_URL}/posts/get-posts`, {
+          withCredentials: true,
+        });
 
         const data = response.data;
 

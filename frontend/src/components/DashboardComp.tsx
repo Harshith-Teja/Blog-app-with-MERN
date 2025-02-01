@@ -13,6 +13,7 @@ import { Button, Table } from "flowbite-react";
 import { Link } from "react-router-dom";
 import { PostType } from "../types/PostType";
 import { CommentType } from "../types/CommentType";
+import { BASE_URL } from "../api/requestUrl";
 
 const DashboardComp = () => {
   const [comments, setComments] = useState<CommentType[]>([]);
@@ -29,7 +30,7 @@ const DashboardComp = () => {
     const fetchComments = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5000/comments/get-all-comments/?userId=${currentUser?._id}`,
+          `${BASE_URL}/comments/get-all-comments/?userId=${currentUser?._id}`,
           {
             withCredentials: true,
           }
@@ -54,7 +55,7 @@ const DashboardComp = () => {
     const fetchPosts = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5000/posts/get-posts/?userId=${currentUser?._id}`,
+          `${BASE_URL}/posts/get-posts/?userId=${currentUser?._id}`,
           {
             withCredentials: true,
           }
@@ -77,7 +78,7 @@ const DashboardComp = () => {
     const fetchLikes = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5000/comments/get-all-likes/?userId=${currentUser?._id}`,
+          `${BASE_URL}/comments/get-all-likes/?userId=${currentUser?._id}`,
           {
             withCredentials: true,
           }
