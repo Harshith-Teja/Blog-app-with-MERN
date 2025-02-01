@@ -30,6 +30,7 @@ const Comment = ({ comment, onLike, onEdit, onDelete }: CommentProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState(comment.content);
 
+  //fetces commented user details on every refresh of the page
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -55,11 +56,13 @@ const Comment = ({ comment, onLike, onEdit, onDelete }: CommentProps) => {
     fetchUser();
   }, []);
 
+  //enables the editing section to edit the comment and save it
   const handleEdit = () => {
     setIsEditing(true);
     setEditedContent(comment.content);
   };
 
+  //saves the edited comment's content to server(backend)
   const handleSave = async () => {
     try {
       const response = await axios.put(
@@ -78,8 +81,8 @@ const Comment = ({ comment, onLike, onEdit, onDelete }: CommentProps) => {
         return;
       }
 
-      setIsEditing(false);
-      onEdit(comment, data.editedComment.content);
+      setIsEditing(false); //closes editing section on success
+      onEdit(comment, data.editedComment.content); //sends a call to update the comment's section to display the new comment
     } catch (err: any) {
       console.log(err.message);
     }
@@ -100,6 +103,7 @@ const Comment = ({ comment, onLike, onEdit, onDelete }: CommentProps) => {
             {user?.uname ? user?.uname : "Anonymous user"}
           </p>
           <p className="text-xs text-gray-500">
+            {/* displays edited tag on the comment after it's been edited */}
             {comment.updatedAt && comment.updatedAt !== comment.createdAt
               ? "(Edited) " + moment(comment.updatedAt).fromNow()
               : moment(comment.createdAt).fromNow()}
@@ -138,6 +142,7 @@ const Comment = ({ comment, onLike, onEdit, onDelete }: CommentProps) => {
               {comment.content}
             </p>
             <div className="mt-2 flex gap-2 items-center">
+              {/* turns the like red as soons as the user likes and vice versa */}
               <button
                 className={
                   comment.likes &&

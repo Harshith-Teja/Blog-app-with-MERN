@@ -27,6 +27,7 @@ const Header = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
 
+  //changes the searchTerm state when the searchTerm changes in the url
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const searchTermFromUrl = urlParams.get("searchTerm");
@@ -34,6 +35,7 @@ const Header = () => {
     if (searchTermFromUrl) setSearchTerm(searchTermFromUrl);
   }, [location.search]);
 
+  //logs out user
   const handleSignout = async () => {
     try {
       dispatch(signoutStart());
@@ -56,6 +58,7 @@ const Header = () => {
     }
   };
 
+  //changes the searchTerm in the url when a new searchTerm through the text input field
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const urlParams = new URLSearchParams(location.search);

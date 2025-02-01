@@ -8,6 +8,7 @@ import { BASE_URL } from "../api/requestUrl";
 const Home = () => {
   const [posts, setPosts] = useState<PostType[]>([]);
 
+  //fetces posts on every refresh of the page
   useEffect(() => {
     const fetchPosts = async () => {
       try {

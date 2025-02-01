@@ -15,6 +15,7 @@ const OAuth = () => {
 
   const auth = getAuth(app);
 
+  //sends user google details to server and logs the user in
   const handleGoogleClick = async () => {
     const provider = new GoogleAuthProvider();
     provider.setCustomParameters({ prompt: "select_account" }); //asks user to select the account

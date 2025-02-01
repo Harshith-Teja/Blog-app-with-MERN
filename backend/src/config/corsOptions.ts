@@ -1,5 +1,6 @@
 import allowedOrigins from "./allowedOrigins";
 
+//checks if the origin is listed in allowed origins and reports cors error accordingly
 const corsOptions = {
   origin: (
     origin: string | undefined,

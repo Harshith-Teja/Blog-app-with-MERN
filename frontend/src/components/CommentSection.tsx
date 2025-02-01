@@ -19,6 +19,7 @@ const CommentSection = ({ postId }: { postId: string }) => {
   const [commentIdToDelete, setCommentIdToDelete] = useState("");
   const navigate = useNavigate();
 
+  //fetces comments on the post on every refresh of the page
   useEffect(() => {
     const fetchPostComments = async () => {
       try {
@@ -45,6 +46,7 @@ const CommentSection = ({ postId }: { postId: string }) => {
     fetchPostComments();
   }, []);
 
+  //adds like on the comment when a user likes it
   const handleLike = async (commentId: string) => {
     try {
       if (currentUser === null) {
@@ -66,6 +68,7 @@ const CommentSection = ({ postId }: { postId: string }) => {
         return;
       }
 
+      //updates the likes of the comments on the client's side
       setPostComments(
         postComments.map((comment) =>
           comment._id === commentId
@@ -83,6 +86,7 @@ const CommentSection = ({ postId }: { postId: string }) => {
     }
   };
 
+  //updates the comment's section to display the new comment after editing it
   const handleEdit = (comment: CommentType, editedContent: string) => {
     setPostComments(
       postComments.map((cmnt) =>
@@ -91,6 +95,7 @@ const CommentSection = ({ postId }: { postId: string }) => {
     );
   };
 
+  //deletes the comment
   const handleDelete = async (commentId: string) => {
     if (!currentUser) {
       navigate("/login");
@@ -111,6 +116,7 @@ const CommentSection = ({ postId }: { postId: string }) => {
         return;
       }
 
+      //updates the client's side to remove deleted comment
       setPostComments(
         postComments.filter((comment) => comment._id !== commentId)
       );
@@ -120,6 +126,7 @@ const CommentSection = ({ postId }: { postId: string }) => {
     }
   };
 
+  //create a comment
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -140,7 +147,7 @@ const CommentSection = ({ postId }: { postId: string }) => {
         return;
       }
 
-      setPostComments([data.newComment, ...postComments]);
+      setPostComments([data.newComment, ...postComments]); //adds the new comment to the client side
       setComment("");
       setErrMsg("");
     } catch (err: any) {

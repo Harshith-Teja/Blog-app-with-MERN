@@ -17,11 +17,13 @@ const DashComments = () => {
   const [commentIdToDelete, setCommentIdToDelete] = useState("");
   const [totalComments, setTotalComments] = useState(0);
 
+  //if totalComments are greater than current comments, enables show more button
   useEffect(() => {
     if (totalComments > comments.length) setShowMore(true);
     else setShowMore(false);
   }, [totalComments, comments]);
 
+  //fetches all comments on all the posts of the current user
   useEffect(() => {
     const fetchComments = async () => {
       try {
@@ -48,6 +50,7 @@ const DashComments = () => {
     fetchComments();
   }, []);
 
+  //fetches more comments when user clicks 'show more' button
   const handleShowMore = async () => {
     const startInd = comments.length;
 
@@ -65,13 +68,14 @@ const DashComments = () => {
         return;
       }
 
-      setComments((prev) => [...prev, ...data.comments]);
+      setComments((prev) => [...prev, ...data.comments]); //keeps the previous comments intact, and adds new comments
       setTotalComments(data.totalComments);
     } catch (err: any) {
       console.log(err.message);
     }
   };
 
+  //deletes the comment
   const handleDelete = async () => {
     setShowModal(false);
 
@@ -89,6 +93,7 @@ const DashComments = () => {
         return;
       }
 
+      //removes the comment from the client side
       setComments((prev) =>
         prev.filter((post) => post._id !== commentIdToDelete)
       );

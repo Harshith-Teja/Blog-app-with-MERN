@@ -11,6 +11,7 @@ const CreatePost = () => {
   const [errMsg, setErrMsg] = useState("");
   const navigate = useNavigate();
 
+  //creates a new post
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -32,7 +33,7 @@ const CreatePost = () => {
       }
 
       setErrMsg("");
-      navigate(`/posts/${data.savedPost.slug}`);
+      navigate(`/posts/${data.savedPost.slug}`); //redirects to the new created post page
     } catch (err: any) {
       setErrMsg(err.message);
     }

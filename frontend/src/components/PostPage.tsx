@@ -14,6 +14,7 @@ const PostPage = () => {
   const [post, setPost] = useState<Partial<PostType>>({});
   const [recentPosts, setRecentPosts] = useState<PostType[]>([]);
 
+  //fetches the post on every refresh
   useEffect(() => {
     const fetchPost = async () => {
       setLoading(true);
@@ -45,6 +46,7 @@ const PostPage = () => {
     fetchPost();
   }, [slug]);
 
+  //fetches 3 recent posts on every refresh
   useEffect(() => {
     const fetchPosts = async () => {
       setLoading(true);

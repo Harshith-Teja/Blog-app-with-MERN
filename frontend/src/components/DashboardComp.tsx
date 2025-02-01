@@ -26,6 +26,7 @@ const DashboardComp = () => {
   const [totalLastMonthLikes, setTotalLastMonthLikes] = useState(0);
   const { currentUser } = useSelector((state: RootState) => state.user);
 
+  //fetches posts, comments and likes whenever the user changes
   useEffect(() => {
     const fetchComments = async () => {
       try {

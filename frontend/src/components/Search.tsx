@@ -23,6 +23,7 @@ const Search = () => {
   const navigate = useNavigate();
   const { currentUser } = useSelector((state: RootState) => state.user);
 
+  //if totalPosts are greater than current posts, enables show more button
   useEffect(() => {
     if (totalPosts > posts.length) setShowMore(true);
     else setShowMore(false);
@@ -43,6 +44,7 @@ const Search = () => {
       });
     }
 
+    //fetches posts every time search query changes
     const fetchPosts = async () => {
       setLoading(true);
       const searchQuery = urlParams.toString();
@@ -74,6 +76,7 @@ const Search = () => {
     fetchPosts();
   }, [location.search]);
 
+  //updates sidebarData everytime one of searchTerm, sort, category changes(in the input field)
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -93,6 +96,7 @@ const Search = () => {
     }
   };
 
+  //fetches more posts when user clicks 'show more' button
   const handleShowMore = async () => {
     if (!currentUser) {
       //if the user is not logged in, redirect to login page
@@ -125,6 +129,7 @@ const Search = () => {
     } catch (err: any) {}
   };
 
+  //updates searchquery everytime filter is submitted(one of searchTerm, sort, category changes)
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 

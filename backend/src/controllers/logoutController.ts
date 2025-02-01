@@ -1,9 +1,8 @@
 import { Request, Response } from "express";
 import { IUser, User } from "../models/users";
 
+//logs out user
 export const handleLogout = async (req: Request, res: Response) => {
-  //delete accessToken on client's side as well
-
   const cookies = req.cookies;
 
   if (!cookies?.jwt) return res.sendStatus(204);
@@ -29,7 +28,7 @@ export const handleLogout = async (req: Request, res: Response) => {
     const result = await foundUser.save();
     console.log(result);
 
-    res.clearCookie("jwt", { httpOnly: true, sameSite: "none", secure: true });
+    res.clearCookie("jwt", { httpOnly: true, sameSite: "none", secure: true }); //clear cookie on client side
     res.sendStatus(204);
   } catch (err: any) {
     res.status(400).json({ message: err.message });

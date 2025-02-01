@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import allowedOrigins from "../config/allowedOrigins";
 
+//allows the client to send cookies to the server(backend)
 const credentials = (req: Request, res: Response, next: NextFunction) => {
   const origin = req.headers.origin;
 

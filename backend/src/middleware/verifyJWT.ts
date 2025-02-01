@@ -9,6 +9,7 @@ declare global {
   }
 }
 
+//verifies the JWT tokens that are sent to the server
 export const verifyJWT = (req: Request, res: Response, next: NextFunction) => {
   const token: string | undefined = req.cookies?.jwt;
 

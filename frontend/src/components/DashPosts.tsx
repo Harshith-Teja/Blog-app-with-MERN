@@ -17,11 +17,13 @@ const DashPosts = () => {
   const [showModal, setShowModal] = useState(false);
   const [postIdToDelete, setPostIdToDelete] = useState("");
 
+  //if totalPosts are greater than current posts, enables show more button
   useEffect(() => {
     if (totalPosts > userPosts.length) setShowMore(true);
     else setShowMore(false);
   }, [totalPosts, userPosts]);
 
+  //fetces posts on every refresh of the page
   useEffect(() => {
     const fetchPosts = async () => {
       try {
@@ -46,6 +48,7 @@ const DashPosts = () => {
     fetchPosts();
   }, [currentUser?._id]);
 
+  //fetches more posts when user clicks 'show more' button
   const handleShowMore = async () => {
     const startInd = userPosts.length;
 
@@ -63,11 +66,12 @@ const DashPosts = () => {
         return;
       }
 
-      setUserPosts((prev) => [...prev, ...data.posts]);
+      setUserPosts((prev) => [...prev, ...data.posts]); //keeps the previous posts intact, and adds new posts
       setTotalPosts(data.totalPosts);
     } catch (err: any) {}
   };
 
+  //deletes the post
   const handleDelete = async () => {
     setShowModal(false);
 
@@ -85,6 +89,7 @@ const DashPosts = () => {
         return;
       }
 
+      //removes the post from the client side
       setUserPosts((prev) =>
         prev.filter((post) => post._id !== postIdToDelete)
       );

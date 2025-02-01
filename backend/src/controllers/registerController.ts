@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import { User } from "../models/users";
 
+//registers a new user
 export const handleNewUser = async (req: Request, res: Response) => {
   const { uname, pwd } = req.body;
 

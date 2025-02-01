@@ -10,6 +10,7 @@ const Dashboard = () => {
   const location = useLocation();
   const [tab, setTab] = useState("");
 
+  //fetches the tab name from the url
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const tabFrmUrl = urlParams.get("tab");

@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { IUser, User } from "../models/users";
 
+//genearates a new refresh token when old one expires
 export const handleRefreshToken = async (req: Request, res: Response) => {
   const cookies = req.cookies;
 

@@ -43,6 +43,7 @@ const RegisterPage = () => {
     setValidCnfrmPwd(pwd === cnfrmPwd);
   }, [pwd, cnfrmPwd]);
 
+  //puts the cursor(focus) on user name on every refresh
   useEffect(() => {
     if (userRef.current) userRef.current.focus();
   }, []);
@@ -85,7 +86,7 @@ const RegisterPage = () => {
       else if (err.response.status === 409) setErrMsg("Username already taken");
       else setErrMsg(err.message);
 
-      if (errRef.current) errRef.current.focus();
+      if (errRef.current) errRef.current.focus(); //puts the cursor(focus) on error when error occurs
 
       setLoading(false);
     }

@@ -58,6 +58,7 @@ const DashProfile = () => {
     setValidPwd(PWD_REGEX.test(pwd));
   }, [pwd]);
 
+  //logs out the user
   const handleSignout = async () => {
     try {
       dispatch(signoutStart());
@@ -78,6 +79,8 @@ const DashProfile = () => {
       dispatch(signoutFailure(err.message));
     }
   };
+
+  //deletes the user
   const handleDelete = async () => {
     setShowModal(false);
 
@@ -103,6 +106,7 @@ const DashProfile = () => {
     }
   };
 
+  //updates the user info
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 

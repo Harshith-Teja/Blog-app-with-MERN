@@ -3,6 +3,7 @@ import { IUser, User } from "../models/users";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 
+//login (or) register user using user's google account
 export const googleLoginController = async (req: Request, res: Response) => {
   const { name, email, photoUrl } = req.body;
   const cookies = req.cookies;
@@ -53,7 +54,7 @@ export const googleLoginController = async (req: Request, res: Response) => {
         });
       }
 
-      foundUser.refreshToken = [...(newRfTokenArr || []), newRefreshToken];
+      foundUser.refreshToken = [...(newRfTokenArr || []), newRefreshToken]; //add new refreshToken to the array for refreshToken rotation
       const result = await foundUser.save();
       console.log(result);
 
@@ -102,7 +103,7 @@ export const googleLoginController = async (req: Request, res: Response) => {
         { expiresIn: "1d" }
       );
 
-      newUser.refreshToken = [refreshToken];
+      newUser.refreshToken = [refreshToken]; //add new refreshToken to the array for refreshToken rotation
       await newUser.save();
 
       res.cookie("jwt", refreshToken, {

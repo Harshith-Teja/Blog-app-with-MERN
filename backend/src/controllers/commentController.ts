@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { Comment } from "../models/comment";
 import { Post } from "../models/posts";
 
+//create a comment
 export const createComment = async (req: Request, res: Response) => {
   const { content, postId, userId } = req.body;
 
@@ -18,6 +19,7 @@ export const createComment = async (req: Request, res: Response) => {
   }
 };
 
+//gets the post comments based on the postId
 export const getPostComments = async (req: Request, res: Response) => {
   try {
     const postComments = await Comment.find({ postId: req.params.postId }).sort(
@@ -30,6 +32,7 @@ export const getPostComments = async (req: Request, res: Response) => {
   }
 };
 
+//adds like to a comment based on the commentId
 export const likeComment = async (req: Request, res: Response) => {
   try {
     const comment = await Comment.findByIdAndUpdate(req.params.commentId);
@@ -56,6 +59,7 @@ export const likeComment = async (req: Request, res: Response) => {
   }
 };
 
+//edits a comment content based on comment id
 export const editComment = async (req: Request, res: Response) => {
   try {
     const comment = await Comment.findById(req.params.commentId);
@@ -81,6 +85,7 @@ export const editComment = async (req: Request, res: Response) => {
   }
 };
 
+//deletes a comment based on commentId
 export const deleteComment = async (req: Request, res: Response) => {
   try {
     const comment = await Comment.findById(req.params.commentId);
@@ -100,6 +105,7 @@ export const deleteComment = async (req: Request, res: Response) => {
   }
 };
 
+//fetches all comments on all posts of a specified user
 export const getAllComments = async (req: Request, res: Response) => {
   try {
     const startInd = parseInt(req.query.startInd as string) || 0;
@@ -164,6 +170,7 @@ export const getAllComments = async (req: Request, res: Response) => {
   }
 };
 
+//fetches all likes on all comments on all posts of a specified user
 export const getAllLikes = async (req: Request, res: Response) => {
   try {
     const postsOfUser = await Post.find({ userId: req.query.userId });

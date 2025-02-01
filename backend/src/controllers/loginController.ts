@@ -6,6 +6,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
+//logs the user in
 export const handleLoginUser = async (req: Request, res: Response) => {
   const { uname, pwd } = req.body;
   const cookies = req.cookies;
@@ -62,7 +63,7 @@ export const handleLoginUser = async (req: Request, res: Response) => {
         });
       }
 
-      foundUser.refreshToken = [...(newRfTokenArr || []), newRefreshToken];
+      foundUser.refreshToken = [...(newRfTokenArr || []), newRefreshToken]; //add new refreshToken to the array for refreshToken rotation
       const result = await foundUser.save();
       console.log(result);
 

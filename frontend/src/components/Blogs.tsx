@@ -11,11 +11,13 @@ const Blogs = () => {
   const [showMore, setShowMore] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  //if totalPosts are greater than current posts, enables show more button
   useEffect(() => {
     if (totalPosts > posts.length) setShowMore(true);
     else setShowMore(false);
   }, [posts, totalPosts]);
 
+  //fetces posts on every refresh of the page
   useEffect(() => {
     const fetchPosts = async () => {
       setLoading(true);
@@ -44,6 +46,7 @@ const Blogs = () => {
     fetchPosts();
   }, []);
 
+  //fetches more posts when user clicks 'show more' button
   const handleShowMore = async () => {
     const startInd = posts.length;
 
@@ -61,7 +64,7 @@ const Blogs = () => {
         return;
       }
 
-      setPosts((prev) => [...prev, ...data.posts]);
+      setPosts((prev) => [...prev, ...data.posts]); //keeps the previous posts intact, and adds new posts
       setTotalPosts(data.totalPosts);
     } catch (err: any) {}
   };

@@ -5,6 +5,7 @@ type ThemeProviderProps = {
   children: React.ReactNode;
 };
 
+//applies regular and dark theme colors to all pages (This is wrapped around all pages(in main file))
 const ThemeProvider = ({ children }: ThemeProviderProps) => {
   const { theme } = useSelector((state: RootState) => state.theme);
   return (

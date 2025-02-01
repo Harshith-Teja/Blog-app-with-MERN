@@ -23,6 +23,7 @@ const DashSidebar = () => {
   const dispatch = useDispatch();
   const [tab, setTab] = useState("");
 
+  //changes the tab state when the tab changes in the url
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const tabFrmUrl = urlParams.get("tab");
@@ -30,6 +31,7 @@ const DashSidebar = () => {
     if (tabFrmUrl) setTab(tabFrmUrl);
   }, [location.search]);
 
+  //logs out the current user
   const handleSignout = async () => {
     try {
       dispatch(signoutStart());

@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { Post } from "../models/posts";
 
+//creates a post
 export const createPost = async (req: Request, res: Response) => {
   if (!req.body.title || !req.body.content)
     return res
@@ -28,6 +29,7 @@ export const createPost = async (req: Request, res: Response) => {
   }
 };
 
+//fetches all the posts or filters them based on the queries from the cliet side
 export const getPosts = async (req: Request, res: Response) => {
   try {
     const startInd = parseInt(req.query.startInd as string) || 0;
@@ -94,6 +96,7 @@ export const getPosts = async (req: Request, res: Response) => {
   }
 };
 
+//deletes a post
 export const deletePost = async (req: Request, res: Response) => {
   if (req.userId !== req.params.userId)
     return res.status(401).json({ message: "Unauthorized" });
@@ -106,6 +109,7 @@ export const deletePost = async (req: Request, res: Response) => {
   }
 };
 
+//updates a post
 export const updatePost = async (req: Request, res: Response) => {
   if (req.userId !== req.params.userId)
     return res.status(401).json({ message: "Unauthorized" });

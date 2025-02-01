@@ -26,6 +26,7 @@ export const logEvents = async (
   }
 };
 
+//logs requests to the server
 export const logger = (
   req: Request,
   res: Response,

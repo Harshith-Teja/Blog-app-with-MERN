@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { IUser, User } from "../models/users";
 import bcrypt from "bcrypt";
 
+//updates the user details
 export const updateUser = async (req: Request, res: Response) => {
   if (req.userId !== req.params.id)
     return res.status(401).json({ message: "Unauthorized" });
@@ -36,6 +37,7 @@ export const updateUser = async (req: Request, res: Response) => {
   }
 };
 
+//fetches all user details
 export const getAllUsers = async (req: Request, res: Response) => {
   try {
     const users = await User.find();
@@ -45,6 +47,7 @@ export const getAllUsers = async (req: Request, res: Response) => {
   }
 };
 
+//deletes a user
 export const deleteUser = async (req: Request, res: Response) => {
   const { id } = req.params;
 
@@ -66,6 +69,7 @@ export const deleteUser = async (req: Request, res: Response) => {
   }
 };
 
+//fetches user details
 export const getUser = async (req: Request, res: Response) => {
   try {
     const user = await User.findById(req.params.userId).exec();

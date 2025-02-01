@@ -27,6 +27,7 @@ const LoginPage = () => {
   const userRef = useRef<HTMLInputElement | null>(null);
   const errRef = useRef<HTMLInputElement | null>(null);
 
+  //puts the cursor(focus) on user name on every refresh
   useEffect(() => {
     if (userRef.current) userRef.current.focus();
   }, []);
@@ -35,6 +36,7 @@ const LoginPage = () => {
     dispatch(signInFailure(""));
   }, [uname, pwd]);
 
+  //sends the user details to the server, and logs the user in
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -77,7 +79,7 @@ const LoginPage = () => {
         dispatch(signInFailure("Unauthorized"));
       else dispatch(signInFailure(err.message));
 
-      errRef.current?.focus();
+      errRef.current?.focus(); //puts the focus on error on error message
     }
   };
 

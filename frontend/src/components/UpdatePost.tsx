@@ -17,6 +17,7 @@ const UpdatePost = () => {
 
   const { postId } = useParams();
 
+  //fetches post details whenever postId changes
   useEffect(() => {
     const fetchPost = async () => {
       try {
@@ -43,6 +44,7 @@ const UpdatePost = () => {
     fetchPost();
   }, [postId]);
 
+  //sends the updated post to the server
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -64,7 +66,7 @@ const UpdatePost = () => {
       }
 
       setErrMsg("");
-      navigate(`/posts/${data.slug}`);
+      navigate(`/posts/${data.slug}`); //navigates to the updated post
     } catch (err: any) {
       setErrMsg(err.message);
     }

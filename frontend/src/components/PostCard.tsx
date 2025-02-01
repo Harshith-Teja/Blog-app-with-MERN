@@ -5,6 +5,7 @@ type PostCardProps = {
   post: PostType;
 };
 
+//a re-usable component to display every post
 const PostCard = ({ post }: PostCardProps) => {
   return (
     <div className="p-3 flex-1 flex flex-col gap-2 border hover:border-2 border-slate-500 rounded-lg hover:scale-105 transition-transform duration-300">
