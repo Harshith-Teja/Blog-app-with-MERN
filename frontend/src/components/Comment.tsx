@@ -6,17 +6,7 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { Button, Textarea } from "flowbite-react";
-
-type CommentType = {
-  _id: string;
-  content: string;
-  postId: string;
-  userId: string;
-  likes?: Array<String>;
-  numOfLikes: number;
-  createdAt?: string;
-  updatedAt?: string;
-};
+import { CommentType } from "../types/CommentType";
 
 type CommentProps = {
   comment: CommentType;
