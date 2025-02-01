@@ -68,7 +68,7 @@ const RegisterPage = () => {
     try {
       setLoading(true);
 
-      const response = await axios.post(
+      await axios.post(
         "http://localhost:5000/register",
         JSON.stringify({ uname, pwd }),
         {
@@ -77,8 +77,6 @@ const RegisterPage = () => {
         }
       );
 
-      console.log(response?.data);
-      console.log(JSON.stringify(response));
       setUname("");
       setPwd("");
       setCnfrmPwd("");
