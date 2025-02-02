@@ -145,6 +145,10 @@ const LoginPage = () => {
               Register here
             </Link>
           </p>
+          <p className="font-light">
+            (Please enable 3rd party cookies in your browser to access all
+            features)
+          </p>
         </form>
       </div>
     </div>
