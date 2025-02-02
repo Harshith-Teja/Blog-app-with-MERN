@@ -1,3 +1,4 @@
+import credentials from "../middleware/credentials";
 import allowedOrigins from "./allowedOrigins";
 
 //checks if the origin is listed in allowed origins and reports cors error accordingly
@@ -10,6 +11,7 @@ const corsOptions = {
       callback(null, true);
     else callback(new Error("Not allowed by cors"));
   },
+  credentials: true,
   optionsSuccessStatus: 200,
 };
 
