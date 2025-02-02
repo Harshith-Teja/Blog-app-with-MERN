@@ -243,7 +243,7 @@ const DashboardComp = () => {
               </Table.Body>
             </Table>
           )}
-          {!postsLoading && (
+          {!postsLoading && posts.length == 0 && (
             <p className="text-center">No posts to display!!</p>
           )}
         </article>
