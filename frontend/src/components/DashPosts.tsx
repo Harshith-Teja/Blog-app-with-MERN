@@ -109,6 +109,7 @@ const DashPosts = () => {
       setUserPosts((prev) =>
         prev.filter((post) => post._id !== postIdToDelete)
       );
+      setTotalPosts(totalPosts - 1);
     } catch (err: any) {}
   };
   return (
