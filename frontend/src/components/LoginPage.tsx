@@ -149,6 +149,10 @@ const LoginPage = () => {
             (Please enable 3rd party cookies in your browser to access all
             features)
           </p>
+          <p className="font-light">
+            (Use credentials uname: vijay, pwd: Aa$12345, so that there is
+            enough data for you to evaluate)
+          </p>
         </form>
       </div>
     </div>
