@@ -4,13 +4,14 @@ import { useEffect, useState } from "react";
 import PostCard from "./PostCard";
 import { PostType } from "../types/PostType";
 import { BASE_URL } from "../api/requestUrl";
+import useFetchPosts from "../hooks/fetch/useFetchPosts";
 
 const Blogs = () => {
   const [posts, setPosts] = useState<PostType[]>([]);
   const [totalPosts, setTotalPosts] = useState(0);
   const [showMore, setShowMore] = useState(false);
-  const [postsLoading, setpostsLoading] = useState(false);
   const [morePostsLoading, setMorePostsLoading] = useState(false);
+  const { data, postsLoading } = useFetchPosts(`${BASE_URL}/posts/get-posts`);
 
   //if totalPosts are greater than current posts, enables show more button
   useEffect(() => {
@@ -20,32 +21,9 @@ const Blogs = () => {
 
   //fetces posts on every refresh of the page
   useEffect(() => {
-    const fetchPosts = async () => {
-      setpostsLoading(true);
-      try {
-        const response = await axios.get(`${BASE_URL}/posts/get-posts`, {
-          withCredentials: true,
-        });
-
-        const data = response.data;
-
-        if (data.success === false) {
-          setpostsLoading(false);
-          console.log(data.message);
-          return;
-        }
-
-        setPosts(data.posts);
-        setTotalPosts(data.totalPosts);
-        setpostsLoading(false);
-      } catch (err: any) {
-        setpostsLoading(false);
-        console.log(err.message);
-      }
-    };
-
-    fetchPosts();
-  }, []);
+    setPosts(data.posts);
+    setTotalPosts(data.totalPosts);
+  }, [data]);
 
   //fetches more posts when user clicks 'show more' button
   const handleShowMore = async () => {
