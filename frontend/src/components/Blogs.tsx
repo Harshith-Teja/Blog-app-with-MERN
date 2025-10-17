@@ -11,7 +11,10 @@ const Blogs = () => {
   const [totalPosts, setTotalPosts] = useState(0);
   const [showMore, setShowMore] = useState(false);
   const [morePostsLoading, setMorePostsLoading] = useState(false);
-  const { data, postsLoading } = useFetchPosts(`${BASE_URL}/posts/get-posts`);
+  const { data, postsLoading } = useFetchPosts(
+    `${BASE_URL}/posts/get-posts`,
+    []
+  );
 
   //if totalPosts are greater than current posts, enables show more button
   useEffect(() => {
