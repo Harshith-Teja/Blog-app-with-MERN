@@ -1,8 +1,12 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 
-const useFetchPosts = (url: string) => {
-  const [data, setData] = useState({ posts: [], totalPosts: 0 });
+const useFetchPosts = (url: string, dependencies: any[] = []) => {
+  const [data, setData] = useState({
+    posts: [],
+    totalPosts: 0,
+    lastMonthPosts: 0,
+  });
   const [postsLoading, setPostsLoading] = useState(false);
 
   useEffect(() => {
@@ -30,7 +34,7 @@ const useFetchPosts = (url: string) => {
     };
 
     fetchPosts();
-  }, [url]);
+  }, [url, ...dependencies]);
 
   return { data, postsLoading };
 };
