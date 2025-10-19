@@ -32,7 +32,6 @@ const DashboardComp = () => {
     [currentUser]
   );
 
-  console.log(data);
   //fetches posts, comments and likes whenever the user changes
   useEffect(() => {
     const fetchComments = async () => {
