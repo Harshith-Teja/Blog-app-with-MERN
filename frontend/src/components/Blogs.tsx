@@ -11,7 +11,7 @@ const Blogs = () => {
   const [totalPosts, setTotalPosts] = useState(0);
   const [showMore, setShowMore] = useState(false);
   const [morePostsLoading, setMorePostsLoading] = useState(false);
-  const { data, postsLoading } = useFetchPosts(
+  const { postsData, postsLoading } = useFetchPosts(
     `${BASE_URL}/posts/get-posts`,
     []
   );
@@ -24,9 +24,9 @@ const Blogs = () => {
 
   //fetces posts on every refresh of the page
   useEffect(() => {
-    setPosts(data.posts);
-    setTotalPosts(data.totalPosts);
-  }, [data]);
+    setPosts(postsData.posts);
+    setTotalPosts(postsData.totalPosts);
+  }, [postsData]);
 
   //fetches more posts when user clicks 'show more' button
   const handleShowMore = async () => {
