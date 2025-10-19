@@ -15,7 +15,7 @@ const PostCard = ({ post }: PostCardProps) => {
       </span>
       <Link
         to={`/posts/${post.slug}`}
-        className="border border-teal-400 text-teal-400 hover:bg-teal-500 hover:text-white p-2 m-2 rounded-md mt-auto"
+        className="border border-teal-400 text-teal-400 hover:bg-teal-500 hover:text-white focus:bg-transparent focus:text-inherit p-2 m-2 rounded-md mt-auto"
       >
         Read article
       </Link>
