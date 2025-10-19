@@ -2,16 +2,18 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 
 const useFetchPosts = (url: string, dependencies: any[] = []) => {
-  const [data, setData] = useState({
+  const [postsData, setPostsData] = useState({
     posts: [],
     totalPosts: 0,
     lastMonthPosts: 0,
   });
   const [postsLoading, setPostsLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
 
   useEffect(() => {
     const fetchPosts = async () => {
       setPostsLoading(true);
+
       try {
         const response = await axios.get(url, {
           withCredentials: true,
@@ -25,10 +27,11 @@ const useFetchPosts = (url: string, dependencies: any[] = []) => {
           return;
         }
 
-        setData(data);
+        setPostsData(data);
         setPostsLoading(false);
       } catch (err: any) {
         setPostsLoading(false);
+        setErrorMsg(err.message);
         console.log(err.message);
       }
     };
@@ -36,7 +39,7 @@ const useFetchPosts = (url: string, dependencies: any[] = []) => {
     fetchPosts();
   }, [url, ...dependencies]);
 
-  return { data, postsLoading };
+  return { postsData, postsLoading, errorMsg };
 };
 
 export default useFetchPosts;
