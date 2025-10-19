@@ -27,7 +27,7 @@ const DashboardComp = () => {
   const [totalLastMonthLikes, setTotalLastMonthLikes] = useState(0);
   const { currentUser } = useSelector((state: RootState) => state.user);
   const [commentsLoading, setCommentsLoading] = useState(false);
-  const { data, postsLoading } = useFetchPosts(
+  const { postsData, postsLoading } = useFetchPosts(
     `${BASE_URL}/posts/get-posts/?userId=${currentUser?._id}`,
     [currentUser]
   );
@@ -66,9 +66,9 @@ const DashboardComp = () => {
 
     const onPostsFetched = () => {
       //console.log(data);
-      setPosts(data.posts);
-      setTotalPosts(data.totalPosts);
-      setTotalLastMonthPosts(data.lastMonthPosts);
+      setPosts(postsData.posts);
+      setTotalPosts(postsData.totalPosts);
+      setTotalLastMonthPosts(postsData.lastMonthPosts);
     };
 
     onPostsFetched();
@@ -96,7 +96,7 @@ const DashboardComp = () => {
     };
 
     fetchLikes();
-  }, [currentUser, data]);
+  }, [currentUser, postsData]);
 
   return (
     <div className="p-3 md:mx-auto ">
