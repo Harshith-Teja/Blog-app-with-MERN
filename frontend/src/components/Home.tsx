@@ -4,30 +4,20 @@ import { Link } from "react-router-dom";
 import PostCard from "./PostCard";
 import { PostType } from "../types/PostType";
 import { BASE_URL } from "../api/requestUrl";
+import useFetchPosts from "../hooks/fetch/useFetchPosts";
 
 const Home = () => {
   const [posts, setPosts] = useState<PostType[]>([]);
+  const { postsData } = useFetchPosts(`${BASE_URL}/posts/get-posts`, []);
 
   //fetces posts on every refresh of the page
   useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const response = await axios.get(`${BASE_URL}/posts/get-posts`, {
-          withCredentials: true,
-        });
-
-        const data = response.data;
-
-        if (data.success === false) {
-          return;
-        }
-
-        setPosts(data.posts);
-      } catch (err: any) {}
+    const onPostsFetched = async () => {
+      setPosts(postsData?.posts);
     };
 
-    fetchPosts();
-  }, []);
+    onPostsFetched();
+  }, [postsData]);
 
   return (
     <div>
