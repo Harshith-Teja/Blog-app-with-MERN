@@ -1,16 +1,41 @@
-import axios from "axios";
 import { Button, Spinner } from "flowbite-react";
 import { useEffect, useState } from "react";
 import PostCard from "./PostCard";
 import { PostType } from "../types/PostType";
 import { BASE_URL } from "../api/requestUrl";
+import useFetchPosts from "../hooks/fetch/useFetchPosts";
+import useHandleShowMore from "../hooks/useHandleShowMore";
 
 const Blogs = () => {
   const [posts, setPosts] = useState<PostType[]>([]);
-  const [totalPosts, setTotalPosts] = useState(0);
-  const [showMore, setShowMore] = useState(false);
-  const [postsLoading, setpostsLoading] = useState(false);
-  const [morePostsLoading, setMorePostsLoading] = useState(false);
+  const [totalPosts, setTotalPosts] = useState<number>(0);
+  const [showMore, setShowMore] = useState<Boolean>(false);
+
+  const [morePostsLoading, setMorePostsLoading] = useState<Boolean>(false);
+  const { postsData, postsLoading } = useFetchPosts(
+    `${BASE_URL}/posts/get-posts`,
+    []
+  );
+
+  const {
+    morePosts: oldAndNewPosts,
+    totalPosts: fetchedTotalPosts,
+    morePostsLoading: fetchedMorePostsLoading,
+    fetchMorePosts,
+  } = useHandleShowMore(`${BASE_URL}/posts/get-posts/?`, posts, totalPosts);
+
+  //fetches more posts when user clicks 'show more' button
+  const handleShowMore = async () => {
+    setMorePostsLoading(true);
+    await fetchMorePosts();
+    setMorePostsLoading(false);
+  };
+
+  useEffect(() => {
+    setPosts(oldAndNewPosts);
+    setTotalPosts(fetchedTotalPosts);
+    setMorePostsLoading(fetchedMorePostsLoading);
+  }, [oldAndNewPosts, fetchedTotalPosts, fetchedMorePostsLoading]);
 
   //if totalPosts are greater than current posts, enables show more button
   useEffect(() => {
@@ -20,63 +45,9 @@ const Blogs = () => {
 
   //fetces posts on every refresh of the page
   useEffect(() => {
-    const fetchPosts = async () => {
-      setpostsLoading(true);
-      try {
-        const response = await axios.get(`${BASE_URL}/posts/get-posts`, {
-          withCredentials: true,
-        });
-
-        const data = response.data;
-
-        if (data.success === false) {
-          setpostsLoading(false);
-          console.log(data.message);
-          return;
-        }
-
-        setPosts(data.posts);
-        setTotalPosts(data.totalPosts);
-        setpostsLoading(false);
-      } catch (err: any) {
-        setpostsLoading(false);
-        console.log(err.message);
-      }
-    };
-
-    fetchPosts();
-  }, []);
-
-  //fetches more posts when user clicks 'show more' button
-  const handleShowMore = async () => {
-    const startInd = posts.length;
-
-    try {
-      setMorePostsLoading(true);
-
-      const response = await axios.get(
-        `${BASE_URL}/posts/get-posts/?startInd=${startInd}`,
-        {
-          withCredentials: true,
-        }
-      );
-
-      const data = response.data;
-
-      if (data.success === false) {
-        console.log(data?.message);
-        setMorePostsLoading(false);
-        return;
-      }
-
-      setPosts((prev) => [...prev, ...data.posts]); //keeps the previous posts intact, and adds new posts
-      setTotalPosts(data.totalPosts);
-      setMorePostsLoading(false);
-    } catch (err: any) {
-      console.log(err.message);
-      setMorePostsLoading(false);
-    }
-  };
+    setPosts(postsData.posts);
+    setTotalPosts(postsData.totalPosts);
+  }, [postsData]);
 
   return (
     <div className="min-h-screen">

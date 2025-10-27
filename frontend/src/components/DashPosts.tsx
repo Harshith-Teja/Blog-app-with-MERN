@@ -8,16 +8,46 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleExclamation } from "@fortawesome/free-solid-svg-icons";
 import { PostType } from "../types/PostType";
 import { BASE_URL } from "../api/requestUrl";
+import useFetchPosts from "../hooks/fetch/useFetchPosts";
+import useHandleShowMore from "../hooks/useHandleShowMore";
 
 const DashPosts = () => {
   const { currentUser } = useSelector((state: RootState) => state.user);
   const [userPosts, setUserPosts] = useState<PostType[]>([]);
-  const [showMore, setShowMore] = useState(false);
-  const [totalPosts, setTotalPosts] = useState(0);
-  const [showModal, setShowModal] = useState(false);
-  const [postIdToDelete, setPostIdToDelete] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [morePostsLoading, setMorePostsLoading] = useState(false);
+  const [showMore, setShowMore] = useState<Boolean>(false);
+  const [totalPosts, setTotalPosts] = useState<number>(0);
+  const [showModal, setShowModal] = useState<boolean | undefined>(false);
+  const [postIdToDelete, setPostIdToDelete] = useState<String>("");
+  const [loading, setLoading] = useState<Boolean>(false);
+  const [morePostsLoading, setMorePostsLoading] = useState<Boolean>(false);
+  const { postsData, postsLoading } = useFetchPosts(
+    `${BASE_URL}/posts/get-posts/?userId=${currentUser?._id}`,
+    [currentUser?._id]
+  );
+
+  const {
+    morePosts: oldAndNewPosts,
+    totalPosts: fetchedTotalPosts,
+    morePostsLoading: fetchedMorePostsLoading,
+    fetchMorePosts,
+  } = useHandleShowMore(
+    `${BASE_URL}/posts/get-posts/?userId=${currentUser?._id}&`,
+    userPosts,
+    totalPosts
+  );
+
+  //fetches more posts when user clicks 'show more' button
+  const handleShowMore = async () => {
+    setMorePostsLoading(true);
+    await fetchMorePosts();
+    setMorePostsLoading(false);
+  };
+
+  useEffect(() => {
+    setUserPosts(oldAndNewPosts);
+    setTotalPosts(fetchedTotalPosts);
+    setMorePostsLoading(fetchedMorePostsLoading);
+  }, [oldAndNewPosts, fetchedTotalPosts, fetchedMorePostsLoading]);
 
   //if totalPosts are greater than current posts, enables show more button
   useEffect(() => {
@@ -27,36 +57,17 @@ const DashPosts = () => {
 
   //fetces posts on every refresh of the page
   useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        setLoading(true);
-
-        const response = await axios.get(
-          `${BASE_URL}/posts/get-posts/?userId=${currentUser?._id}`,
-          {
-            withCredentials: true,
-          }
-        );
-
-        const data = response.data;
-
-        if (data.success === false) {
-          console.log(data?.message);
-          setLoading(false);
-          return;
-        }
-
-        setUserPosts(data.posts);
-        setTotalPosts(data.totalPosts);
-        setLoading(false);
-      } catch (err: any) {}
+    const onPostsFetched = async () => {
+      setUserPosts(postsData?.posts);
+      setTotalPosts(postsData?.totalPosts);
+      setLoading(postsLoading);
     };
 
-    fetchPosts();
-  }, [currentUser?._id]);
+    onPostsFetched();
+  }, [currentUser?._id, postsData]);
 
   //fetches more posts when user clicks 'show more' button
-  const handleShowMore = async () => {
+  /*const handleShowMore = async () => {
     const startInd = userPosts.length;
 
     try {
@@ -84,7 +95,7 @@ const DashPosts = () => {
       console.log(err.message);
       setMorePostsLoading(false);
     }
-  };
+  };*/
 
   //deletes the post
   const handleDelete = async () => {

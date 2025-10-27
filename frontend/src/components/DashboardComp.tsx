@@ -14,6 +14,7 @@ import { Link } from "react-router-dom";
 import { PostType } from "../types/PostType";
 import { CommentType } from "../types/CommentType";
 import { BASE_URL } from "../api/requestUrl";
+import useFetchPosts from "../hooks/fetch/useFetchPosts";
 
 const DashboardComp = () => {
   const [comments, setComments] = useState<CommentType[]>([]);
@@ -26,7 +27,10 @@ const DashboardComp = () => {
   const [totalLastMonthLikes, setTotalLastMonthLikes] = useState(0);
   const { currentUser } = useSelector((state: RootState) => state.user);
   const [commentsLoading, setCommentsLoading] = useState(false);
-  const [postsLoading, setPostsLoading] = useState(false);
+  const { postsData, postsLoading } = useFetchPosts(
+    `${BASE_URL}/posts/get-posts/?userId=${currentUser?._id}`,
+    [currentUser]
+  );
 
   //fetches posts, comments and likes whenever the user changes
   useEffect(() => {
@@ -60,36 +64,14 @@ const DashboardComp = () => {
 
     fetchComments();
 
-    const fetchPosts = async () => {
-      try {
-        setPostsLoading(true);
-
-        const response = await axios.get(
-          `${BASE_URL}/posts/get-posts/?userId=${currentUser?._id}`,
-          {
-            withCredentials: true,
-          }
-        );
-
-        const data = response.data;
-
-        if (data.success === false) {
-          console.log(data.message);
-          setPostsLoading(false);
-          return;
-        }
-
-        setPosts(data.posts);
-        setTotalPosts(data.totalPosts);
-        setTotalLastMonthPosts(data.lastMonthPosts);
-        setPostsLoading(false);
-      } catch (err: any) {
-        console.log(err.message);
-        setPostsLoading(false);
-      }
+    const onPostsFetched = () => {
+      //console.log(data);
+      setPosts(postsData.posts);
+      setTotalPosts(postsData.totalPosts);
+      setTotalLastMonthPosts(postsData.lastMonthPosts);
     };
 
-    fetchPosts();
+    onPostsFetched();
 
     const fetchLikes = async () => {
       try {
@@ -114,7 +96,7 @@ const DashboardComp = () => {
     };
 
     fetchLikes();
-  }, [currentUser]);
+  }, [currentUser, postsData]);
 
   return (
     <div className="p-3 md:mx-auto ">
