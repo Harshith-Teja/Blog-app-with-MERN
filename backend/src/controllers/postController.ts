@@ -131,3 +131,77 @@ export const updatePost = async (req: Request, res: Response) => {
     res.status(400).json({ message: err.message });
   }
 };
+
+//likes a post
+export const likePost = async (req: Request, res: Response) => {
+  if (req.userId !== req.params.userId)
+    return res.status(401).json({ message: "Unauthorized" });
+
+  try {
+    const updatedPost = await Post.findById(req.params.postId);
+
+    if (!updatePost) return res.status(404).json({ message: "Post not found" });
+
+    if (updatedPost) {
+      const userInd = updatedPost.likes?.indexOf(req.params.userId);
+
+      if (userInd === -1) {
+        //user not found(not liked)
+        updatedPost.likes?.push(req.params.userId as string);
+        updatedPost.numOfLikes = ((updatedPost.numOfLikes as number) || 0) + 1;
+      } else {
+        //user found(liked)
+        updatedPost.likes?.splice(userInd as number, 1);
+        updatedPost.numOfLikes = ((updatedPost.numOfLikes as number) || 1) - 1;
+      }
+
+      await updatedPost.save(); // Don't forget to save the updated post
+
+      res.status(200).json(updatedPost);
+    }
+  } catch (err: any) {
+    res.status(400).json({ message: err.message });
+  }
+};
+
+//fetches all likes of all posts of a user
+export const getUserLikes = async (req: Request, res: Response) => {
+  if (req.userId !== req.params.userId)
+    return res.status(401).json({ message: "Unauthorized" });
+
+  try {
+    const userPosts = await Post.find({ userId: req.params.userId });
+
+    const totalLikeCountByPost = userPosts.map((post) => post.numOfLikes);
+
+    const totalLikes = totalLikeCountByPost.reduce(
+      (sum, count) => sum + count,
+      0
+    );
+
+    const now = new Date();
+
+    const oneMonthAgo = new Date(
+      now.getFullYear(),
+      now.getMonth() - 1,
+      now.getDate()
+    );
+
+    const lastMonthPosts = userPosts.filter(
+      (post) => post.createdAt >= oneMonthAgo
+    );
+
+    const totalLastMonthLikeCountByPost = lastMonthPosts.map(
+      (post) => post.numOfLikes
+    );
+
+    const totalLastMonthLikes = totalLastMonthLikeCountByPost.reduce(
+      (sum, count) => sum + count,
+      0
+    );
+
+    res.status(200).json({ totalLikes, totalLastMonthLikes });
+  } catch (err: any) {
+    res.status(400).json({ message: err.message });
+  }
+};

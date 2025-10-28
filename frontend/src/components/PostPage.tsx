@@ -1,18 +1,23 @@
 // import axios from "axios";
 import { Alert, Button, Spinner } from "flowbite-react";
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import CommentSection from "./CommentSection";
 import PostCard from "./PostCard";
 import { PostType } from "../types/PostType";
 import { BASE_URL } from "../api/requestUrl";
 import useFetchPosts from "../hooks/fetch/useFetchPosts";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHeart } from "@fortawesome/free-solid-svg-icons";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
+import axios from "axios";
 
 const PostPage = () => {
   const { slug } = useParams();
   const [loading, setLoading] = useState(true);
   const [errMsg, setErrMsg] = useState("");
-  const [post, setPost] = useState<Partial<PostType>>({});
+  const [post, setPost] = useState<PostType>(); // useState<Partial<PostType>>({});
   const [recentPosts, setRecentPosts] = useState<PostType[]>([]);
   const {
     postsData: mainPostData,
@@ -21,6 +26,8 @@ const PostPage = () => {
   } = useFetchPosts(`${BASE_URL}/posts/get-posts?slug=${slug}`, [slug]);
   const { postsData: recentPostData, errorMsg: recentPostErrorMsg } =
     useFetchPosts(`${BASE_URL}/posts/get-posts?limit=3`, []);
+  const { currentUser } = useSelector((state: RootState) => state.user);
+  const navigate = useNavigate();
 
   //fetches the post on every refresh
   useEffect(() => {
@@ -54,6 +61,36 @@ const PostPage = () => {
 
     onRecentPostFetch();
   }, [recentPostData]);
+
+  const likePost = async (postId: string) => {
+    try {
+      if (currentUser === null) {
+        navigate("/login");
+        return;
+      }
+
+      const response = await axios.put(
+        `${BASE_URL}/posts/like-post/${postId}/${currentUser._id}`,
+        {},
+        {
+          withCredentials: true,
+        }
+      );
+
+      const data = response.data;
+      if (data.success === false) {
+        setErrMsg(data.message);
+        return;
+      }
+
+      console.log(data);
+      setPost(data);
+      setErrMsg("");
+    } catch (err: any) {
+      setErrMsg(err.message);
+    }
+  };
+
   return (
     <>
       {loading ? (
@@ -86,6 +123,25 @@ const PostPage = () => {
             className="p-3 w-full max-w-3xl mx-auto post-content"
             dangerouslySetInnerHTML={{ __html: post?.content as string }}
           ></section>
+          <section className="p-3 w-full max-w-3xl mx-auto post-content">
+            {/* turns the like red as soons as the user likes and vice versa */}
+            <button
+              className={`${
+                post?.likes && post?.likes.includes(currentUser?._id as string)
+                  ? "text-red-500 text-2xl mr-3 transition-colors duration-300"
+                  : "text-gray-300 hover:text-red-500 text-2xl mr-3 transition-colors duration-300"
+              }`}
+              onClick={() => likePost(post!._id)}
+            >
+              <FontAwesomeIcon icon={faHeart} />
+            </button>
+            <span className="text-gray-400 text-lg">
+              {(post?.numOfLikes as number) > 0 &&
+                post?.numOfLikes +
+                  " " +
+                  (post?.numOfLikes && post?.numOfLikes > 1 ? "likes" : "like")}
+            </span>
+          </section>
           <CommentSection postId={post?._id as string} />
 
           <section className="flex flex-col justify-between items-center my-5">
