@@ -76,7 +76,7 @@ const DashboardComp = () => {
     const fetchLikes = async () => {
       try {
         const response = await axios.get(
-          `${BASE_URL}/comments/get-all-likes/?userId=${currentUser?._id}`,
+          `${BASE_URL}/posts/get-all-likes/${currentUser?._id}`,
           {
             withCredentials: true,
           }
