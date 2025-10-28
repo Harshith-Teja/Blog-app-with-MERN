@@ -171,7 +171,7 @@ export const getAllComments = async (req: Request, res: Response) => {
 };
 
 //fetches all likes on all comments on all posts of a specified user
-export const getAllLikes = async (req: Request, res: Response) => {
+/* export const getAllLikes = async (req: Request, res: Response) => {
   try {
     const postsOfUser = await Post.find({ userId: req.query.userId });
 
@@ -220,4 +220,4 @@ export const getAllLikes = async (req: Request, res: Response) => {
   } catch (err: any) {
     res.status(400).json({ message: err.message });
   }
-};
+}; */
