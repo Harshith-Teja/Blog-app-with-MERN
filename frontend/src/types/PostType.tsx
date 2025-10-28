@@ -6,4 +6,6 @@ export type PostType = {
   slug: string;
   createdAt: string;
   updatedAt: string;
+  likes?: Array<String>;
+  numOfLikes: number;
 };
