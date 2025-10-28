@@ -6,6 +6,9 @@ interface IPost extends Document {
   content: String;
   category?: String;
   slug: String;
+  likes?: Array<String>;
+  numOfLikes: number;
+  createdAt: Date;
 }
 
 const postsSchema = new Schema(
@@ -15,6 +18,8 @@ const postsSchema = new Schema(
     content: { type: String, required: true },
     category: { type: String, default: "uncategorized" },
     slug: { type: String, required: true, unique: true },
+    likes: { type: Array, default: [] },
+    numOfLikes: { type: Number, default: 0 },
   },
   { timestamps: true }
 );
