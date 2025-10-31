@@ -34,10 +34,14 @@ const Comment = ({ comment, onLike, onEdit, onDelete }: CommentProps) => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
+        console.log("first");
+        console.log("at", currentUser?.accessToken);
         const response = await axios.get(
           `${BASE_URL}/users/get-user/${comment.userId}`,
           {
-            withCredentials: true,
+            headers: {
+              Authorization: `Bearer ${currentUser?.accessToken}`,
+            },
           }
         );
 
@@ -69,8 +73,10 @@ const Comment = ({ comment, onLike, onEdit, onDelete }: CommentProps) => {
         `${BASE_URL}/comments/edit-comment/${comment._id}`,
         JSON.stringify({ content: editedContent }),
         {
-          headers: { "Content-Type": "Application/json" },
-          withCredentials: true,
+          headers: {
+            "Content-Type": "Application/json",
+            Authorization: `Bearer ${currentUser?.accessToken}`,
+          },
         }
       );
 

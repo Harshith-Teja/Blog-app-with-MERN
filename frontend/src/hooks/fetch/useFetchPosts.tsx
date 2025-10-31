@@ -1,5 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
 
 const useFetchPosts = (url: string, dependencies: any[] = []) => {
   const [postsData, setPostsData] = useState({
@@ -9,6 +11,7 @@ const useFetchPosts = (url: string, dependencies: any[] = []) => {
   });
   const [postsLoading, setPostsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+  const { currentUser } = useSelector((state: RootState) => state.user);
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -16,7 +19,9 @@ const useFetchPosts = (url: string, dependencies: any[] = []) => {
 
       try {
         const response = await axios.get(url, {
-          withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${currentUser?.accessToken}`,
+          },
         });
 
         const data = response.data;

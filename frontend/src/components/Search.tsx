@@ -54,7 +54,9 @@ const Search = () => {
         const response = await axios.get(
           `${BASE_URL}/posts/get-posts?${searchQuery}`,
           {
-            withCredentials: true,
+            headers: {
+              Authorization: `Bearer ${currentUser?.accessToken}`,
+            },
           }
         );
 
@@ -117,7 +119,9 @@ const Search = () => {
       const response = await axios.get(
         `${BASE_URL}/posts/get-posts?${searchQuery}`,
         {
-          withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${currentUser?.accessToken}`,
+          },
         }
       );
 

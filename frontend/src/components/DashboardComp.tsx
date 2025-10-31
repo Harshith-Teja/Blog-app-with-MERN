@@ -41,7 +41,9 @@ const DashboardComp = () => {
         const response = await axios.get(
           `${BASE_URL}/comments/get-all-comments/?userId=${currentUser?._id}`,
           {
-            withCredentials: true,
+            headers: {
+              Authorization: `Bearer ${currentUser?.accessToken}`,
+            },
           }
         );
 
@@ -78,7 +80,9 @@ const DashboardComp = () => {
         const response = await axios.get(
           `${BASE_URL}/posts/get-all-likes/${currentUser?._id}`,
           {
-            withCredentials: true,
+            headers: {
+              Authorization: `Bearer ${currentUser?.accessToken}`,
+            },
           }
         );
 

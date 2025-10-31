@@ -33,7 +33,9 @@ const DashComments = () => {
         const response = await axios.get(
           `${BASE_URL}/comments/get-all-comments/?userId=${currentUser?._id}`,
           {
-            withCredentials: true,
+            headers: {
+              Authorization: `Bearer ${currentUser?.accessToken}`,
+            },
           }
         );
 
@@ -66,7 +68,9 @@ const DashComments = () => {
       const response = await axios.get(
         `${BASE_URL}/comments/get-all-comments/?userId=${currentUser?._id}&startInd=${startInd}`,
         {
-          withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${currentUser?.accessToken}`,
+          },
         }
       );
 
@@ -94,7 +98,9 @@ const DashComments = () => {
       const response = await axios.delete(
         `${BASE_URL}/comments/delete-comment/${commentIdToDelete}`,
         {
-          withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${currentUser?.accessToken}`,
+          },
         }
       );
 

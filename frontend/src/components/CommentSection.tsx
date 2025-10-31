@@ -26,7 +26,9 @@ const CommentSection = ({ postId }: { postId: string }) => {
         const response = await axios.get(
           `${BASE_URL}/comments/get-post-comments/${postId}`,
           {
-            withCredentials: true,
+            headers: {
+              Authorization: `Bearer ${currentUser?.accessToken}`,
+            },
           }
         );
 
@@ -58,7 +60,9 @@ const CommentSection = ({ postId }: { postId: string }) => {
         `${BASE_URL}/comments/like-comment/${commentId}`,
         {},
         {
-          withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${currentUser?.accessToken}`,
+          },
         }
       );
 
@@ -106,7 +110,9 @@ const CommentSection = ({ postId }: { postId: string }) => {
       const response = await axios.delete(
         `${BASE_URL}/comments/delete-comment/${commentId}`,
         {
-          withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${currentUser?.accessToken}`,
+          },
         }
       );
 
@@ -135,8 +141,10 @@ const CommentSection = ({ postId }: { postId: string }) => {
         `${BASE_URL}/comments/create-comment`,
         JSON.stringify({ content: comment, postId, userId: currentUser?._id }),
         {
-          headers: { "Content-Type": "Application/json" },
-          withCredentials: true,
+          headers: {
+            "Content-Type": "Application/json",
+            Authorization: `Bearer ${currentUser?.accessToken}`,
+          },
         }
       );
 

@@ -1,6 +1,8 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { PostType } from "../types/PostType";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
 
 const useHandleShowMore = (
   url: string,
@@ -10,6 +12,7 @@ const useHandleShowMore = (
   const [morePosts, setMorePosts] = useState<PostType[]>(initialPosts);
   const [totalPosts, setTotalPosts] = useState<number>(initialTotalPosts);
   const [morePostsLoading, setMorePostsLoading] = useState<Boolean>(false);
+  const { currentUser } = useSelector((state: RootState) => state.user);
 
   useEffect(() => {
     setMorePosts(initialPosts);
@@ -23,7 +26,9 @@ const useHandleShowMore = (
       setMorePostsLoading(true);
 
       const response = await axios.get(url + `startInd=${startInd}`, {
-        withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${currentUser?.accessToken}`,
+        },
       });
 
       const data = response.data;

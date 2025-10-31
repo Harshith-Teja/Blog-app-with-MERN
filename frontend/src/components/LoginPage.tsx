@@ -69,7 +69,7 @@ const LoginPage = () => {
 
       setUname("");
       setPwd("");
-      dispatch(signInSuccess(data?.userWithoutPwd));
+      dispatch(signInSuccess(data));
       navigate("/");
     } catch (err: any) {
       if (!err?.response) dispatch(signInFailure("No server response"));

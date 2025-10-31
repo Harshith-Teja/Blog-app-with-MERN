@@ -90,7 +90,9 @@ const DashProfile = () => {
       const response = await axios.delete(
         `${BASE_URL}/users/delete/${currentUser?._id}`,
         {
-          withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${currentUser?.accessToken}`,
+          },
         }
       );
 
@@ -116,8 +118,10 @@ const DashProfile = () => {
         `${BASE_URL}/users/update/${currentUser?._id}`,
         JSON.stringify({ uname, pwd }),
         {
-          headers: { "Content-Type": "Application/json" },
-          withCredentials: true,
+          headers: {
+            "Content-Type": "Application/json",
+            Authorization: `Bearer ${currentUser?.accessToken}`,
+          },
         }
       );
 

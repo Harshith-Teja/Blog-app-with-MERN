@@ -5,11 +5,14 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../api/requestUrl";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
 
 const CreatePost = () => {
   const [formData, setFormData] = useState({});
   const [errMsg, setErrMsg] = useState("");
   const navigate = useNavigate();
+  const { currentUser } = useSelector((state: RootState) => state.user);
 
   //creates a new post
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -20,8 +23,10 @@ const CreatePost = () => {
         `${BASE_URL}/posts/create-post`,
         JSON.stringify(formData),
         {
-          headers: { "Content-Type": "Application/json" },
-          withCredentials: true,
+          headers: {
+            "Content-Type": "Application/json",
+            Authorization: `Bearer ${currentUser?.accessToken}`,
+          },
         }
       );
 

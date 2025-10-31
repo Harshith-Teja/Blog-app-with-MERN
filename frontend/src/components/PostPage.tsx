@@ -73,7 +73,9 @@ const PostPage = () => {
         `${BASE_URL}/posts/like-post/${postId}/${currentUser._id}`,
         {},
         {
-          withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${currentUser?.accessToken}`,
+          },
         }
       );
 

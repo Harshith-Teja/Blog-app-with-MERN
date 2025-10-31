@@ -72,7 +72,6 @@ const RegisterPage = () => {
 
       await axios.post(`${BASE_URL}/register`, JSON.stringify({ uname, pwd }), {
         headers: { "Content-Type": "application/json" },
-        withCredentials: true,
       });
 
       setUname("");

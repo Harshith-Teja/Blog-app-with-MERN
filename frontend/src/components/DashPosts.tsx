@@ -76,7 +76,9 @@ const DashPosts = () => {
       const response = await axios.get(
         `${BASE_URL}/posts/get-posts/?userId=${currentUser?._id}&startInd=${startInd}`,
         {
-          withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${currentUser?.accessToken}`,
+          },
         }
       );
 
@@ -105,7 +107,9 @@ const DashPosts = () => {
       const response = await axios.delete(
         `${BASE_URL}/posts/delete-post/${postIdToDelete}/${currentUser?._id}`,
         {
-          withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${currentUser?.accessToken}`,
+          },
         }
       );
 

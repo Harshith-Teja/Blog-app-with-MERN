@@ -24,7 +24,9 @@ const UpdatePost = () => {
         const response = await axios.get(
           `${BASE_URL}/posts/get-posts?postId=${postId}`,
           {
-            withCredentials: true,
+            headers: {
+              Authorization: `Bearer ${currentUser?.accessToken}`,
+            },
           }
         );
 
@@ -53,8 +55,10 @@ const UpdatePost = () => {
         `${BASE_URL}/posts/update-post/${postId}/${currentUser?._id}`,
         JSON.stringify(formData),
         {
-          headers: { "Content-Type": "Application/json" },
-          withCredentials: true,
+          headers: {
+            "Content-Type": "Application/json",
+            Authorization: `Bearer ${currentUser?.accessToken}`,
+          },
         }
       );
 
