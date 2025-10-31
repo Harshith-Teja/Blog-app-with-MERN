@@ -11,16 +11,23 @@ declare global {
 
 //verifies the JWT tokens that are sent to the server
 export const verifyJWT = (req: Request, res: Response, next: NextFunction) => {
-  const token: string | undefined = req.cookies?.jwt;
+  const authHeader: string =
+    req.headers.authorization || (req.headers.Authorization as string);
 
-  console.log("jwt ", token);
-  if (!token) return res.status(401).json({ message: "Unauthorized" });
+  console.log("jwt ", authHeader);
+  if (!authHeader || !authHeader.startsWith("Bearer "))
+    return res.status(401).json({ message: "Unauthorized" });
+
+  const token = authHeader.split(" ")[1];
 
   jwt.verify(
     token,
-    process.env.REFRESH_TOKEN_SECRET as string,
+    process.env.ACCESS_TOKEN_SECRET as string,
     (err, decoded) => {
-      if (err) return res.status(403).json({ message: err.message });
+      if (err) {
+        console.log(err.message);
+        return res.status(403).json({ message: err.message });
+      }
 
       const payload = decoded as { id: string };
       req.userId = payload.id;
