@@ -30,13 +30,13 @@ export const handleLoginUser = async (req: Request, res: Response) => {
       const accessToken = jwt.sign(
         { id: foundUser._id },
         process.env.ACCESS_TOKEN_SECRET as string,
-        { expiresIn: "30s" }
+        { expiresIn: "15m" }
       );
 
       const newRefreshToken = jwt.sign(
         { id: foundUser._id },
         process.env.REFRESH_TOKEN_SECRET as string,
-        { expiresIn: "1d" }
+        { expiresIn: "3d" }
       );
 
       //if a jwt rf token cookie exists, clear both the cookie and that token
@@ -76,7 +76,7 @@ export const handleLoginUser = async (req: Request, res: Response) => {
 
       const { pwd, ...userWithoutPwd } = foundUser.toObject();
 
-      res.status(201).json({ accessToken, userWithoutPwd });
+      res.status(201).json({ accessToken, ...userWithoutPwd });
     } else {
       res.status(401).json({ message: "Unauthorized" });
     }
