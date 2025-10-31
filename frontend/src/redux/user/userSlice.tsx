@@ -4,6 +4,7 @@ type User = {
   _id: string;
   uname: string;
   pwd: string;
+  accessToken?: string;
   refreshToken?: string[];
   email?: string;
   profilePic?: string;
