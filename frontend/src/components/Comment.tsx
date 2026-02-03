@@ -34,8 +34,6 @@ const Comment = ({ comment, onLike, onEdit, onDelete }: CommentProps) => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        console.log("first");
-        console.log("at", currentUser?.accessToken);
         const response = await axios.get(
           `${BASE_URL}/users/get-user/${comment.userId}`,
           {
