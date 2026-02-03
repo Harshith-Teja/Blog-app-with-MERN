@@ -39,6 +39,11 @@ const userSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
+    updateAccessToken: (state, action) => {
+      if (state.currentUser) {
+        state.currentUser.accessToken = action.payload;
+      }
+    },
     updateStart: (state) => {
       state.loading = true;
       state.error = null;
@@ -85,6 +90,7 @@ export const {
   signInStart,
   signInSuccess,
   signInFailure,
+  updateAccessToken,
   updateStart,
   updateSuccess,
   updateFailure,
