@@ -42,6 +42,7 @@ const CommentSection = ({ postId }: { postId: string }) => {
         setErrMsg("");
       } catch (err: any) {
         setErrMsg(err.message);
+        console.log(err.message);
       }
     };
 
@@ -87,6 +88,7 @@ const CommentSection = ({ postId }: { postId: string }) => {
       setErrMsg("");
     } catch (err: any) {
       setErrMsg(err.message);
+      console.log(err.message);
     }
   };
 
@@ -129,6 +131,7 @@ const CommentSection = ({ postId }: { postId: string }) => {
       setShowModal(false);
     } catch (err: any) {
       setErrMsg(err.message);
+      console.log(err.message);
     }
   };
 
