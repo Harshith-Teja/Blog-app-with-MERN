@@ -7,6 +7,7 @@ import { Provider } from "react-redux";
 import { persistor, store } from "./redux/store.tsx";
 import { PersistGate } from "redux-persist/integration/react";
 import ThemeProvider from "./components/ThemeProvider.tsx";
+import "./api/interceptors.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
