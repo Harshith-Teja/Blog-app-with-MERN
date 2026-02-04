@@ -33,12 +33,12 @@ const CommentSection = ({ postId }: { postId: string }) => {
         );
 
         const data = response.data;
-        if (data.success === false) {
-          setErrMsg(data.message);
+        if (data?.success === false) {
+          setErrMsg(data?.message);
           return;
         }
 
-        setPostComments(data.postComments);
+        setPostComments(data?.postComments);
         setErrMsg("");
       } catch (err: any) {
         setErrMsg(err.message);
@@ -68,8 +68,8 @@ const CommentSection = ({ postId }: { postId: string }) => {
       );
 
       const data = response.data;
-      if (data.success === false) {
-        setErrMsg(data.message);
+      if (data?.success === false) {
+        setErrMsg(data?.message);
         return;
       }
 
@@ -79,8 +79,8 @@ const CommentSection = ({ postId }: { postId: string }) => {
           comment._id === commentId
             ? {
                 ...comment,
-                likes: data.comment.likes,
-                numOfLikes: data.comment.numOfLikes,
+                likes: data?.comment?.likes,
+                numOfLikes: data?.comment?.numOfLikes,
               }
             : comment
         )
@@ -119,8 +119,8 @@ const CommentSection = ({ postId }: { postId: string }) => {
       );
 
       const data = response.data;
-      if (data.success === false) {
-        setErrMsg(data.message);
+      if (data?.success === false) {
+        setErrMsg(data?.message);
         return;
       }
 
@@ -153,12 +153,12 @@ const CommentSection = ({ postId }: { postId: string }) => {
 
       const data = response.data;
 
-      if (data.success === false) {
-        setErrMsg(data.message);
+      if (data?.success === false) {
+        setErrMsg(data?.message);
         return;
       }
 
-      setPostComments([data.newComment, ...postComments]); //adds the new comment to the client side
+      setPostComments([data?.newComment, ...postComments]); //adds the new comment to the client side
       setComment("");
       setErrMsg("");
     } catch (err: any) {
