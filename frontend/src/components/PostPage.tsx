@@ -144,7 +144,7 @@ const PostPage = () => {
                   (post?.numOfLikes && post?.numOfLikes > 1 ? "likes" : "like")}
             </span>
           </section>
-          <CommentSection postId={post?._id as string} />
+          {post?._id && <CommentSection postId={post?._id as string} />}
 
           <section className="flex flex-col justify-between items-center my-5">
             <h1 className="text-xl my-5">Recent articles</h1>
