@@ -11,19 +11,17 @@ import { store } from "../redux/store";
 axios.interceptors.response.use(
   (response) => response,
   async (error) => {
-    //const dispatch = useDispatch();
     const originalRequest = error.config;
 
     if (error?.response?.status === 403 && !originalRequest._retry) {
       originalRequest._retry = true;
 
-      //Todo: Fix - refresh token route is resulting in error, forcing logout
       try {
         const response = await axios.get(`${BASE_URL}/refresh`, {
           withCredentials: true,
         });
 
-        const newAccessToken = response.data.accessToken;
+        const newAccessToken = response?.data?.accessToken;
         store.dispatch(updateAccessToken(newAccessToken));
 
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
@@ -42,17 +40,17 @@ axios.interceptors.response.use(
 
             const data = response?.data;
 
-            if (data.success === false) {
-              store.dispatch(signoutFailure(data.message));
-              //  window.location.href = "/login";
+            if (data?.success === false) {
+              store.dispatch(signoutFailure(data?.message));
+              window.location.href = "/login";
               return;
             }
 
             store.dispatch(signoutSuccess());
-            //  window.location.href = "/login";
+            window.location.href = "/login";
           } catch (err: any) {
             store.dispatch(signoutFailure(err.message));
-            // window.location.href = "/login";
+            window.location.href = "/login";
           }
         };
 
@@ -63,4 +61,3 @@ axios.interceptors.response.use(
     }
   }
 );
-//interceptor is not intercepting
