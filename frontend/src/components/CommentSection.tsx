@@ -21,6 +21,8 @@ const CommentSection = ({ postId }: { postId: string }) => {
 
   //fetces comments on the post on every refresh of the page
   useEffect(() => {
+    const controller = new AbortController();
+
     const fetchPostComments = async () => {
       try {
         const response = await axios.get(
@@ -29,6 +31,7 @@ const CommentSection = ({ postId }: { postId: string }) => {
             headers: {
               Authorization: `Bearer ${currentUser?.accessToken}`,
             },
+            signal: controller.signal,
           }
         );
 
@@ -41,13 +44,23 @@ const CommentSection = ({ postId }: { postId: string }) => {
         setPostComments(data?.postComments);
         setErrMsg("");
       } catch (err: any) {
+        if (axios.isCancel(err)) {
+          // Ignore errors caused by the cancellation
+          console.log("Request canceled", err.message);
+          return;
+        }
         setErrMsg(err.message);
         console.log(err.message);
       }
     };
 
     fetchPostComments();
-  }, []);
+
+    return () => {
+      // Cleanup function: Cancel the request if component unmounts
+      controller.abort();
+    };
+  }, [postId]);
 
   //adds like on the comment when a user likes it
   const handleLike = async (commentId: string) => {
@@ -67,7 +80,7 @@ const CommentSection = ({ postId }: { postId: string }) => {
         }
       );
 
-      const data = response.data;
+      const data = response?.data;
       if (data?.success === false) {
         setErrMsg(data?.message);
         return;
@@ -118,7 +131,7 @@ const CommentSection = ({ postId }: { postId: string }) => {
         }
       );
 
-      const data = response.data;
+      const data = response?.data;
       if (data?.success === false) {
         setErrMsg(data?.message);
         return;
@@ -151,7 +164,7 @@ const CommentSection = ({ postId }: { postId: string }) => {
         }
       );
 
-      const data = response.data;
+      const data = response?.data;
 
       if (data?.success === false) {
         setErrMsg(data?.message);
