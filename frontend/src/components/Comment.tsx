@@ -96,9 +96,18 @@ const Comment = ({ comment, onLike, onEdit, onDelete }: CommentProps) => {
     <div className="mt-5 border-b p-3 flex">
       <section className="mr-4">
         <img
-          src={user?.profilePic}
-          alt={user?.uname}
+          src={
+            user?.profilePic
+              ? user.profilePic
+              : "https://tse4.mm.bing.net/th?id=OIP.4Q7-yMnrlnqwR4ORH7c06AHaHa&pid=Api&P=0&h=180"
+          }
+          alt={user?.uname[0].toUpperCase() || "A"}
           className="w-8 h-8 rounded-full"
+          onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+            e.currentTarget.onerror = null; //prevents infinite loop if the fallback image also fails to load
+            e.currentTarget.src =
+              "https://tse4.mm.bing.net/th?id=OIP.4Q7-yMnrlnqwR4ORH7c06AHaHa&pid=Api&P=0&h=180"; //fallback image if the user's profile picture fails to load
+          }}
         />
       </section>
       <section className="w-full">
