@@ -21,6 +21,8 @@ axios.interceptors.response.use(
           withCredentials: true,
         });
 
+        if (!response) throw new Error("No response from refresh endpoint");
+
         const newAccessToken = response?.data?.accessToken;
         store.dispatch(updateAccessToken(newAccessToken));
 
