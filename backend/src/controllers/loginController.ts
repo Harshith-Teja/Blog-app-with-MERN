@@ -36,7 +36,7 @@ export const handleLoginUser = async (req: Request, res: Response) => {
       const newRefreshToken = jwt.sign(
         { id: foundUser._id },
         process.env.REFRESH_TOKEN_SECRET as string,
-        { expiresIn: "3d" }
+        { expiresIn: "1d" }
       );
 
       //if a jwt rf token cookie exists, clear both the cookie and that token
