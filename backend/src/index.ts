@@ -7,6 +7,7 @@ import { verifyJWT } from "./middleware/verifyJWT";
 import registerRouter from "./routes/register";
 import loginRouter from "./routes/login";
 import logoutRouter from "./routes/logout";
+import blogRouter from "./routes/blogRoutes";
 import refreshRouter from "./routes/refresh";
 import googleRouter from "./routes/google";
 import postsRouter from "./routes/posts";
@@ -37,6 +38,7 @@ app.use("/refresh", refreshRouter);
 app.use("/logout", logoutRouter);
 
 app.use("/posts", postsRouter);
+app.use("/blogs", blogRouter);
 
 app.use(verifyJWT as RequestHandler);
 
