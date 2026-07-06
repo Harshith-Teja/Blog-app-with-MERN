@@ -6,6 +6,7 @@ interface IPost extends Document {
   content: String;
   category?: String;
   slug: String;
+  summary?: String;
   likes?: Array<String>;
   numOfLikes: number;
   createdAt: Date;
@@ -20,6 +21,10 @@ const postsSchema = new Schema(
     slug: { type: String, required: true, unique: true },
     likes: { type: Array, default: [] },
     numOfLikes: { type: Number, default: 0 },
+    summary: {
+      type: String,
+      default: null, // Defaults to null until the TL;DR button is clicked
+    },
   },
   { timestamps: true }
 );
