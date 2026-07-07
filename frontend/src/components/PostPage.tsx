@@ -27,6 +27,8 @@ const PostPage = () => {
   const { postsData: recentPostData, errorMsg: recentPostErrorMsg } =
     useFetchPosts(`${BASE_URL}/posts/get-posts?limit=3`, []);
   const { currentUser } = useSelector((state: RootState) => state.user);
+  const [isSummary, setIsSummary] = useState(false);
+  const [isSummaryLoading, setIsSummaryLoading] = useState(false);
   const navigate = useNavigate();
 
   //fetches the post on every refresh
@@ -44,6 +46,7 @@ const PostPage = () => {
     };
 
     onPostFetch();
+    setIsSummary(false); // Reset summary state when the post changes
   }, [slug, mainPostData]);
 
   //fetches 3 recent posts on every refresh
@@ -91,6 +94,37 @@ const PostPage = () => {
     } catch (err: any) {
       setErrMsg(err.message);
     }
+  };
+
+  const fetchTLDR = () => {
+    if (!post?.content) {
+      setErrMsg("Post content is empty.");
+      setIsSummaryLoading(false);
+      return;
+    }
+
+    setIsSummaryLoading(true);
+    const apiUrl = `${BASE_URL}/blogs/summary/${post?._id}`;
+
+    axios
+      .post(apiUrl)
+      .then((response) => {
+        const result = response?.data?.summary;
+        setPost((prevPost) => ({
+          ...prevPost!,
+          summary: result,
+        }));
+
+        console.log("TL;DR generated:", result);
+        setErrMsg("");
+        setIsSummaryLoading(false);
+        setIsSummary(true);
+      })
+      .catch((error) => {
+        setErrMsg("Failed to generate TL;DR. Please try again later.");
+        setIsSummaryLoading(false);
+        console.error(error);
+      });
   };
 
   return (
@@ -143,6 +177,56 @@ const PostPage = () => {
                   " " +
                   (post?.numOfLikes && post?.numOfLikes > 1 ? "likes" : "like")}
             </span>
+            <section className="w-full max-w-3xl mx-auto my-8">
+              {/* The AI Button */}
+              <button
+                onClick={fetchTLDR}
+                className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-violet-500 to-purple-600 text-white text-sm font-semibold rounded-full shadow-md hover:shadow-lg hover:scale-105 transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
+              >
+                {/* A spark/lightning icon to indicate AI */}
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-4 w-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M13 10V3L4 14h7v7l9-11h-7z"
+                  />
+                </svg>
+                Generate TL;DR
+              </button>
+
+              {/* The Summary Callout Box */}
+              {isSummaryLoading ? (
+                <div className="flex justify-center items-center mt-6 py-4">
+                  <Spinner className="xl" />
+                </div>
+              ) : (
+                isSummary && (
+                  <div className="mt-6 p-5 bg-purple-50 rounded-2xl border border-purple-100 shadow-sm relative overflow-hidden transition-all duration-300 ease-in-out">
+                    {/* Subtle left accent line to indicate a quote/summary block */}
+                    <div className="absolute top-0 left-0 w-1.5 h-full bg-gradient-to-b from-violet-500 to-purple-600"></div>
+
+                    <h3 className="text-xs font-bold text-purple-800 mb-2 uppercase tracking-wider">
+                      ✨ AI Summary
+                    </h3>
+
+                    {/* The actual summary text */}
+                    <div
+                      className="text-gray-700 leading-relaxed text-md post-content"
+                      dangerouslySetInnerHTML={{
+                        __html: post?.summary as string,
+                      }}
+                    ></div>
+                  </div>
+                )
+              )}
+            </section>
           </section>
           {post?._id && <CommentSection postId={post?._id as string} />}
 
