@@ -4,6 +4,7 @@ export type PostType = {
   content: string;
   category: string;
   slug: string;
+  summary?: string;
   createdAt: string;
   updatedAt: string;
   likes?: Array<String>;
