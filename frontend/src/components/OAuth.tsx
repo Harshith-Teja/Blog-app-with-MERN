@@ -1,6 +1,5 @@
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Button } from "flowbite-react";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { app } from "../firebase";
 import axios from "axios";
@@ -12,7 +11,6 @@ import { BASE_URL } from "../api/requestUrl";
 const OAuth = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
   const auth = getAuth(app);
 
   //sends user google details to server and logs the user in
@@ -44,16 +42,14 @@ const OAuth = () => {
   };
 
   return (
-    <Button
+    <button
       type="button"
-      className="w-full mt-2"
-      gradientDuoTone="purpleToBlue"
-      outline
       onClick={handleGoogleClick}
+      className="w-full flex items-center justify-center gap-3 py-3 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700 hover:shadow-md transition-all duration-200 outline-none focus:ring-4 focus:ring-slate-100 dark:focus:ring-slate-800"
     >
-      <FontAwesomeIcon icon={faGoogle} className="w-4 h-4 mr-2" />
+      <FontAwesomeIcon icon={faGoogle} className="text-red-500 text-lg" />
       Continue with Google
-    </Button>
+    </button>
   );
 };
 
