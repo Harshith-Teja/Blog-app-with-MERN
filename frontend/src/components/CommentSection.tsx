@@ -178,63 +178,77 @@ const CommentSection = ({ postId }: { postId: string }) => {
       setErrMsg(err.message);
     }
   };
-  return (
-    <div className="max-w-2xl mx-auto w-full p-3">
-      {currentUser ? (
-        <section className="flex items-center gap-1 my-5 text-gray-500 text-sm">
-          <p>Signed in as: </p>
-          <img
-            src={currentUser.profilePic}
-            alt={currentUser.uname}
-            className="h-5 w-5 object-cover rounded-full"
-          />
-          <Link
-            to={"/dashboard?tab=profile"}
-            className="text-xs text-cyan-600 hover:underline"
-          >
-            @{currentUser.uname}
-          </Link>
-        </section>
-      ) : (
-        <section className="flex items-center gap-1 my-5 text-gray-500 text-sm border rounded-md p-3">
-          <p>You must be signed in to comment</p>
-          <Link to={"/login"} className="text-blue-600 underline">
-            Sign in
-          </Link>
-        </section>
-      )}
 
-      {currentUser && (
-        <form
-          className="border border-slate-700 p-3 rounded-md"
-          onSubmit={handleSubmit}
-        >
-          <Textarea
-            placeholder="Add a comment..."
-            rows={3}
-            maxLength={200}
-            value={comment}
-            onChange={(e) => setComment(e.target.value)}
-          />
-          <div className="flex justify-between items-center mt-5">
-            <p className="text-gray-500 text-sm">
-              {200 - comment.length} characters remaining
-            </p>
-            <Button gradientDuoTone="purpleToBlue" outline type="submit">
-              Submit
-            </Button>
-          </div>
-          <Alert color="failure" className={errMsg ? "block mt-4" : "hidden"}>
-            {errMsg}
-          </Alert>
-        </form>
+  return (
+    <div className="max-w-3xl mx-auto w-full p-3 font-sans">
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-200">
+          Discussion ({postComments.length})
+        </h2>
+      </div>
+
+      {currentUser ? (
+        <div className="bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/50 rounded-2xl p-5 shadow-sm mb-8">
+          <section className="flex items-center gap-2 mb-4 text-slate-500 text-sm">
+            <p>Commenting as:</p>
+            <div className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-700/50 px-2.5 py-1 rounded-full">
+              <img
+                src={currentUser.profilePic}
+                alt={currentUser.uname}
+                className="h-5 w-5 object-cover rounded-full border border-slate-300 dark:border-slate-600"
+              />
+              <Link
+                to={"/dashboard?tab=profile"}
+                className="text-xs font-semibold text-cyan-600 dark:text-cyan-400 hover:underline"
+              >
+                @{currentUser.uname}
+              </Link>
+            </div>
+          </section>
+
+          <form onSubmit={handleSubmit}>
+            <Textarea
+              placeholder="What are your thoughts?"
+              rows={3}
+              maxLength={200}
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              className="w-full resize-none bg-slate-50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-700 focus:ring-cyan-500 focus:border-cyan-500 rounded-xl"
+            />
+            <div className="flex justify-between items-center mt-4">
+              <p className="text-slate-400 text-xs font-medium">
+                {200 - comment.length} characters remaining
+              </p>
+              <button
+                type="submit"
+                className="px-6 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-full shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200"
+              >
+                Submit
+              </button>
+            </div>
+            <Alert color="failure" className={errMsg ? "block mt-4" : "hidden"}>
+              {errMsg}
+            </Alert>
+          </form>
+        </div>
+      ) : (
+        <section className="flex items-center gap-2 my-5 text-slate-500 text-sm bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/50 rounded-2xl p-5 shadow-sm">
+          <p>Join the conversation!</p>
+          <Link
+            to={"/login"}
+            className="text-cyan-600 dark:text-cyan-400 font-semibold hover:underline"
+          >
+            Sign in to comment
+          </Link>
+        </section>
       )}
 
       {postComments.length === 0 ? (
-        <p className="text-sm my-4">No comments yet!</p>
+        <p className="text-sm text-slate-500 italic text-center py-10">
+          No comments yet. Be the first to share your thoughts!
+        </p>
       ) : (
-        <section>
-          <p>{postComments.length} comments</p>
+        <section className="flex flex-col gap-4">
           {postComments.map((comment) => (
             <Comment
               key={comment._id}
@@ -261,20 +275,25 @@ const CommentSection = ({ postId }: { postId: string }) => {
           <Modal.Body className="text-center">
             <FontAwesomeIcon
               icon={faCircleExclamation}
-              className="w-14 h-14 text-gray-500 dark:text-gray-200 mb-4"
+              className="w-14 h-14 text-slate-400 dark:text-slate-200 mb-4"
             />
-            <h1 className="text-gray-500 dark:text-gray-200 text-lg mb-4">
+            <h1 className="text-slate-600 dark:text-slate-200 text-lg font-medium mb-6">
               Are you sure you want to delete this comment?
             </h1>
             <div className="flex justify-center gap-4">
               <Button
                 color="failure"
+                className="rounded-full px-4"
                 onClick={() => handleDelete(commentIdToDelete)}
               >
-                Yes, I'm sure
+                Yes, delete it
               </Button>
-              <Button color="gray" onClick={() => setShowModal(false)}>
-                No, cancel
+              <Button
+                color="gray"
+                className="rounded-full px-4"
+                onClick={() => setShowModal(false)}
+              >
+                Cancel
               </Button>
             </div>
           </Modal.Body>
