@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/store";
-import { Alert, Button, Modal, Spinner, TextInput } from "flowbite-react";
+import { Alert, Modal, Spinner, TextInput } from "flowbite-react";
 import { useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -144,119 +144,159 @@ const DashProfile = () => {
       errRef.current?.focus();
     }
   };
+
   return (
-    <div className="max-w-lg w-full mx-auto p-3">
-      <h1 className="my-7 text-center font-semibold text-3xl">Profile</h1>
-      <form className="flex flex-col gap-4 w-full" onSubmit={handleSubmit}>
-        <div className="w-32 h-32 rounded-full object-cover p-1 bg-gradient-to-r from-blue-500 to-purple-500 self-center">
-          <img
-            src={currentUser?.profilePic}
-            alt="profilePic"
-            className="w-full h-full rounded-full object-cover"
-          />
+    <div className="max-w-lg w-full mx-auto p-6 md:p-8 font-sans min-h-screen">
+      <h1 className="mb-8 text-center font-extrabold text-3xl text-slate-800 dark:text-white tracking-tight">
+        Profile Settings
+      </h1>
+
+      <div className="bg-white dark:bg-slate-900/40 backdrop-blur-md border border-slate-200 dark:border-slate-800/60 rounded-[2rem] shadow-sm p-6 md:p-8">
+        <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
+          {/* Ambient Glow Profile Picture */}
+          <div className="relative w-32 h-32 mx-auto mb-4 group">
+            <div className="absolute inset-0 bg-gradient-to-tr from-cyan-400 to-blue-600 rounded-full blur-[12px] opacity-60 group-hover:opacity-100 transition-opacity duration-300 -z-10"></div>
+            <img
+              src={currentUser?.profilePic}
+              alt="profilePic"
+              className="relative w-full h-full rounded-full object-cover border-4 border-white dark:border-slate-800 shadow-md"
+            />
+          </div>
+
+          {/* Form Fields */}
+          <div className="flex flex-col gap-5">
+            <div>
+              <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">
+                Username
+              </label>
+              <TextInput
+                type="text"
+                id="uname"
+                placeholder="Username"
+                value={uname}
+                onChange={(e) => setUname(e.target.value)}
+                aria-invalid={!validUname ? "true" : "false"}
+                aria-describedby="uidnote"
+                onFocus={() => setUnameFocus(true)}
+                onBlur={() => setUnameFocus(false)}
+                className="shadow-sm"
+              />
+              <div
+                id="uidnote"
+                className={
+                  unameFocus && uname && !validUname
+                    ? "mt-2 flex items-start gap-2 text-xs p-3 rounded-xl bg-blue-50 text-gray-700 dark:bg-blue-900/20 dark:text-blue-300 border border-blue-100 dark:border-blue-800/50 transition-all"
+                    : "hidden"
+                }
+              >
+                <FontAwesomeIcon icon={faInfoCircle} className="mt-0.5" />
+                <p>
+                  4 to 24 characters.
+                  <br />
+                  Must begin with a letter.
+                  <br />
+                  Letters, numbers, underscores, hyphens allowed.
+                </p>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">
+                Password
+              </label>
+              <TextInput
+                type="password"
+                id="pwd"
+                placeholder="Leave blank to keep current password"
+                onChange={(e) => setPwd(e.target.value)}
+                value={pwd}
+                aria-invalid={!validPwd ? "true" : "false"}
+                aria-describedby="pwdnote"
+                onFocus={() => setPwdFocus(true)}
+                onBlur={() => setPwdFocus(false)}
+                className="shadow-sm"
+              />
+              <div
+                id="pwdnote"
+                className={
+                  pwdFocus && pwd && !validPwd
+                    ? "mt-2 flex items-start gap-2 text-xs p-3 rounded-xl bg-blue-50 text-gray-700 dark:bg-blue-900/20 dark:text-blue-300 border border-blue-100 dark:border-blue-800/50 transition-all"
+                    : "hidden"
+                }
+              >
+                <FontAwesomeIcon icon={faInfoCircle} className="mt-0.5" />
+                <p>
+                  8 to 24 characters.
+                  <br />
+                  Must include uppercase and lowercase letters, a number, and a
+                  special character.
+                  <br />
+                  Allowed: <span className="font-mono">! @ # $ %</span>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-3 mt-2">
+            <button
+              type="submit"
+              disabled={
+                (uname.length > 0 && !validUname) ||
+                (pwd.length > 0 && !validPwd) ||
+                loading
+              }
+              className="w-full py-2.5 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold rounded-xl shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex justify-center items-center h-11"
+            >
+              {loading ? <Spinner size="sm" /> : "Update Profile"}
+            </button>
+
+            <Link to="/create-post" className="w-full">
+              <button
+                type="button"
+                className="w-full py-2.5 bg-white dark:bg-slate-800 text-cyan-600 dark:text-cyan-400 font-bold rounded-xl border border-cyan-500/30 hover:bg-cyan-50 dark:hover:bg-cyan-900/20 transition-all duration-200 shadow-sm flex justify-center items-center h-11"
+              >
+                Create New Post
+              </button>
+            </Link>
+          </div>
+
+          <Alert
+            ref={errRef}
+            color="failure"
+            className={errMsg ? "block rounded-xl" : "hidden"}
+            aria-live="assertive"
+          >
+            {errMsg}
+          </Alert>
+          <Alert
+            ref={successRef}
+            color="success"
+            className={success ? "block rounded-xl" : "hidden"}
+            aria-live="assertive"
+          >
+            Profile updated successfully
+          </Alert>
+        </form>
+
+        {/* Destructive Actions */}
+        <div className="flex justify-between items-center mt-8 pt-6 border-t border-slate-100 dark:border-slate-800/60">
+          <button
+            type="button"
+            className="text-sm font-medium text-slate-400 hover:text-red-500 transition-colors duration-200 outline-none"
+            onClick={() => setShowModal(true)}
+          >
+            Delete account
+          </button>
+          <button
+            type="button"
+            className="text-sm font-medium text-slate-400 hover:text-red-500 transition-colors duration-200 outline-none"
+            onClick={handleSignout}
+          >
+            Sign out
+          </button>
         </div>
-        <TextInput
-          type="text"
-          id="uname"
-          placeholder="Username"
-          value={uname}
-          onChange={(e) => setUname(e.target.value)}
-          aria-invalid={!validUname ? "true" : "false"}
-          aria-describedby="uidnote"
-          onFocus={() => setUnameFocus(true)}
-          onBlur={() => setUnameFocus(false)}
-        />
-        <p
-          id="uidnote"
-          className={
-            unameFocus && uname && !validUname
-              ? "text-xs p-1 rounded-md bg-slate-400 w-5/6 mx-auto"
-              : "hidden"
-          }
-        >
-          <FontAwesomeIcon icon={faInfoCircle} /> 4 to 24 characters.
-          <br />
-          Must begin with a letter.
-          <br />
-          Letters, numbers, underscores, hyphens allowed.
-        </p>
-        <TextInput
-          type="password"
-          id="pwd"
-          placeholder="Password"
-          onChange={(e) => setPwd(e.target.value)}
-          value={pwd}
-          aria-invalid={!validPwd ? "true" : "false"}
-          aria-describedby="pwdnote"
-          onFocus={() => setPwdFocus(true)}
-          onBlur={() => setPwdFocus(false)}
-        />
-        <p
-          id="pwdnote"
-          className={
-            pwdFocus && pwd && !validPwd
-              ? "text-xs p-1 rounded-md bg-slate-400 w-5/6 mx-auto"
-              : "hidden"
-          }
-        >
-          <FontAwesomeIcon icon={faInfoCircle} /> 8 to 24 characters.
-          <br />
-          Must include uppercase and lowercase letters, a number and a special
-          character.
-          <br />
-          Allowed special characters:{" "}
-          <span aria-label="exclamation mark">!</span>{" "}
-          <span aria-label="at symbol">@</span>{" "}
-          <span aria-label="hashtag">#</span>{" "}
-          <span aria-label="dollar sign">$</span>{" "}
-          <span aria-label="percent">%</span>
-        </p>
-        <Button
-          type="submit"
-          gradientDuoTone="purpleToBlue"
-          disabled={
-            (uname.length > 0 && !validUname) ||
-            (pwd.length > 0 && !validPwd) ||
-            loading
-          }
-        >
-          {loading ? <Spinner size="sm" /> : "Update profile"}
-        </Button>
-        <Button
-          gradientDuoTone="purpleToBlue"
-          disabled={
-            (uname.length > 0 && !validUname) ||
-            (pwd.length > 0 && !validPwd) ||
-            loading
-          }
-        >
-          <Link to="/create-post">Create posts</Link>
-        </Button>
-        <Alert
-          ref={errRef}
-          color="failure"
-          className={errMsg ? "block" : "hidden"}
-          aria-live="assertive"
-        >
-          {errMsg}
-        </Alert>
-        <Alert
-          ref={successRef}
-          color="success"
-          className={success ? "block" : "hidden"}
-          aria-live="assertive"
-        >
-          Profile updated successfully
-        </Alert>
-      </form>
-      <div className="text-red-500 mt-5 flex justify-between">
-        <span className="cursor-pointer" onClick={() => setShowModal(true)}>
-          Delete account
-        </span>
-        <span className="cursor-pointer" onClick={handleSignout}>
-          Sign out
-        </span>
       </div>
+
       {showModal && (
         <Modal
           show={showModal}
@@ -268,18 +308,24 @@ const DashProfile = () => {
           <Modal.Body className="text-center">
             <FontAwesomeIcon
               icon={faCircleExclamation}
-              className="w-14 h-14 text-gray-500 dark:text-gray-200 mb-4"
+              className="w-14 h-14 text-slate-400 dark:text-slate-200 mb-4"
             />
-            <h1 className="text-gray-500 dark:text-gray-200 text-lg mb-4">
+            <h1 className="text-slate-600 dark:text-slate-200 text-lg font-medium mb-6">
               Are you sure you want to delete your account?
             </h1>
             <div className="flex justify-center gap-4">
-              <Button color="failure" onClick={handleDelete}>
+              <button
+                className="px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white font-medium rounded-full shadow-sm transition-colors"
+                onClick={handleDelete}
+              >
                 Yes, I'm sure
-              </Button>
-              <Button color="gray" onClick={() => setShowModal(false)}>
+              </button>
+              <button
+                className="px-5 py-2.5 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 font-medium rounded-full transition-colors"
+                onClick={() => setShowModal(false)}
+              >
                 No, cancel
-              </Button>
+              </button>
             </div>
           </Modal.Body>
         </Modal>
