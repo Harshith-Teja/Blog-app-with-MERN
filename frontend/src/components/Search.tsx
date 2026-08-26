@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Button, Select, Spinner, TextInput } from "flowbite-react";
+import { Select, Spinner, TextInput } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import PostCard from "./PostCard";
@@ -99,7 +99,7 @@ const Search = () => {
     }
   };
 
-  //fetches more posts when user clicks 'show more' button
+  //fetches more posts when user clicks 'load more' button
   const handleShowMore = async () => {
     if (!currentUser) {
       //if the user is not logged in, redirect to login page
@@ -156,73 +156,107 @@ const Search = () => {
   };
 
   return (
-    <div className="flex flex-col md:flex-row">
-      <section className="p-7 border-b md:border-r md:min-h-screen border-gray-500">
-        <form className="flex flex-col gap-8" onSubmit={handleSubmit}>
-          <div className="flex items-center gap-2">
-            <label className="whitespace-nowrap font-semibold">
-              Search Term:
+    <div className="flex flex-col md:flex-row bg-white dark:bg-gray-950 min-h-screen">
+      {/* Sidebar */}
+      <section className="w-full md:w-80 p-6 md:p-8 border-b md:border-b-0 md:border-r border-slate-200 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-900/30 md:min-h-screen flex-shrink-0">
+        <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
+          <div className="flex flex-col gap-2">
+            <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+              Search Term
             </label>
             <TextInput
-              placeholder="Search"
+              placeholder="Keywords..."
               id="searchTerm"
               type="text"
               value={sidebarData.searchTerm}
               onChange={handleChange}
+              className="shadow-sm"
             />
           </div>
-          <div className="flex items-center gap-2">
-            <label className="font-semibold">Sort:</label>
-            <Select id="sort" value={sidebarData.sort} onChange={handleChange}>
-              <option value="desc">Latest</option>
-              <option value="asc">Oldest</option>
+
+          <div className="flex flex-col gap-2">
+            <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+              Sort By
+            </label>
+            <Select
+              id="sort"
+              value={sidebarData.sort}
+              onChange={handleChange}
+              className="shadow-sm"
+            >
+              <option value="desc">Latest First</option>
+              <option value="asc">Oldest First</option>
             </Select>
           </div>
-          <div className="flex items-center gap-2">
-            <label className="font-semibold">Category:</label>
+
+          <div className="flex flex-col gap-2">
+            <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+              Category
+            </label>
             <Select
               id="category"
               value={sidebarData.category}
               onChange={handleChange}
+              className="shadow-sm"
             >
-              <option value="uncategorized">Uncategorized</option>
+              <option value="uncategorized">All Categories</option>
               <option value="programming">Programming</option>
               <option value="finance">Finance</option>
               <option value="travel">Travel</option>
             </Select>
           </div>
-          <Button type="submit" outline gradientDuoTone="purpleToBlue">
+
+          <button
+            type="submit"
+            className="mt-4 w-full py-2.5 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold rounded-xl shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200"
+          >
             Apply Filters
-          </Button>
+          </button>
         </form>
       </section>
-      <section className="w-full">
-        <h1 className="text-3xl font-semibold border-gray-500 p-3 mt-5">
-          Posts results
+
+      {/* Main Content Area */}
+      <section className="w-full p-6 md:p-10 lg:p-12">
+        <h1 className="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white mb-8 border-b border-slate-200 dark:border-slate-800 pb-4">
+          Explore Articles
         </h1>
-        <section className="flex justify-center mt-5">
-          {loading && <Spinner size="md" />}
+
+        <div className="flex justify-center mt-5">
+          {loading && <Spinner size="xl" />}
           {!loading && posts.length === 0 && (
-            <p className="text-xl">No posts found</p>
+            <div className="text-center py-20">
+              <p className="text-2xl font-bold text-slate-600 dark:text-slate-400">
+                No posts found
+              </p>
+              <p className="text-slate-500 mt-2">
+                Try adjusting your search or filters.
+              </p>
+            </div>
           )}
-        </section>
-        <div className="p-7 grid grid-cols-2 sm:grid-cols-3 gap-4">
+        </div>
+
+        {/* Post Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {!loading &&
             posts.length > 0 &&
             posts.map((post) => <PostCard key={post._id} post={post} />)}
         </div>
+
+        {/* Load More Button */}
         {!morePostsLoading && showMore && (
-          <Button
-            color="gray"
-            className="w-full text-teal-500 self-center text-sm my-7"
-            onClick={handleShowMore}
-          >
-            Show more
-          </Button>
+          <div className="mt-12 flex justify-center">
+            <button
+              onClick={handleShowMore}
+              className="px-8 py-3 text-cyan-600 dark:text-cyan-400 font-semibold border-2 border-cyan-500/30 rounded-full hover:bg-cyan-50 dark:hover:bg-cyan-900/20 transition-all shadow-sm focus:ring-4 focus:ring-cyan-500/20 outline-none"
+            >
+              Load More Articles
+            </button>
+          </div>
         )}
+
         {morePostsLoading && (
-          <section className="flex justify-center mt-5">
-            <Spinner size="md" />
+          <section className="flex justify-center mt-12">
+            <Spinner size="xl" />
           </section>
         )}
       </section>
