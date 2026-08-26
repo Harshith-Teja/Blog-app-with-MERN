@@ -1,5 +1,4 @@
-// import axios from "axios";
-import { Alert, Button, Spinner } from "flowbite-react";
+import { Alert, Spinner } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import CommentSection from "./CommentSection";
@@ -8,16 +7,33 @@ import { PostType } from "../types/PostType";
 import { BASE_URL } from "../api/requestUrl";
 import useFetchPosts from "../hooks/fetch/useFetchPosts";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHeart } from "@fortawesome/free-solid-svg-icons";
+import {
+  faHeart,
+  faWandMagicSparkles,
+} from "@fortawesome/free-solid-svg-icons";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import axios from "axios";
+
+// Re-using the gradient logic for the Hero Banner
+const getCategoryGradient = (category: string = "uncategorized") => {
+  switch (category.toLowerCase()) {
+    case "programming":
+      return "from-indigo-500 via-purple-500 to-fuchsia-500";
+    case "finance":
+      return "from-emerald-400 via-teal-500 to-cyan-600";
+    case "travel":
+      return "from-sky-400 via-blue-500 to-indigo-600";
+    default:
+      return "from-slate-400 to-slate-600 dark:from-slate-700 dark:to-slate-800";
+  }
+};
 
 const PostPage = () => {
   const { slug } = useParams();
   const [loading, setLoading] = useState(true);
   const [errMsg, setErrMsg] = useState("");
-  const [post, setPost] = useState<PostType>(); // useState<Partial<PostType>>({});
+  const [post, setPost] = useState<PostType>();
   const [recentPosts, setRecentPosts] = useState<PostType[]>([]);
   const {
     postsData: mainPostData,
@@ -57,11 +73,9 @@ const PostPage = () => {
         setLoading(false);
         return;
       }
-
       setErrMsg("");
       setRecentPosts(recentPostData.posts);
     };
-
     onRecentPostFetch();
   }, [recentPostData]);
 
@@ -88,7 +102,6 @@ const PostPage = () => {
         return;
       }
 
-      console.log(data);
       setPost(data);
       setErrMsg("");
     } catch (err: any) {
@@ -115,7 +128,6 @@ const PostPage = () => {
           summary: result,
         }));
 
-        console.log("TL;DR generated:", result);
         setErrMsg("");
         setIsSummaryLoading(false);
         setIsSummary(true);
@@ -131,108 +143,134 @@ const PostPage = () => {
     <>
       {loading ? (
         <main className="flex justify-center items-center min-h-screen">
-          <Spinner className="xl" />
+          <Spinner size="xl" />
         </main>
       ) : (
-        <main className="flex flex-col max-w-6xl mx-auto min-h-screen p-3">
-          <Alert color="failure" className={errMsg ? "block" : "hidden"}>
+        <main className="flex flex-col mx-auto min-h-screen pb-10">
+          <Alert
+            color="failure"
+            className={errMsg ? "block max-w-4xl mx-auto mt-5" : "hidden"}
+          >
             {errMsg}
           </Alert>
-          <h1 className="text-3xl lg:text-4xl mt-10 p-3 text-center max-w-2xl mx-auto">
-            {post?.title}
-          </h1>
-          <Button color="gray" pill size="xs" className="self-center mt-5">
-            <Link to={`/search?category=${post?.category}`}>
-              {post?.category}
-            </Link>
-          </Button>
-          <section className="flex justify-between p-3 border-b border-slate-500 w-full max-w-2xl mx-auto text-xs">
-            <span>
-              {new Date(post?.createdAt as string).toLocaleDateString()}
-            </span>
-            <span className="italic">
-              {post?.content && (post?.content.length / 1000).toFixed(0)} mins
-              read
-            </span>
-          </section>
+
+          {/* Dynamic Hero Banner */}
+          <header className="relative w-full max-w-6xl mx-auto mt-6 rounded-[2rem] overflow-hidden shadow-xl px-4 sm:px-0">
+            <div
+              className={`absolute inset-0 bg-gradient-to-br ${getCategoryGradient(
+                post?.category
+              )} opacity-95`}
+            ></div>
+            {/* Subtle dark overlay for text contrast */}
+            <div className="absolute inset-0 bg-black/20 dark:bg-black/40 mix-blend-overlay"></div>
+
+            <div className="relative z-10 px-6 py-16 md:py-24 flex flex-col items-center text-center">
+              <Link
+                to={`/search?category=${post?.category}`}
+                className="mb-6 hover:scale-105 transition-transform"
+              >
+                <span className="px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-white bg-white/20 backdrop-blur-md rounded-full border border-white/30 shadow-sm">
+                  {post?.category || "General"}
+                </span>
+              </Link>
+
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white max-w-4xl leading-tight mb-6 drop-shadow-md">
+                {post?.title}
+              </h1>
+
+              <div className="flex items-center gap-3 text-sm font-medium text-white/90 bg-black/10 px-4 py-2 rounded-full backdrop-blur-sm border border-white/10">
+                <span>
+                  {new Date(post?.createdAt as string).toLocaleDateString(
+                    "en-US",
+                    { month: "short", day: "numeric", year: "numeric" }
+                  )}
+                </span>
+                <span className="w-1.5 h-1.5 rounded-full bg-white/50"></span>
+                <span className="italic">
+                  {post?.content ? (post.content.length / 1000).toFixed(0) : 0}{" "}
+                  min read
+                </span>
+              </div>
+            </div>
+          </header>
+
+          {/* Enhanced Content Section */}
           <section
-            className="p-3 w-full max-w-3xl mx-auto post-content"
+            className="p-6 md:p-8 w-full max-w-3xl mx-auto post-content mt-8 text-lg text-slate-800 dark:text-slate-200 leading-relaxed font-serif"
             dangerouslySetInnerHTML={{ __html: post?.content as string }}
           ></section>
-          <section className="p-3 w-full max-w-3xl mx-auto post-content">
-            {/* turns the like red as soons as the user likes and vice versa */}
-            <button
-              className={`${
-                post?.likes && post?.likes.includes(currentUser?._id as string)
-                  ? "text-red-500 text-2xl mr-3 transition-colors duration-300"
-                  : "text-gray-300 hover:text-red-500 text-2xl mr-3 transition-colors duration-300"
-              }`}
-              onClick={() => likePost(post!._id)}
-            >
-              <FontAwesomeIcon icon={faHeart} />
-            </button>
-            <span className="text-gray-400 text-lg">
-              {(post?.numOfLikes as number) > 0 &&
-                post?.numOfLikes +
-                  " " +
-                  (post?.numOfLikes && post?.numOfLikes > 1 ? "likes" : "like")}
-            </span>
-            <section className="w-full max-w-3xl mx-auto my-8">
-              {/* The AI Button */}
+
+          <section className="p-3 w-full max-w-3xl mx-auto post-content border-b border-slate-200 dark:border-slate-700 pb-10">
+            {/* Interactions */}
+            <div className="flex items-center gap-3 mb-10 bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl w-fit">
               <button
-                onClick={fetchTLDR}
-                className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-violet-500 to-purple-600 text-white text-sm font-semibold rounded-full shadow-md hover:shadow-lg hover:scale-105 transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
+                className={`${
+                  post?.likes &&
+                  post?.likes.includes(currentUser?._id as string)
+                    ? "text-red-500 text-3xl hover:scale-110 transition-transform duration-300"
+                    : "text-slate-400 hover:text-red-500 text-3xl hover:scale-110 transition-transform duration-300"
+                }`}
+                onClick={() => likePost(post!._id)}
               >
-                {/* A spark/lightning icon to indicate AI */}
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-4"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M13 10V3L4 14h7v7l9-11h-7z"
-                  />
-                </svg>
-                Generate TL;DR
+                <FontAwesomeIcon icon={faHeart} />
               </button>
+              <span className="text-slate-600 dark:text-slate-400 font-medium text-lg">
+                {(post?.numOfLikes as number) > 0
+                  ? `${post?.numOfLikes} ${
+                      post?.numOfLikes === 1 ? "like" : "likes"
+                    }`
+                  : "Be the first to like"}
+              </span>
+            </div>
 
-              {/* The Summary Callout Box */}
-              {isSummaryLoading ? (
-                <div className="flex justify-center items-center mt-6 py-4">
-                  <Spinner className="xl" />
+            {/* AI Section */}
+            <div className="w-full bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-950/30 dark:to-purple-900/20 p-6 rounded-2xl border border-indigo-100 dark:border-indigo-800/30 shadow-inner">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
+                <div>
+                  <h3 className="text-lg font-bold text-indigo-900 dark:text-indigo-300 flex items-center gap-2">
+                    <FontAwesomeIcon
+                      icon={faWandMagicSparkles}
+                      className="text-purple-500"
+                    />
+                    AI Summary
+                  </h3>
+                  <p className="text-sm text-indigo-600/80 dark:text-indigo-400/80">
+                    Get a quick breakdown of this article.
+                  </p>
                 </div>
-              ) : (
-                isSummary && (
-                  <div className="mt-6 p-5 bg-purple-50 rounded-2xl border border-purple-100 shadow-sm relative overflow-hidden transition-all duration-300 ease-in-out">
-                    {/* Subtle left accent line to indicate a quote/summary block */}
-                    <div className="absolute top-0 left-0 w-1.5 h-full bg-gradient-to-b from-violet-500 to-purple-600"></div>
+                <button
+                  onClick={fetchTLDR}
+                  disabled={isSummaryLoading}
+                  className="px-6 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-xl shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed flex items-center gap-2"
+                >
+                  {isSummaryLoading ? <Spinner size="sm" /> : "Generate TL;DR"}
+                </button>
+              </div>
 
-                    <h3 className="text-xs font-bold text-purple-800 mb-2 uppercase tracking-wider">
-                      ✨ AI Summary
-                    </h3>
-
-                    {/* The actual summary text */}
-                    <div
-                      className="text-gray-700 leading-relaxed text-md post-content"
-                      dangerouslySetInnerHTML={{
-                        __html: post?.summary as string,
-                      }}
-                    ></div>
-                  </div>
-                )
+              {isSummary && (
+                <div className="mt-4 p-5 bg-white/60 dark:bg-slate-900/60 backdrop-blur-sm rounded-xl border border-white/40 dark:border-slate-700 shadow-sm animate-fade-in">
+                  <div
+                    className="text-slate-700 dark:text-slate-300 leading-relaxed"
+                    dangerouslySetInnerHTML={{
+                      __html: post?.summary as string,
+                    }}
+                  ></div>
+                </div>
               )}
-            </section>
+            </div>
           </section>
-          {post?._id && <CommentSection postId={post?._id as string} />}
 
-          <section className="flex flex-col justify-between items-center my-5">
-            <h1 className="text-xl my-5">Recent articles</h1>
-            <div className="flex flex-col sm:flex-row gap-6">
+          {/* Comments */}
+          <div className="w-full max-w-3xl mx-auto mt-8">
+            {post?._id && <CommentSection postId={post?._id as string} />}
+          </div>
+
+          {/* Recent Articles */}
+          <section className="flex flex-col items-center mt-16 px-4 w-full max-w-6xl mx-auto">
+            <h2 className="text-2xl font-bold mb-8 text-slate-800 dark:text-slate-200">
+              Keep Reading
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
               {recentPosts.map((post) => (
                 <PostCard key={post?._id} post={post} />
               ))}
