@@ -25,6 +25,9 @@ const LoginPage = () => {
   const userRef = useRef<HTMLInputElement | null>(null);
   const errRef = useRef<HTMLInputElement | null>(null);
 
+  // Local state to track if the demo login specifically is loading
+  const [isDemoLoading, setIsDemoLoading] = useState(false);
+
   //puts the cursor(focus) on user name on every refresh
   useEffect(() => {
     if (userRef.current) userRef.current.focus();
@@ -39,6 +42,7 @@ const LoginPage = () => {
     passwordToLogin: string
   ) => {
     try {
+      setIsDemoLoading(true);
       dispatch(signInStart());
       const response = await axios.post(
         `${BASE_URL}/login`,
@@ -52,12 +56,14 @@ const LoginPage = () => {
       const data = response.data;
       if (data.success === false) {
         dispatch(signInFailure(data.message));
+        setIsDemoLoading(false);
         return;
       }
 
       setUname("");
       setPwd("");
       dispatch(signInSuccess(data));
+      setIsDemoLoading(false);
       navigate("/");
     } catch (err: any) {
       if (!err?.response) dispatch(signInFailure("No server response"));
@@ -67,6 +73,7 @@ const LoginPage = () => {
         dispatch(signInFailure("Unauthorized. Check credentials."));
       else dispatch(signInFailure(err.message));
 
+      setIsDemoLoading(false);
       errRef.current?.focus(); //puts the focus on error on error message
     }
   };
@@ -147,10 +154,19 @@ const LoginPage = () => {
                   type="button"
                   onClick={handleDemoLogin}
                   disabled={loading}
-                  className="whitespace-nowrap px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-lg shadow-sm hover:shadow transition-all flex items-center gap-2 disabled:opacity-70"
+                  className="whitespace-nowrap px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-lg shadow-sm hover:shadow transition-all flex items-center justify-center gap-2 disabled:opacity-70 min-w-[130px]"
                 >
-                  <FontAwesomeIcon icon={faRocket} />
-                  1-Click Demo
+                  {isDemoLoading ? (
+                    <>
+                      <Spinner size="sm" />
+                      Connecting...
+                    </>
+                  ) : (
+                    <>
+                      <FontAwesomeIcon icon={faRocket} />
+                      1-Click Demo
+                    </>
+                  )}
                 </button>
               </div>
             </div>
@@ -210,7 +226,7 @@ const LoginPage = () => {
               disabled={loading}
               className="mt-2 w-full py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold rounded-xl shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-70 disabled:transform-none flex justify-center items-center h-12"
             >
-              {loading ? <Spinner size="sm" /> : "Sign in"}
+              {loading && !isDemoLoading ? <Spinner size="sm" /> : "Sign in"}
             </button>
 
             <div className="relative flex items-center py-2">
