@@ -14,16 +14,31 @@ import useHandleShowMore from "../hooks/useHandleShowMore";
 const DashPosts = () => {
   const { currentUser } = useSelector((state: RootState) => state.user);
   const [userPosts, setUserPosts] = useState<PostType[]>([]);
-  const [showMore, setShowMore] = useState<Boolean>(false);
+  const [showMore, setShowMore] = useState<boolean>(false);
   const [totalPosts, setTotalPosts] = useState<number>(0);
-  const [showModal, setShowModal] = useState<boolean | undefined>(false);
-  const [postIdToDelete, setPostIdToDelete] = useState<String>("");
-  const [loading, setLoading] = useState<Boolean>(false);
-  const [morePostsLoading, setMorePostsLoading] = useState<Boolean>(false);
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [postIdToDelete, setPostIdToDelete] = useState<string>("");
+  const [morePostsLoading, setMorePostsLoading] = useState<boolean>(false);
+
   const { postsData, postsLoading } = useFetchPosts(
     `${BASE_URL}/posts/get-posts/?userId=${currentUser?._id}`,
     [currentUser?._id]
   );
+
+  // Fix: Prevent the "No posts found" flash on initial mount
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
+
+  useEffect(() => {
+    if (postsLoading) {
+      setIsInitialLoad(false);
+    }
+    // Safety fallback to clear the initial loading mask after 300ms
+    const timer = setTimeout(() => setIsInitialLoad(false), 300);
+    return () => clearTimeout(timer);
+  }, [postsLoading]);
+
+  // The component is only truly "loading" if it's the initial gap OR the hook is actively fetching
+  const isLoading = isInitialLoad || postsLoading;
 
   const {
     morePosts: oldAndNewPosts,
@@ -46,7 +61,7 @@ const DashPosts = () => {
   useEffect(() => {
     setUserPosts(oldAndNewPosts);
     setTotalPosts(fetchedTotalPosts);
-    setMorePostsLoading(fetchedMorePostsLoading);
+    setMorePostsLoading(morePostsLoading);
   }, [oldAndNewPosts, fetchedTotalPosts, fetchedMorePostsLoading]);
 
   //if totalPosts are greater than current posts, enables 'load more' button
@@ -57,14 +72,11 @@ const DashPosts = () => {
 
   //fetches posts on every refresh of the page
   useEffect(() => {
-    const onPostsFetched = async () => {
-      setUserPosts(postsData?.posts);
-      setTotalPosts(postsData?.totalPosts);
-      setLoading(postsLoading);
-    };
-
-    onPostsFetched();
-  }, [currentUser?._id, postsData]);
+    if (postsData?.posts) {
+      setUserPosts(postsData.posts);
+      setTotalPosts(postsData.totalPosts);
+    }
+  }, [postsData]);
 
   const handleDelete = async () => {
     setShowModal(false);
@@ -105,10 +117,10 @@ const DashPosts = () => {
 
         <div className="bg-white dark:bg-slate-900/40 backdrop-blur-md border border-slate-200 dark:border-slate-800/60 rounded-[2rem] shadow-sm p-6 overflow-hidden">
           <section className="flex justify-center mt-2">
-            {loading && <Spinner size="xl" />}
+            {isLoading && <Spinner size="xl" />}
           </section>
 
-          {!loading && userPosts.length > 0 && (
+          {!isLoading && userPosts.length > 0 && (
             <>
               <div className="overflow-x-auto rounded-xl border border-slate-100 dark:border-slate-800/50">
                 <Table hoverable className="shadow-none border-none">
@@ -193,8 +205,8 @@ const DashPosts = () => {
               )}
             </>
           )}
-          {!loading && userPosts.length === 0 && (
-            <div className="text-center py-20">
+          {!isLoading && userPosts.length === 0 && (
+            <div className="text-center py-20 animate-fade-in">
               <p className="text-2xl font-bold text-slate-600 dark:text-slate-400">
                 No posts found
               </p>
