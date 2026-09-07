@@ -15,7 +15,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import axios from "axios";
 
-// Re-using the gradient logic for the Hero Banner
+// Category gradient mapping
 const getCategoryGradient = (category: string = "uncategorized") => {
   switch (category.toLowerCase()) {
     case "programming":
@@ -31,17 +31,19 @@ const getCategoryGradient = (category: string = "uncategorized") => {
 
 const PostPage = () => {
   const { slug } = useParams();
-  const [loading, setLoading] = useState(true);
   const [errMsg, setErrMsg] = useState("");
   const [post, setPost] = useState<PostType>();
   const [recentPosts, setRecentPosts] = useState<PostType[]>([]);
+
   const {
     postsData: mainPostData,
     postsLoading: mainPostLoading,
     errorMsg: mainPostErrorMsg,
   } = useFetchPosts(`${BASE_URL}/posts/get-posts?slug=${slug}`, [slug]);
+
   const { postsData: recentPostData, errorMsg: recentPostErrorMsg } =
     useFetchPosts(`${BASE_URL}/posts/get-posts?limit=3`, []);
+
   const { currentUser } = useSelector((state: RootState) => state.user);
   const [isSummary, setIsSummary] = useState(false);
   const [isSummaryLoading, setIsSummaryLoading] = useState(false);
@@ -49,35 +51,29 @@ const PostPage = () => {
 
   //fetches the post on every refresh
   useEffect(() => {
-    const onPostFetch = async () => {
-      if (mainPostErrorMsg) {
-        setErrMsg(mainPostErrorMsg);
-        setLoading(false);
-        return;
-      }
+    if (mainPostErrorMsg) {
+      setErrMsg(mainPostErrorMsg);
+      return;
+    }
 
+    if (mainPostData?.posts?.length > 0) {
       setErrMsg("");
-      setPost(mainPostData?.posts[0]);
-      setLoading(mainPostLoading);
-    };
+      setPost(mainPostData.posts[0]);
+    }
 
-    onPostFetch();
-    setIsSummary(false); // Reset summary state when the post changes
-  }, [slug, mainPostData]);
+    setIsSummary(false);
+  }, [slug, mainPostData, mainPostErrorMsg]);
 
   //fetches 3 recent posts on every refresh
   useEffect(() => {
-    const onRecentPostFetch = async () => {
-      if (recentPostErrorMsg) {
-        setErrMsg(recentPostErrorMsg);
-        setLoading(false);
-        return;
-      }
-      setErrMsg("");
+    if (recentPostErrorMsg) {
+      setErrMsg(recentPostErrorMsg);
+      return;
+    }
+    if (recentPostData?.posts) {
       setRecentPosts(recentPostData.posts);
-    };
-    onRecentPostFetch();
-  }, [recentPostData]);
+    }
+  }, [recentPostData, recentPostErrorMsg]);
 
   const likePost = async (postId: string) => {
     try {
@@ -139,23 +135,48 @@ const PostPage = () => {
       });
   };
 
-  return (
-    <>
-      {loading ? (
-        <main className="flex justify-center items-center min-h-screen">
-          <Spinner size="xl" />
-        </main>
-      ) : (
-        <main className="flex flex-col mx-auto min-h-screen pb-10">
-          <Alert
-            color="failure"
-            className={errMsg ? "block max-w-4xl mx-auto mt-5" : "hidden"}
-          >
-            {errMsg}
-          </Alert>
+  // Improved loading check: Wait until both the loading flag is false AND the post data exists
+  const isPostLoading = mainPostLoading || (!post && !errMsg);
 
+  return (
+    <main className="flex flex-col mx-auto min-h-screen pb-10 bg-slate-50/50 dark:bg-transparent transition-colors">
+      <Alert
+        color="failure"
+        className={errMsg ? "block max-w-4xl mx-auto mt-5" : "hidden"}
+      >
+        {errMsg}
+      </Alert>
+
+      {isPostLoading ? (
+        /* --- PREMIUM SKELETON UI --- */
+        <div className="w-full max-w-6xl mx-auto px-4 sm:px-0 mt-6 animate-pulse">
+          {/* Skeleton Hero Banner */}
+          <div className="w-full h-64 md:h-80 lg:h-96 bg-slate-200 dark:bg-slate-800/80 rounded-[2rem] shadow-sm flex flex-col items-center justify-center border border-slate-100 dark:border-slate-800">
+            <Spinner size="xl" className="mb-4 text-cyan-500 fill-blue-600" />
+            <p className="text-slate-500 dark:text-slate-400 font-medium">
+              Fetching article...
+            </p>
+          </div>
+
+          {/* Skeleton Content Body */}
+          <div className="max-w-3xl mx-auto mt-12 px-6 sm:px-0 space-y-5">
+            <div className="h-5 bg-slate-200 dark:bg-slate-800/80 rounded-md w-full"></div>
+            <div className="h-5 bg-slate-200 dark:bg-slate-800/80 rounded-md w-11/12"></div>
+            <div className="h-5 bg-slate-200 dark:bg-slate-800/80 rounded-md w-full"></div>
+            <div className="h-5 bg-slate-200 dark:bg-slate-800/80 rounded-md w-4/5"></div>
+            <br />
+            <div className="h-5 bg-slate-200 dark:bg-slate-800/80 rounded-md w-full"></div>
+            <div className="h-5 bg-slate-200 dark:bg-slate-800/80 rounded-md w-10/12"></div>
+
+            {/* Skeleton AI Box */}
+            <div className="w-full h-32 bg-indigo-50 dark:bg-slate-800/50 rounded-2xl mt-12 border border-slate-100 dark:border-slate-800"></div>
+          </div>
+        </div>
+      ) : (
+        /* --- LOADED ARTICLE UI --- */
+        <>
           {/* Dynamic Hero Banner */}
-          <header className="relative w-full max-w-6xl mx-auto mt-6 rounded-[2rem] overflow-hidden shadow-xl px-4 sm:px-0">
+          <header className="relative w-full max-w-6xl mx-auto mt-6 rounded-[2rem] overflow-hidden shadow-xl px-4 sm:px-0 animate-fade-in">
             <div
               className={`absolute inset-0 bg-gradient-to-br ${getCategoryGradient(
                 post?.category
@@ -196,13 +217,13 @@ const PostPage = () => {
 
           {/* Enhanced Content Section */}
           <section
-            className="p-6 md:p-8 w-full max-w-3xl mx-auto post-content mt-8 text-lg text-slate-800 dark:text-slate-200 leading-relaxed font-serif"
+            className="p-6 md:p-8 w-full max-w-3xl mx-auto post-content mt-8 text-lg text-slate-800 dark:text-slate-200 leading-relaxed font-serif animate-fade-in"
             dangerouslySetInnerHTML={{ __html: post?.content as string }}
           ></section>
 
-          <section className="p-3 w-full max-w-3xl mx-auto post-content border-b border-slate-200 dark:border-slate-700 pb-10">
+          <section className="p-4 w-full max-w-3xl mx-auto post-content border-b border-slate-200 dark:border-slate-700/50 pb-10">
             {/* Interactions */}
-            <div className="flex items-center gap-3 mb-10 bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl w-fit">
+            <div className="flex items-center gap-3 mb-10 bg-white dark:bg-slate-800/50 p-4 rounded-2xl w-fit border border-slate-100 dark:border-slate-700/50 shadow-sm">
               <button
                 className={`${
                   post?.likes &&
@@ -214,7 +235,7 @@ const PostPage = () => {
               >
                 <FontAwesomeIcon icon={faHeart} />
               </button>
-              <span className="text-slate-600 dark:text-slate-400 font-medium text-lg">
+              <span className="text-slate-600 dark:text-slate-400 font-medium text-lg pr-2">
                 {(post?.numOfLikes as number) > 0
                   ? `${post?.numOfLikes} ${
                       post?.numOfLikes === 1 ? "like" : "likes"
@@ -250,7 +271,7 @@ const PostPage = () => {
               {isSummary && (
                 <div className="mt-4 p-5 bg-white/60 dark:bg-slate-900/60 backdrop-blur-sm rounded-xl border border-white/40 dark:border-slate-700 shadow-sm animate-fade-in">
                   <div
-                    className="text-slate-700 dark:text-slate-300 leading-relaxed"
+                    className="text-slate-700 dark:text-slate-300 leading-relaxed text-base"
                     dangerouslySetInnerHTML={{
                       __html: post?.summary as string,
                     }}
@@ -276,9 +297,9 @@ const PostPage = () => {
               ))}
             </div>
           </section>
-        </main>
+        </>
       )}
-    </>
+    </main>
   );
 };
 
